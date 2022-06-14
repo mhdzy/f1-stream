@@ -1,0 +1,10 @@
+# udp data output
+data/
+
+# macOS folders
+.DS_Store
+
+# pycache
+__pycache__/
+.pytest_cache
+
