@@ -1,3 +1,4 @@
+
 import socket
 import sys
 
@@ -8,6 +9,12 @@ if len(sys.argv) == 3:
 else:
     print("Run like : python3 server.py <arg1:server ip:this system IP 192.168.0.200> <arg2:server port:20777>")
     exit(1)
+
+if False:
+    import os
+    cmd = 'ifconfig | pcre2grep -o "(?<=(inet ))([\d\.]*)(?=( netmask))"'
+    ip = os.popen(cmd).read().split('\n')[1]
+    port = 20777
 
 # Create a UDP socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -40,13 +47,14 @@ def unique(l: list = []) -> int:
         res.append(x)
     return res
 
-unique_packet_lengths = unique(map(len, datastream))
-
 # breakpoint
 import pdb; pdb.set_trace()
+
 # enter a local python session w/ all pdb variables
 import code; code.interact(local=vars())
 
-data_lens = map(len, datastream)
+packet_lengths = map(len, datastream)
+unique_packet_lengths = unique(map(len, datastream))
 
-print(list(data_lens))
+print(list(packet_lengths))
+
