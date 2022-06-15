@@ -1,5 +1,5 @@
 import ctypes
-from spec import *
+from src.spec import *
 
 class Test_PacketHeader(object):
     @pytest.mark.parametrize(
