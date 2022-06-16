@@ -16,10 +16,10 @@ RawByteParser <- R6::R6Class(
 
       if ("filename" %in% names(args)) self$filename <- args$filename
 
-      return(self)
+      invisible(self)
     },
 
-    file_is_open = function() {
+    isOpen = function() {
       tryCatch({
         isOpen(self$fptr)
       }, error = function(e) {
@@ -27,29 +27,41 @@ RawByteParser <- R6::R6Class(
       })
     },
 
-    file_open = function(filename = NULL) {
+    fOpen = function(filename = NULL) {
       if (is.null(filename)) filename <- self$filename
-      print(filename)
-      if (!self$file_is_open()) self$file <- file(filename, "rb")
-      return(self)
+      if (!self$isOpen()) self$file <- file(filename, "rb")
+      invisible(self)
     },
 
-    file_close = function() {
-      if (self$file_is_open()) close(self$file)
-      return(self)
+    fClose = function() {
+      if (self$isOpen()) close(self$file)
+      invisible(self)
     },
 
-    read_byte = function() {
+    readByte = function() {
       return(readBin(self$file, raw(), 1L))
     },
 
-    read_bytes = function(width = 1L) {
-      stack <- Stack$new()
+    readBytes = function(width = 1L) {
+      queue <- Queue$new()
       for (i in seq(width)) {
-        stack$push(self$read_byte())
+        queue$push(self$readByte())
       }
-      bytes <- stack$flush()
+      bytes <- queue$flush()
       return(bytes)
+    },
+
+    bytesToInteger = function(bytes, width = 1L) {
+      return(readBin(unlist(bytes), integer(), size = width))
+    },
+
+    rawListToInt = function(bytes) {
+      result <- 0L
+      for (i in seq_along(bytes)) {
+        browser()
+        result <- result + bitwShiftL(bytes[[i]], length(bytes) - i)
+      }
+      return(result)
     }
   )
 )
