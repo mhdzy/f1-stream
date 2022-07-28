@@ -1,7 +1,7 @@
-source("R/Queue.R")
-source("R/RawByteParser.R")
+source("R/src/Queue.R")
+source("R/src/RawByteParser.R")
 
-source("R/Struct.R")
+source("R/src/Struct.R")
 pstruct <- Struct$new()$structToBytes("PacketHeader")
 
 files <- file.path("data", list.files("data"))
