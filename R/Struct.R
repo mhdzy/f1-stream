@@ -254,7 +254,7 @@ Struct <- R6::R6Class(
       PacketMotionData = list(
         "PacketHeader" = "m_header",                # Header
 
-        "CarMotionData" = "m_carMotionData:[22]",   #  Data for all cars on track, Extra player car ONLY data
+        "CarMotionData" = "m_carMotionData[22]",    #  Data for all cars on track, Extra player car ONLY data
         "float" = "m_suspensionPosition[4]",        #  Note: All wheel arrays have the following order:
         "float" = "m_suspensionVelocity[4]",        #  RL, RR, FL, FR
         "float" = "m_suspensionAcceleration[4]",    #  RL, RR, FL, FR
@@ -274,6 +274,7 @@ Struct <- R6::R6Class(
 
       PacketSessionData = list(
         "PacketHeader" = "m_header",                # Header
+
         "uint8" = "m_weather",                      # 0 = clear, 1 = light cloud, 2 = overcast, 3 = light rain, 4 = heavy rain, 5 = storm
         "int8" = "m_trackTemperature",              # Track temp. in degrees celsius
         "int8" = "m_airTemperature",                # Air temp. in degrees celsius
@@ -325,7 +326,7 @@ Struct <- R6::R6Class(
         "EventDataDetails" = "m_eventDetails"       # Event details - should be interpreted differently for each type
       ),
 
-      PacketParticipantsData = list({
+      PacketParticipantsData = list(
         "PacketHeader" = "m_header",                # Header
         "uint8" = "m_numActiveCars",                # Number of active cars in the data – should match number of cars on HUD
         "ParticipantData" = "m_participants[22]"
@@ -363,14 +364,17 @@ Struct <- R6::R6Class(
     },
 
     structToBits = function(name) {
-      struct <- self$structs[[which(names(self$structs) == name)]]
+      sset_names <- function(x, y) x[[which(names(x) == y)]]
+      struct <- sset_names(self$structs, name)
+      # self$structs[[which(names(self$structs) == name)]]
       return(
         setNames(
           lapply(
             names(struct),
-            function(x) self$bitmap[[which(names(self$bitmap) == x)]]
+            function(x) sset_names(self$bitmap, x)
+            #function(x) self$bitmap[[which(names(self$bitmap) == x)]]
           ),
-        as.vector(struct)
+          as.vector(struct)
         )
       )
     },

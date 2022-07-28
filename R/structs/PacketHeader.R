@@ -7,7 +7,7 @@ PacketHeader <- R6::R6Class(
 
   ),
 
-  public = list
+  public = list(
 
     PacketHeader = list(
       "uint16" = "m_packetFormat",                 # 2021

@@ -8,6 +8,8 @@ if len(sys.argv) == 3:
     port = int(sys.argv[2])
 else:
     print("Run like : python3 server.py <arg1:server ip:this system IP 192.168.0.200> <arg2:server port:20777>")
+    ip = "192.168.0.24"
+    port = 20777
     exit(1)
 
 if False:
@@ -28,7 +30,7 @@ tick=0
 datastream = []
 while True:
     tick = tick+1
-    if tick > 999:
+    if tick > 4096:
         break
     print(tick)
     print("####### server is listening #######")
@@ -48,10 +50,10 @@ def unique(l: list = []) -> int:
     return res
 
 # breakpoint
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 
 # enter a local python session w/ all pdb variables
-import code; code.interact(local=vars())
+# import code; code.interact(local=vars())
 
 packet_lengths = map(len, datastream)
 unique_packet_lengths = unique(map(len, datastream))
