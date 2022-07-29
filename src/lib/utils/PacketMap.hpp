@@ -7,8 +7,8 @@
 
 struct PacketMap
 {
-  char *file_name;
-  const char *file_packet_name;
+  std::string file_name;
+  std::string file_packet_name;
   int file_size;
   int file_id;
 };

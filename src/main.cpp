@@ -27,7 +27,7 @@ int main()
   {
     printf(
         "=== %s ===\n%d bytes\nid: %d (%s)\n---\n",
-        pmap.file_name, pmap.file_size, pmap.file_id, pmap.file_packet_name);
+        pmap.file_name.c_str(), pmap.file_size, pmap.file_id, pmap.file_packet_name.c_str());
   }
 
   // parse a file

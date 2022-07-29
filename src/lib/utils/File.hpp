@@ -2,7 +2,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <string>
 #include <vector>
 
-extern int file_size(const char *filename);
-extern std::vector<unsigned char> file_read(const char *filename);
+extern int file_size(std::string filename);
+extern std::vector<unsigned char> file_read(std::string filename);

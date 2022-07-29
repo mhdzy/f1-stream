@@ -1,6 +1,6 @@
 #include "File.hpp"
 
-int file_size(const char *filename)
+int file_size(std::string filename)
 {
   std::streampos size;
   std::ifstream file(filename, std::ios::binary);
@@ -13,7 +13,7 @@ int file_size(const char *filename)
   return (size);
 };
 
-std::vector<unsigned char> file_read(const char *filename)
+std::vector<unsigned char> file_read(std::string filename)
 {
   std::streampos size;
   size = file_size(filename);
