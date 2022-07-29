@@ -1,3 +1,9 @@
+# object files
+*.o
+
+# compilation target
+src/main
+
 # udp data output
 data/
 
@@ -8,5 +14,8 @@ data/
 __pycache__/
 .pytest_cache
 
+# R stuff
 .Rhistory
+
+# vscode stuff
 .vscode
