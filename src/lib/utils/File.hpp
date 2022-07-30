@@ -5,5 +5,9 @@
 #include <string>
 #include <vector>
 
+extern std::vector<std::vector<unsigned char>> parse_bytes_to_pairs(std::vector<std::pair<int, std::string>> pairs,
+                                                                    std::vector<unsigned char> filebytes, int offset);
+
 extern int file_size(std::string filename);
+
 extern std::vector<unsigned char> file_read(std::string filename);

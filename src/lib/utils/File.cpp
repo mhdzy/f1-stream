@@ -1,7 +1,24 @@
 #include "File.hpp"
 
-int file_size(std::string filename)
-{
+std::vector<std::vector<unsigned char>> parse_bytes_to_pairs(std::vector<std::pair<int, std::string>> pairs,
+                                                             std::vector<unsigned char> filebytes, int offset = 0) {
+  std::vector<std::vector<unsigned char>> parsed_bytes;
+
+  for (std::pair<int, std::string> p : pairs) {
+    std::vector<unsigned char> bytes;
+    std::vector<unsigned char> tmp_bytes;
+
+    tmp_bytes = {filebytes.begin() + offset, filebytes.begin() + offset + p.first};
+
+    std::copy(tmp_bytes.begin(), tmp_bytes.end() + 1, std::back_inserter(bytes));
+    parsed_bytes.push_back(bytes);
+    offset = offset + p.first;
+  }
+
+  return (parsed_bytes);
+}
+
+int file_size(std::string filename) {
   std::streampos size;
   std::ifstream file(filename, std::ios::binary);
 
@@ -13,8 +30,7 @@ int file_size(std::string filename)
   return (size);
 };
 
-std::vector<unsigned char> file_read(std::string filename)
-{
+std::vector<unsigned char> file_read(std::string filename) {
   std::streampos size;
   size = file_size(filename);
 

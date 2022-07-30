@@ -5,8 +5,7 @@
 
 #include "File.hpp"
 
-struct PacketMap
-{
+struct PacketMap {
   std::string file_name;
   std::string file_packet_name;
   int file_size;

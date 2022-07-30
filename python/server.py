@@ -1,4 +1,6 @@
 
+import genericpath
+import os
 import socket
 import sys
 
@@ -10,7 +12,7 @@ else:
     print("Run like : python3 server.py <arg1:server ip:this system IP 192.168.0.200> <arg2:server port:20777>")
     ip = "192.168.0.24"
     port = 20777
-    exit(1)
+    # exit(1)
 
 if False:
     import os
@@ -30,7 +32,7 @@ tick=0
 datastream = []
 while True:
     tick = tick+1
-    if tick > 4096:
+    if tick > 65535:
         break
     print(tick)
     print("####### server is listening #######")
@@ -38,9 +40,13 @@ while True:
     datastream.append(data)
     print("\n\n [RECEIVE] Server received: ", data, "\n\n")
 
+subfolder = "data/brazil-single-lap"
+if not genericpath.exists(subfolder):
+    os.mkdir(subfolder)
 for i in range(0, len(datastream)):
-  with open("data/data"+str(i)+".raw", "wb") as file:
+  with open(subfolder + "/data"+str(i)+".raw", "wb") as file:
       file.write(datastream[i])
+
 
 def unique(l: list = []) -> int:
     res = []

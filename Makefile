@@ -5,7 +5,7 @@ SDIR:=src
 LDIR:=src/lib/include
 UDIR:=src/lib/utils
 
-OBJECTS:=$(SDIR)/main.o $(LDIR)/PacketHeader.o $(UDIR)/PacketMap.o $(UDIR)/File.o $(UDIR)/Maps.o $(UDIR)/Pairs.o
+OBJECTS:=$(SDIR)/main.o $(LDIR)/PacketHeader.o $(LDIR)/PacketMotionData.o $(UDIR)/PacketMap.o $(UDIR)/File.o $(UDIR)/Maps.o $(UDIR)/Pairs.o
 TARGET_EXECUTABLE:=$(SDIR)/main
 
 all: ${TARGET_EXECUTABLE}

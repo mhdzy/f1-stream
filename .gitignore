@@ -5,7 +5,10 @@
 src/main
 
 # udp data output
-data/
+data/*
+
+# parsed data output
+*.csv
 
 # macOS folders
 .DS_Store

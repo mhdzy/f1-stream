@@ -6,4 +6,5 @@
 #include <vector>
 
 extern std::vector<int> getMapKeys(std::map<int, std::string> map);
+
 extern std::vector<std::string> getMapValues(std::map<int, std::string> map);

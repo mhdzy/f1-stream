@@ -52,3 +52,44 @@ arrows(plotdf$id,plotdf$avg_place-plotdf$avg_sd, plotdf$id, plotdf$avg_place+plo
 
 plotdf %>%
   ggplot2::ggplot(aes(x = avg_place, y = avg_sd)) + geom_point()
+
+## f1 stuff
+
+library(dplyr)
+library(readr)
+
+track <- "brazil"
+
+lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
+  readr::read_csv() |>
+  dplyr::arrange(m_frameIdentifier)
+
+lapdata |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = m_worldForwardDirX/32767,
+      y = m_worldForwardDirY/32767,
+      color = m_frameIdentifier
+    )
+  ) +
+  ggplot2::geom_point()
+
+lapdata |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = m_worldPositionX,
+      y = m_worldPositionY,
+      color = m_frameIdentifier
+    )
+  ) +
+  ggplot2::geom_point()
+
+lapdata |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = m_frameIdentifier,
+      y = m_gForceLongitudinal,
+      color = m_frameIdentifier
+    )
+  ) +
+  ggplot2::geom_point()
