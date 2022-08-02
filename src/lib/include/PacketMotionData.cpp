@@ -1,58 +1,130 @@
 #include "PacketMotionData.hpp"
 
-void PrintCarMotionData(CarMotionData cmd) {
-  // printf("CarMotionData\n");
-  // printf("m_worldPositionX: %f\n", cmd.m_worldPositionX);
-  printf("%f, %f\n", cmd.m_worldPositionX, cmd.m_worldPositionY);
-  /*
-  printf("m_worldPositionY: %f\n", cmd.m_worldPositionY);
-  printf("m_worldPositionZ: %f\n", cmd.m_worldPositionZ);
-  printf("m_worldVelocityX: %f\n", cmd.m_worldVelocityX);
-  printf("m_worldVelocityY: %f\n", cmd.m_worldVelocityY);
-  printf("m_worldVelocityZ: %f\n", cmd.m_worldVelocityZ);
-  printf("m_worldForwardDirX: %d\n", cmd.m_worldForwardDirX);
-  printf("m_worldForwardDirY: %d\n", cmd.m_worldForwardDirY);
-  printf("m_worldForwardDirZ: %d\n", cmd.m_worldForwardDirZ);
-  printf("m_worldRightDirX: %d\n", cmd.m_worldRightDirX);
-  printf("m_worldRightDirY: %d\n", cmd.m_worldRightDirY);
-  printf("m_worldRightDirZ: %d\n", cmd.m_worldRightDirZ);
-  printf("m_gForceLateral: %f\n", cmd.m_gForceLateral);
-  printf("m_gForceLongitudinal: %f\n", cmd.m_gForceLongitudinal);
-  printf("m_gForceVertical: %f\n", cmd.m_gForceVertical);
-  printf("m_yaw: %f\n", cmd.m_yaw);
-  printf("m_pitch: %f\n", cmd.m_pitch);
-  printf("m_roll: %f\n", cmd.m_roll);
-  */
+std::string CarMotionDataCSVHeader() {
+  std::string str =
+      "m_worldPositionX,m_worldPositionY,m_worldPositionZ,m_worldVelocityX,m_worldVelocityY,m_"
+      "worldVelocityZ,m_"
+      "worldForwardDirX,m_worldForwardDirY,m_worldForwardDirZ,m_worldRightDirX,m_worldRightDirY,m_worldRightDirZ,m_"
+      "gForceLateral,m_gForceLongitudinal,m_gForceVertical,m_yaw,m_pitch,m_roll";
+
+  return (str);
 }
 
-void PrintPacketMotionData(PacketMotionData pmd) {}
+std::string PacketMotionDataCSVHeader() {
+  std::string str =
+      "m_suspensionPosition,m_suspensionVelocity,m_suspensionAcceleration,m_wheelSpeed,m_localVelocityX,"
+      "m_localVelocityY,m_localVelocityZ,m_angularVelocityX,m_angularVelocityY,m_angularVelocityZ,"
+      "m_angularAccelerationX,m_angularAccelerationY,m_angularAccelerationZ,m_frontWheelsAngle";
+
+  return (str);
+}
+
+std::string CarMotionDataString(CarMotionData obj, std::string sep = ",") {
+  const char *fmt = "%f%s%f%s%f%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%f%s%f";
+
+  int size = std::snprintf(
+      nullptr, 0, fmt, obj.m_worldPositionX, sep.c_str(), obj.m_worldPositionY, sep.c_str(), obj.m_worldPositionZ,
+      sep.c_str(), obj.m_worldVelocityX, sep.c_str(), obj.m_worldVelocityY, sep.c_str(), obj.m_worldVelocityZ,
+      sep.c_str(), obj.m_worldForwardDirX, sep.c_str(), obj.m_worldForwardDirY, sep.c_str(), obj.m_worldForwardDirZ,
+      sep.c_str(), obj.m_worldRightDirX, sep.c_str(), obj.m_worldRightDirY, sep.c_str(), obj.m_worldRightDirZ,
+      sep.c_str(), obj.m_gForceLateral, sep.c_str(), obj.m_gForceLongitudinal, sep.c_str(), obj.m_gForceVertical,
+      sep.c_str(), obj.m_yaw, sep.c_str(), obj.m_pitch, sep.c_str(), obj.m_roll);
+
+  std::vector<char> buf(size + 1);  // note +1 for null terminator
+  std::snprintf(&buf[0], buf.size(), fmt, obj.m_worldPositionX, sep.c_str(), obj.m_worldPositionY, sep.c_str(),
+                obj.m_worldPositionZ, sep.c_str(), obj.m_worldVelocityX, sep.c_str(), obj.m_worldVelocityY, sep.c_str(),
+                obj.m_worldVelocityZ, sep.c_str(), obj.m_worldForwardDirX, sep.c_str(), obj.m_worldForwardDirY,
+                sep.c_str(), obj.m_worldForwardDirZ, sep.c_str(), obj.m_worldRightDirX, sep.c_str(),
+                obj.m_worldRightDirY, sep.c_str(), obj.m_worldRightDirZ, sep.c_str(), obj.m_gForceLateral, sep.c_str(),
+                obj.m_gForceLongitudinal, sep.c_str(), obj.m_gForceVertical, sep.c_str(), obj.m_yaw, sep.c_str(),
+                obj.m_pitch, sep.c_str(), obj.m_roll);
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0'));  // remove null terminator
+
+  return (str);
+}
+
+std::string PacketMotionDataString(PacketMotionData obj, std::string sep) {
+  const char *fmt = "%s%s%s%s%s%s%s%s%s%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f";
+
+  std::string m_susP(reinterpret_cast<char const *>(std::begin(obj.m_suspensionPosition)),
+                     reinterpret_cast<const char *>(std::end(obj.m_suspensionPosition)));
+  std::string m_susV(reinterpret_cast<char const *>(std::begin(obj.m_suspensionVelocity)),
+                     reinterpret_cast<const char *>(std::end(obj.m_suspensionVelocity)));
+  std::string m_susA(reinterpret_cast<char const *>(std::begin(obj.m_suspensionAcceleration)),
+                     reinterpret_cast<const char *>(std::end(obj.m_suspensionAcceleration)));
+  std::string m_whSpeed(reinterpret_cast<char const *>(std::begin(obj.m_wheelSpeed)),
+                        reinterpret_cast<const char *>(std::end(obj.m_wheelSpeed)));
+  std::string m_whSlip(reinterpret_cast<char const *>(std::begin(obj.m_wheelSlip)),
+                       reinterpret_cast<const char *>(std::end(obj.m_wheelSlip)));
+
+  int size = std::snprintf(
+      nullptr, 0, fmt, m_susP.c_str(), sep.c_str(), m_susV.c_str(), sep.c_str(), m_susA.c_str(), sep.c_str(),
+      m_whSpeed.c_str(), sep.c_str(), m_whSlip.c_str(), sep.c_str(), obj.m_localVelocityX, sep.c_str(),
+      obj.m_localVelocityY, sep.c_str(), obj.m_localVelocityZ, sep.c_str(), obj.m_angularVelocityX, sep.c_str(),
+      obj.m_angularVelocityY, sep.c_str(), obj.m_angularVelocityZ, sep.c_str(), obj.m_angularAccelerationX, sep.c_str(),
+      obj.m_angularAccelerationY, sep.c_str(), obj.m_angularAccelerationZ, sep.c_str(), obj.m_frontWheelsAngle);
+
+  std::vector<char> buf(size + 1);  // note +1 for null terminator
+  std::snprintf(&buf[0], buf.size(), fmt, m_susP.c_str(), sep.c_str(), m_susV.c_str(), sep.c_str(), m_susA.c_str(),
+                sep.c_str(), m_whSpeed.c_str(), sep.c_str(), m_whSlip.c_str(), sep.c_str(), obj.m_localVelocityX,
+                sep.c_str(), obj.m_localVelocityY, sep.c_str(), obj.m_localVelocityZ, sep.c_str(),
+                obj.m_angularVelocityX, sep.c_str(), obj.m_angularVelocityY, sep.c_str(), obj.m_angularVelocityZ,
+                sep.c_str(), obj.m_angularAccelerationX, sep.c_str(), obj.m_angularAccelerationY, sep.c_str(),
+                obj.m_angularAccelerationZ, sep.c_str(), obj.m_frontWheelsAngle);
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0'));
+
+  return (str);
+}
 
 CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes) {
-  CarMotionData cmd;
-  std::memcpy(&cmd.m_worldPositionX, &bytes.at(0).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldPositionY, &bytes.at(1).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldPositionZ, &bytes.at(2).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldVelocityX, &bytes.at(3).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldVelocityY, &bytes.at(4).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldVelocityZ, &bytes.at(5).front(), sizeof(float));
-  std::memcpy(&cmd.m_worldForwardDirX, &bytes.at(6).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_worldForwardDirY, &bytes.at(7).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_worldForwardDirZ, &bytes.at(8).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_worldRightDirX, &bytes.at(9).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_worldRightDirY, &bytes.at(10).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_worldRightDirZ, &bytes.at(11).front(), sizeof(std::uint16_t));
-  std::memcpy(&cmd.m_gForceLateral, &bytes.at(12).front(), sizeof(float));
-  std::memcpy(&cmd.m_gForceLongitudinal, &bytes.at(13).front(), sizeof(float));
-  std::memcpy(&cmd.m_gForceVertical, &bytes.at(14).front(), sizeof(float));
-  std::memcpy(&cmd.m_yaw, &bytes.at(15).front(), sizeof(float));
-  std::memcpy(&cmd.m_pitch, &bytes.at(16).front(), sizeof(float));
-  std::memcpy(&cmd.m_roll, &bytes.at(17).front(), sizeof(float));
-  return (cmd);
+  CarMotionData obj;
+  std::memcpy(&obj.m_worldPositionX, &bytes.at(0).front(), sizeof(float));
+  std::memcpy(&obj.m_worldPositionY, &bytes.at(1).front(), sizeof(float));
+  std::memcpy(&obj.m_worldPositionZ, &bytes.at(2).front(), sizeof(float));
+  std::memcpy(&obj.m_worldVelocityX, &bytes.at(3).front(), sizeof(float));
+  std::memcpy(&obj.m_worldVelocityY, &bytes.at(4).front(), sizeof(float));
+  std::memcpy(&obj.m_worldVelocityZ, &bytes.at(5).front(), sizeof(float));
+  std::memcpy(&obj.m_worldForwardDirX, &bytes.at(6).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_worldForwardDirY, &bytes.at(7).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_worldForwardDirZ, &bytes.at(8).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_worldRightDirX, &bytes.at(9).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_worldRightDirY, &bytes.at(10).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_worldRightDirZ, &bytes.at(11).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_gForceLateral, &bytes.at(12).front(), sizeof(float));
+  std::memcpy(&obj.m_gForceLongitudinal, &bytes.at(13).front(), sizeof(float));
+  std::memcpy(&obj.m_gForceVertical, &bytes.at(14).front(), sizeof(float));
+  std::memcpy(&obj.m_yaw, &bytes.at(15).front(), sizeof(float));
+  std::memcpy(&obj.m_pitch, &bytes.at(16).front(), sizeof(float));
+  std::memcpy(&obj.m_roll, &bytes.at(17).front(), sizeof(float));
+  return (obj);
 }
 
-PacketMotionData ParsePacketMotionData(std::vector<std::vector<unsigned char>> bytes) {
-  PacketMotionData pmd;
-  return (pmd);
+PacketMotionData ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes) {
+  // PacketMotionData obj;
+  /*
+    H O W   T O   D E A L   W I T H   A R R A Y S    ???
+  */
+  std::memcpy(&obj.m_suspensionPosition, &bytes.at(0).front(), sizeof(float) * 4);
+  std::memcpy(&obj.m_suspensionVelocity, &bytes.at(1).front(), sizeof(float) * 4);
+  std::memcpy(&obj.m_suspensionAcceleration, &bytes.at(2).front(), sizeof(float) * 4);
+  std::memcpy(&obj.m_wheelSpeed, &bytes.at(3).front(), sizeof(float) * 4);
+  std::memcpy(&obj.m_wheelSlip, &bytes.at(4).front(), sizeof(float) * 4);
+
+  std::memcpy(&obj.m_localVelocityX, &bytes.at(5).front(), sizeof(float));
+  std::memcpy(&obj.m_localVelocityY, &bytes.at(6).front(), sizeof(float));
+  std::memcpy(&obj.m_localVelocityZ, &bytes.at(7).front(), sizeof(float));
+  std::memcpy(&obj.m_angularVelocityX, &bytes.at(8).front(), sizeof(float));
+  std::memcpy(&obj.m_angularVelocityY, &bytes.at(9).front(), sizeof(float));
+  std::memcpy(&obj.m_angularVelocityZ, &bytes.at(10).front(), sizeof(float));
+  std::memcpy(&obj.m_angularAccelerationX, &bytes.at(11).front(), sizeof(float));
+  std::memcpy(&obj.m_angularAccelerationY, &bytes.at(12).front(), sizeof(float));
+  std::memcpy(&obj.m_angularAccelerationZ, &bytes.at(13).front(), sizeof(float));
+  std::memcpy(&obj.m_frontWheelsAngle, &bytes.at(14).front(), sizeof(float));
+  return (obj);
 }
 
 std::vector<std::pair<int, std::string>> CarMotionDataPairs = {
@@ -77,5 +149,20 @@ std::vector<std::pair<int, std::string>> CarMotionDataPairs = {
 };
 
 std::vector<std::pair<int, std::string>> PacketMotionDataPairs = {
-
+    std::make_pair(sizeof(float) * 4, "m_suspensionPosition"),      // Note: All wheel arrays have the
+                                                                    // following order:
+    std::make_pair(sizeof(float) * 4, "m_suspensionVelocity"),      // RL, RR, FL, FR
+    std::make_pair(sizeof(float) * 4, "m_suspensionAcceleration"),  // RL, RR, FL, FR
+    std::make_pair(sizeof(float) * 4, "m_wheelSpeed"),              // Speed of each wheel
+    std::make_pair(sizeof(float) * 4, "m_wheelSlip"),               // Slip ratio for each wheel
+    std::make_pair(sizeof(float), "m_localVelocityX"),              // Velocity in local space
+    std::make_pair(sizeof(float), "m_localVelocityY"),              // Velocity in local space
+    std::make_pair(sizeof(float), "m_localVelocityZ"),              // Velocity in local space
+    std::make_pair(sizeof(float), "m_angularVelocityX"),            // Angular velocity x-component
+    std::make_pair(sizeof(float), "m_angularVelocityY"),            // Angular velocity y-component
+    std::make_pair(sizeof(float), "m_angularVelocityZ"),            // Angular velocity z-component
+    std::make_pair(sizeof(float), "m_angularAccelerationX"),        // Angular velocity x-component
+    std::make_pair(sizeof(float), "m_angularAccelerationY"),        // Angular velocity y-component
+    std::make_pair(sizeof(float), "m_angularAccelerationZ"),        // Angular velocity z-component
+    std::make_pair(sizeof(float), "m_frontWheelsAngle")             // Curent front wheel angle in radians
 };

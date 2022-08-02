@@ -1,18 +1,38 @@
 #include "PacketHeader.hpp"
 
-void PrintPacketHeader(PacketHeader ph) {
-  printf("PacketHeader\n");
-  printf("m_packetFormat: %d\n", ph.m_packetFormat);
-  printf("m_gameMajorVersion: %d\n", ph.m_gameMajorVersion);
-  printf("m_gameMinorVersion: %d\n", ph.m_gameMinorVersion);
-  printf("m_packetVersion: %d\n", ph.m_packetVersion);
-  printf("m_packetId: %d\n", ph.m_packetId);
-  printf("m_sessionUID: %llu\n", ph.m_sessionUID);
-  printf("m_sessionTime: %f\n", ph.m_sessionTime);
-  printf("m_frameIdentifier: %d\n", ph.m_frameIdentifier);
-  printf("m_playerCarIndex: %d\n", ph.m_playerCarIndex);
-  printf("m_secondaryPlayerCarIndex: %d\n", ph.m_secondaryPlayerCarIndex);
-};
+std::string PacketHeaderCSVHeader() {
+  std::string str =
+      "m_packetFormat,m_gameMajorVersion,m_gameMinorVersion,m_packetVersion,m_packetId,m_sessionUID,m_sessionTime,m_"
+      "frameIdentifier,m_playerCarIndex,m_secondaryPlayerCarIndex";
+
+  return (str);
+}
+
+std::string PacketHeaderString(PacketHeader obj, std::string sep = ",") {
+  const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
+
+  int size = std::snprintf(
+      nullptr, 0, fmt, obj.m_packetFormat, sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMajorVersion), sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_gameMinorVersion), sep.c_str(), static_cast<std::uint32_t>(obj.m_packetVersion),
+      sep.c_str(), static_cast<std::uint32_t>(obj.m_packetId), sep.c_str(), obj.m_sessionUID, sep.c_str(),
+      obj.m_sessionTime, sep.c_str(), obj.m_frameIdentifier, sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_playerCarIndex), sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_secondaryPlayerCarIndex));
+
+  std::vector<char> buf(size + 1);  // note +1 for null terminator
+  std::snprintf(
+      &buf[0], buf.size(), fmt, obj.m_packetFormat, sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMajorVersion),
+      sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMinorVersion), sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_packetVersion), sep.c_str(), static_cast<std::uint32_t>(obj.m_packetId),
+      sep.c_str(), obj.m_sessionUID, sep.c_str(), obj.m_sessionTime, sep.c_str(), obj.m_frameIdentifier, sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_playerCarIndex), sep.c_str(),
+      static_cast<std::uint32_t>(obj.m_secondaryPlayerCarIndex));
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0')); // remove null terminator
+
+  return (str);
+}
 
 PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes) {
   PacketHeader ph;
@@ -30,25 +50,15 @@ PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes) {
 };
 
 std::vector<std::pair<int, std::string>> PacketHeaderPairs = {
-    std::make_pair(sizeof(std::uint16_t), "m_packetFormat"),  // 2022
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_gameMajorVersion"),  // Game major version - "X.00"
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_gameMinorVersion"),  // Game minor version - "1.XX"
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_packetVersion"),  // Version of this packet type, all start from 1
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_packetId"),  // Identifier for the packet type, see below
-    std::make_pair(sizeof(std::uint64_t),
-                   "m_sessionUID"),                  // Unique identifier for the session
-    std::make_pair(sizeof(float), "m_sessionTime"),  // Session timestamp
-    std::make_pair(sizeof(std::uint32_t),
-                   "m_frameIdentifier"),  // Identifier for the frame the data
-                                          // was retrieved on
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_playerCarIndex"),  // Index of player's car in the array
-    std::make_pair(sizeof(std::uint8_t),
-                   "m_secondaryPlayerCarIndex")  // Index of secondary player's car in the
-                                                 // array (splitscreen), 255 if no second
-                                                 // player
+    std::make_pair(sizeof(std::uint16_t), "m_packetFormat"),     // 2022
+    std::make_pair(sizeof(std::uint8_t), "m_gameMajorVersion"),  // Game major version - "X.00"
+    std::make_pair(sizeof(std::uint8_t), "m_gameMinorVersion"),  // Game minor version - "1.XX"
+    std::make_pair(sizeof(std::uint8_t), "m_packetVersion"),     // Version of this packet type, all start from 1
+    std::make_pair(sizeof(std::uint8_t), "m_packetId"),          // Identifier for the packet type, see below
+    std::make_pair(sizeof(std::uint64_t), "m_sessionUID"),       // Unique identifier for the session
+    std::make_pair(sizeof(float), "m_sessionTime"),              // Session timestamp
+    std::make_pair(sizeof(std::uint32_t), "m_frameIdentifier"),  // Identifier for the frame the data was retrieved on
+    std::make_pair(sizeof(std::uint8_t), "m_playerCarIndex"),    // Index of player's car in the array
+    std::make_pair(sizeof(std::uint8_t), "m_secondaryPlayerCarIndex")  // Index of secondary player's car in the array
+                                                                       // (splitscreen), 255 if no second player
 };

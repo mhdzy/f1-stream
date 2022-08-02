@@ -4,8 +4,7 @@ int main() {
   std::vector<std::string> filenames;
   std::vector<PacketMap> Packets;
   std::vector<PacketMap> MotionPackets;
-
-  std::string track = "brazil";
+  std::string track = "spa";
 
   // collect all filenames
   const std::filesystem::path path{"data/" + track + "-single-lap/"};
@@ -19,81 +18,45 @@ int main() {
     if (pmap.file_id == 0) MotionPackets.push_back(pmap);
   }
 
-  printf("motion packets total: %lu\n", MotionPackets.size());
-  // print metadata for each packet
-  /*
-  for (PacketMap pmap : Packets) {
-      printf("%17s :: %4d bytes :: id %2d (%s)\n", pmap.file_name.c_str(), pmap.file_size, pmap.file_id,
-  pmap.file_packet_name.c_str());
-  }
-  printf("\n");
-  */
-
+  std::string output_path = "data/" + track + "-lap-data-parsed.csv";
   std::ofstream output_file;
-  output_file.open("data/" + track + "-lap-data-parsed.csv");
-  output_file
-      << "m_packetFormat,m_gameMajorVersion,m_gameMinorVersion,m_packetVersion,m_packetId,m_sessionUID,m_sessionTime,m_"
-         "frameIdentifier,m_playerCarIndex,m_secondaryPlayerCarIndex,";
-  output_file
-      << "m_carID,m_worldPositionX,m_worldPositionY,m_worldPositionZ,m_worldVelocityX,m_worldVelocityY,m_"
-         "worldVelocityZ,m_"
-         "worldForwardDirX,m_worldForwardDirY,m_worldForwardDirZ,m_worldRightDirX,m_worldRightDirY,m_worldRightDirZ,m_"
-         "gForceLateral,m_gForceLongitudinal,m_gForceVertical,m_yaw,m_pitch,m_roll\n ";
+
+  // open output file & write csv header
+  output_file.open(output_path);
+  output_file << PacketHeaderCSVHeader() + ",m_carID," + CarMotionDataCSVHeader() + "," + PacketMotionDataCSVHeader() +
+                     "\n";
+  
+  printf("here\n");
+
+  // parse & write each motion packet
   for (PacketMap packet : MotionPackets) {
+    PacketMotionData pmd;
+    printf("here2\n");
     // parse a file
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
 
-    /*
-    // print all parsed file bytes
-    for (int i = 0; i < sizeof(PacketHeader); i++)
-    {
-      printf("%2x ", filebytes.at(i));
-      if (i % 6 == 5)
-        printf("\n");
-    }
-    printf("\n");
-
-    // print remainder of parsed bytes
-    for (int i = sizeof(PacketHeader); i < sizeof(PacketHeader) +
-    sizeof(CarMotionData); i++)
-    {
-      printf("%2x ", filebytes.at(i));
-      if (i % 6 == 5)
-        printf("\n");
-    }
-    printf("\n");
-    */
-
-    for (int i = 1; i <= 22; i++) {
-      std::vector<std::vector<unsigned char>> packet_header_bytes =
-          parse_bytes_to_pairs(PacketHeaderPairs, filebytes, 0);
-      PacketHeader packet_header = ParsePacketHeader(packet_header_bytes);
-      // PrintPacketHeader(packet_header);
-      // printf("\n");
-      output_file << packet_header.m_packetFormat << "," << static_cast<std::uint32_t>(packet_header.m_gameMajorVersion)
-                  << "," << static_cast<std::uint32_t>(packet_header.m_gameMinorVersion) << ","
-                  << static_cast<std::uint32_t>(packet_header.m_packetVersion) << ","
-                  << static_cast<std::uint32_t>(packet_header.m_packetId) << "," << packet_header.m_sessionUID << ","
-                  << packet_header.m_sessionTime << "," << packet_header.m_frameIdentifier << ","
-                  << static_cast<std::uint32_t>(packet_header.m_playerCarIndex) << ","
-                  << static_cast<std::uint32_t>(packet_header.m_secondaryPlayerCarIndex) << ",";
-
+    // parse header
+    std::vector<std::vector<unsigned char>> packet_header_bytes = parse_bytes_to_pairs(PacketHeaderPairs, filebytes, 0);
+    pmd.m_header = ParsePacketHeader(packet_header_bytes);
+    printf("here3\n");
+    // parse footer?
+    std::vector<std::vector<unsigned char>> packet_footer_bytes =
+        parse_bytes_to_pairs(PacketMotionDataPairs, filebytes, sizeof(PacketHeader) + (sizeof(CarMotionData) * 22));
+    // parse motion data writes directly to object; requires passing by reference
+    ParsePacketMotionData(pmd, packet_footer_bytes);
+    printf("here4\n");
+    // loop over the 22 car data packets
+    for (int i = 0; i < 22; i++) {
       std::vector<std::vector<unsigned char>> car_motion_data_bytes =
-          parse_bytes_to_pairs(CarMotionDataPairs, filebytes, sizeof(PacketHeader) * i);
-      CarMotionData car_motion_data = ParseCarMotionData(car_motion_data_bytes);
-      // PrintCarMotionData(car_motion_data);
-      // printf("\n");
-
-      output_file << i << "," << car_motion_data.m_worldPositionX << "," << car_motion_data.m_worldPositionY << ","
-                  << car_motion_data.m_worldPositionZ << "," << car_motion_data.m_worldVelocityX << ","
-                  << car_motion_data.m_worldVelocityY << "," << car_motion_data.m_worldVelocityZ << ","
-                  << car_motion_data.m_worldForwardDirX << "," << car_motion_data.m_worldForwardDirY << ","
-                  << car_motion_data.m_worldForwardDirZ << "," << car_motion_data.m_worldRightDirX << ","
-                  << car_motion_data.m_worldRightDirY << "," << car_motion_data.m_worldRightDirZ << ","
-                  << car_motion_data.m_gForceLateral << "," << car_motion_data.m_gForceLongitudinal << ","
-                  << car_motion_data.m_gForceVertical << "," << car_motion_data.m_yaw << "," << car_motion_data.m_pitch
-                  << "," << car_motion_data.m_roll << "\n";
+          parse_bytes_to_pairs(CarMotionDataPairs, filebytes, sizeof(PacketHeader) + (sizeof(CarMotionData) * i));
+      pmd.m_carMotionData.at(i) = ParseCarMotionData(car_motion_data_bytes);
+      printf("here5\n");
+      // for each car data packet, write 1 entry in file
+      output_file << PacketHeaderString(pmd.m_header, ",") + "," + std::to_string(i) + "," +
+                         CarMotionDataString(pmd.m_carMotionData.at(i), ",") + "," + PacketMotionDataString(pmd, ",") +
+                         "\n";
     }
+    printf("here6\n");
   }
   output_file.close();
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
+#include <vector>
 
 #include "PacketHeader.hpp"
 
@@ -30,7 +32,7 @@ struct CarMotionData {
 struct PacketMotionData {
   PacketHeader m_header;  // Header
 
-  CarMotionData m_carMotionData[22];  // Data for all cars on track
+  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
 
   // Extra player car ONLY data
   float m_suspensionPosition[4];      // Note: All wheel arrays have the following
@@ -53,10 +55,12 @@ struct PacketMotionData {
 
 #pragma pack(pop)
 
-extern void PrintCarMotionData(CarMotionData cmd);
+extern std::string CarMotionDataCSVHeader();
+extern std::string CarMotionDataString(CarMotionData obj, std::string sep);
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
 
-extern void PrintPacketMotionData(PacketMotionData pmd);
-extern PacketMotionData ParsePacketMotionData(std::vector<std::vector<unsigned char>> bytes);
+extern std::string PacketMotionDataCSVHeader();
+extern std::string PacketMotionDataString(PacketMotionData obj, std::string sep);
+extern PacketMotionData ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;
