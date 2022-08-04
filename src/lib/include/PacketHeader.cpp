@@ -8,7 +8,7 @@ std::string PacketHeaderCSVHeader() {
   return (str);
 }
 
-std::string PacketHeaderString(PacketHeader obj, std::string sep = ",") {
+std::string PacketHeaderString(PacketHeader obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
 
   int size = std::snprintf(

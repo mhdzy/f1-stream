@@ -23,40 +23,22 @@ int main() {
 
   // open output file & write csv header
   output_file.open(output_path);
-  output_file << PacketHeaderCSVHeader() + ",m_carID," + CarMotionDataCSVHeader() + "," + PacketMotionDataCSVHeader() +
-                     "\n";
+  output_file << "m_carID," + PacketMotionDataCSVHeader() + "\n";
 
   // parse & write each motion packet
   for (PacketMap packet : MotionPackets) {
-    PacketMotionData pmd;
-
     // parse a file
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
 
-    // parse header
-    std::vector<std::vector<unsigned char>> packet_header_bytes = parse_bytes_to_pairs(PacketHeaderPairs, filebytes, 0);
-    pmd.m_header = ParsePacketHeader(packet_header_bytes);
+    PacketMotionData pmd = ParsePacketMotionData(filebytes);
 
-    // parse footer?
-    std::vector<std::vector<unsigned char>> packet_footer_bytes =
-        parse_bytes_to_pairs(PacketMotionDataPairs, filebytes, sizeof(PacketHeader) + (sizeof(CarMotionData) * 22));
-    // parse motion data writes directly to object; requires passing by reference
-    ParsePacketMotionData(pmd, packet_footer_bytes);
-
-    // loop over the 22 car data packets
-    for (int i = 0; i < 1; i++) {
-      std::vector<std::vector<unsigned char>> car_motion_data_bytes =
-          parse_bytes_to_pairs(CarMotionDataPairs, filebytes, sizeof(PacketHeader) + (sizeof(CarMotionData) * i));
-      pmd.m_carMotionData.at(i) = ParseCarMotionData(car_motion_data_bytes);
-
-      // for each car data packet, write 1 entry in file
-      output_file << PacketHeaderString(pmd.m_header, ",") + "," + std::to_string(i) + "," +
-                         CarMotionDataString(pmd.m_carMotionData.at(i), ",") + "," + PacketMotionDataString(pmd, ",") +
-                         "\n";
+    // need to extract 
+    for (int i = 0; i < 22; i++) {
+      output_file << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
     }
-
   }
-  output_file.close();
 
-  return (0);
+output_file.close();
+
+return 0;
 };

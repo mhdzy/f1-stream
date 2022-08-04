@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "../utils/File.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -29,11 +30,7 @@ struct CarMotionData {
   float m_roll;                     // Roll angle in radians
 };
 
-struct PacketMotionData {
-  PacketHeader m_header;  // Header
-
-  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
-
+struct ExtraCarMotionData {
   // Extra player car ONLY data
   float m_suspensionPosition[4];      // Note: All wheel arrays have the following
                                       // order:
@@ -53,14 +50,27 @@ struct PacketMotionData {
   float m_frontWheelsAngle;           // Current front wheels angle in radians
 };
 
+struct PacketMotionData {
+  PacketHeader m_header;  // Header
+
+  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
+
+  ExtraCarMotionData m_extraCarMotionData;
+};
+
 #pragma pack(pop)
 
 extern std::string CarMotionDataCSVHeader();
-extern std::string CarMotionDataString(CarMotionData obj, std::string sep);
+extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
 
+extern std::string ExtraCarMotionDataCSVHeader();
+extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
+extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
+extern std::vector<std::pair<int, std::string>> ExtraCarMotionDataPairs;
+
 extern std::string PacketMotionDataCSVHeader();
-extern std::string PacketMotionDataString(PacketMotionData obj, std::string sep);
-extern void ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
+extern std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep = ",");
+extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);
 extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;
