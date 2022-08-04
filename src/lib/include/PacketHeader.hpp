@@ -27,4 +27,4 @@ struct PacketHeader {
 extern std::string PacketHeaderCSVHeader();
 extern std::string PacketHeaderString(PacketHeader obj, std::string sep = ",");
 extern PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> PacketHeaderPairs;
+extern std::vector<std::size_t> PacketHeaderSizes();

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../utils/File.hpp"
+#include "File.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -63,14 +63,13 @@ struct PacketMotionData {
 extern std::string CarMotionDataCSVHeader();
 extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
+extern std::vector<std::size_t> CarMotionDataSizes();
 
 extern std::string ExtraCarMotionDataCSVHeader();
 extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
 extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> ExtraCarMotionDataPairs;
+extern std::vector<std::size_t> ExtraCarMotionDataSizes();
 
 extern std::string PacketMotionDataCSVHeader();
 extern std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep = ",");
 extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);
-extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;

@@ -1,18 +1,18 @@
 #include "File.hpp"
 
-std::vector<std::vector<unsigned char>> parse_bytes_to_pairs(std::vector<std::pair<int, std::string>> pairs,
+std::vector<std::vector<unsigned char>> parse_bytes_to_pairs(std::vector<std::size_t> sizes,
                                                              std::vector<unsigned char> filebytes, int offset = 0) {
   std::vector<std::vector<unsigned char>> parsed_bytes;
 
-  for (std::pair<int, std::string> p : pairs) {
+  for (std::size_t size : sizes) {
     std::vector<unsigned char> bytes;
     std::vector<unsigned char> tmp_bytes;
 
-    tmp_bytes = {filebytes.begin() + offset, filebytes.begin() + offset + p.first};
+    tmp_bytes = {filebytes.begin() + offset, filebytes.begin() + offset + size};
 
     std::copy(tmp_bytes.begin(), tmp_bytes.end() + 1, std::back_inserter(bytes));
     parsed_bytes.push_back(bytes);
-    offset = offset + p.first;
+    offset = offset + size;
   }
 
   return (parsed_bytes);
