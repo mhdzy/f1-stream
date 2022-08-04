@@ -127,31 +127,20 @@ CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes) 
 
 ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes) {
   ExtraCarMotionData obj;
+  std::uint8_t idx[4] = {0, 1, 2, 3};
 
-  std::memcpy(&obj.m_suspensionPosition[0], &bytes.at(0).front() + 0 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionPosition[1], &bytes.at(0).front() + 1 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionPosition[2], &bytes.at(0).front() + 2 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionPosition[3], &bytes.at(0).front() + 3 * sizeof(float), sizeof(float));
-
-  std::memcpy(&obj.m_suspensionVelocity[0], &bytes.at(1).front() + 0 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionVelocity[1], &bytes.at(1).front() + 1 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionVelocity[2], &bytes.at(1).front() + 2 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionVelocity[3], &bytes.at(1).front() + 3 * sizeof(float), sizeof(float));
-
-  std::memcpy(&obj.m_suspensionAcceleration[0], &bytes.at(2).front() + 0 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionAcceleration[1], &bytes.at(2).front() + 1 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionAcceleration[2], &bytes.at(2).front() + 2 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_suspensionAcceleration[3], &bytes.at(2).front() + 3 * sizeof(float), sizeof(float));
-
-  std::memcpy(&obj.m_wheelSpeed[0], &bytes.at(3).front() + 0 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSpeed[1], &bytes.at(3).front() + 1 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSpeed[2], &bytes.at(3).front() + 2 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSpeed[3], &bytes.at(3).front() + 3 * sizeof(float), sizeof(float));
-
-  std::memcpy(&obj.m_wheelSlip[0], &bytes.at(4).front() + 0 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSlip[1], &bytes.at(4).front() + 1 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSlip[2], &bytes.at(4).front() + 2 * sizeof(float), sizeof(float));
-  std::memcpy(&obj.m_wheelSlip[3], &bytes.at(4).front() + 3 * sizeof(float), sizeof(float));
+  for (std::uint8_t i : idx)
+    std::memcpy(&obj.m_suspensionPosition[i], &bytes.at(0).front() + i * sizeof(float), sizeof(float));
+  
+  for (std::uint8_t i : idx)
+    std::memcpy(&obj.m_suspensionVelocity[i], &bytes.at(1).front() + i * sizeof(float), sizeof(float));
+  
+  for (std::uint8_t i : idx)
+    std::memcpy(&obj.m_suspensionAcceleration[i], &bytes.at(2).front() + i * sizeof(float), sizeof(float));
+  
+  for (std::uint8_t i : idx) std::memcpy(&obj.m_wheelSpeed[i], &bytes.at(3).front() + i * sizeof(float), sizeof(float));
+  
+  for (std::uint8_t i : idx) std::memcpy(&obj.m_wheelSlip[i], &bytes.at(4).front() + i * sizeof(float), sizeof(float));
 
   std::memcpy(&obj.m_localVelocityX, &bytes.at(5).front(), sizeof(float));
   std::memcpy(&obj.m_localVelocityY, &bytes.at(6).front(), sizeof(float));
