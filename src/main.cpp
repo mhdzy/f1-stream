@@ -20,11 +20,15 @@ int main() {
 
   std::string output_path = "data/" + track + "-lap-data-parsed.csv";
   std::ofstream output_file;
+  std::ofstream output_test;
 
   // open output file & write csv header
   output_file.open(output_path);
   output_file << PacketHeaderCSVHeader() + ",m_carID," + CarMotionDataCSVHeader() + "," + PacketMotionDataCSVHeader() +
                      "\n";
+
+  output_test.open("data/debug.csv");
+  output_test << "x,y\n";
 
   // parse & write each motion packet
   for (PacketMap packet : MotionPackets) {
@@ -54,9 +58,10 @@ int main() {
                          CarMotionDataString(pmd.m_carMotionData.at(i), ",") + "," + PacketMotionDataString(pmd, ",") +
                          "\n";
     }
-
   }
-  output_file.close();
 
-  return (0);
+  output_file.close();
+  output_test.close();
+
+  return 0;
 };

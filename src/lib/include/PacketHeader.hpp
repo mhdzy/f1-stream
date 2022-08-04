@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#pragma pack(push, 1)
-
 struct PacketHeader {
   std::uint16_t m_packetFormat;            // 2022
   std::uint8_t m_gameMajorVersion;         // Game major version - "X.00"
@@ -21,8 +19,6 @@ struct PacketHeader {
   std::uint8_t m_secondaryPlayerCarIndex;  // Index of secondary player's car in the array
                                            // (splitscreen) 255 if no second player
 };
-
-#pragma pack(pop)
 
 extern std::string PacketHeaderCSVHeader();
 extern std::string PacketHeaderString(PacketHeader obj, std::string sep);

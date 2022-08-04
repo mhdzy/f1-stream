@@ -2,11 +2,10 @@
 
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "PacketHeader.hpp"
-
-#pragma pack(push, 1)
 
 struct CarMotionData {
   float m_worldPositionX;           // World space X position
@@ -53,8 +52,6 @@ struct PacketMotionData {
   float m_frontWheelsAngle;           // Current front wheels angle in radians
 };
 
-#pragma pack(pop)
-
 extern std::string CarMotionDataCSVHeader();
 extern std::string CarMotionDataString(CarMotionData obj, std::string sep);
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
@@ -62,5 +59,5 @@ extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
 
 extern std::string PacketMotionDataCSVHeader();
 extern std::string PacketMotionDataString(PacketMotionData obj, std::string sep);
-extern PacketMotionData ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
+extern void ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;

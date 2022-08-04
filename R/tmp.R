@@ -58,38 +58,57 @@ plotdf %>%
 library(dplyr)
 library(readr)
 
-track <- "brazil"
+track <- "spa"
 
 lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
   readr::read_csv() |>
   dplyr::arrange(m_frameIdentifier)
 
+debugdata <- readr::read_csv("~/prog/f1/data/debug.csv")
+plot(debugdata$x, debugdata$y)
+
 lapdata |>
+  dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
     ggplot2::aes(
-      x = m_worldForwardDirX/32767,
-      y = m_worldForwardDirY/32767,
+      x = m_worldPositionX/32767L,
+      y = -1L * m_worldPositionZ/32767L,
       color = m_frameIdentifier
     )
   ) +
   ggplot2::geom_point()
 
 lapdata |>
-  ggplot2::ggplot(
-    ggplot2::aes(
-      x = m_worldPositionX,
-      y = m_worldPositionY,
-      color = m_frameIdentifier
-    )
-  ) +
-  ggplot2::geom_point()
-
-lapdata |>
+  dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
     ggplot2::aes(
       x = m_frameIdentifier,
       y = m_gForceLongitudinal,
+      #y = m_gForceLateral,
       color = m_frameIdentifier
     )
   ) +
   ggplot2::geom_point()
+
+lapdata2 <- lapdata |> dplyr::filter(m_carID == 0) |> distinct()
+
+options(rgl.printRglwidget = TRUE)
+rgl::plot3d(
+  x = lapdata2$m_worldPositionX/32767,
+  y = -1L * lapdata2$m_worldPositionZ/32767,
+  z = lapdata2$m_worldPositionY/32767
+)
+
+l2 <- lapdata |>
+  dplyr::arrange(dplyr::desc(m_frameIdentifier)) |>
+  dplyr::pull(m_suspensionAcceleration) |>
+  stringr::str_split("/") |>
+  base::unique() |>
+  lapply(function(x) c('rl' = x[1], 'rr' = x[2], 'fl' = x[3], 'fr' = x[4])) |>
+  dplyr::bind_rows() |>
+  dplyr::distinct()
+
+plot(
+  l2$rr/32767,
+  l2$rl/32767
+)

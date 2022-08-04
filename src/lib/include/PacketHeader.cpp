@@ -5,7 +5,7 @@ std::string PacketHeaderCSVHeader() {
       "m_packetFormat,m_gameMajorVersion,m_gameMinorVersion,m_packetVersion,m_packetId,m_sessionUID,m_sessionTime,m_"
       "frameIdentifier,m_playerCarIndex,m_secondaryPlayerCarIndex";
 
-  return (str);
+  return str;
 }
 
 std::string PacketHeaderString(PacketHeader obj, std::string sep = ",") {
@@ -29,24 +29,26 @@ std::string PacketHeaderString(PacketHeader obj, std::string sep = ",") {
       static_cast<std::uint32_t>(obj.m_secondaryPlayerCarIndex));
 
   std::string str(buf.begin(), buf.end());
-  str.erase(str.find('\0')); // remove null terminator
+  str.erase(str.find('\0'));  // remove null terminator
 
-  return (str);
+  return str;
 }
 
 PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes) {
-  PacketHeader ph;
-  std::memcpy(&ph.m_packetFormat, &bytes.at(0).front(), sizeof(std::uint16_t));
-  std::memcpy(&ph.m_gameMajorVersion, &bytes.at(1).front(), sizeof(std::uint8_t));
-  std::memcpy(&ph.m_gameMinorVersion, &bytes.at(2).front(), sizeof(std::uint8_t));
-  std::memcpy(&ph.m_packetVersion, &bytes.at(3).front(), sizeof(std::uint8_t));
-  std::memcpy(&ph.m_packetId, &bytes.at(4).front(), sizeof(std::uint8_t));
-  std::memcpy(&ph.m_sessionUID, &bytes.at(5).front(), sizeof(std::uint64_t));
-  std::memcpy(&ph.m_sessionTime, &bytes.at(6).front(), sizeof(float));
-  std::memcpy(&ph.m_frameIdentifier, &bytes.at(7).front(), sizeof(std::uint32_t));
-  std::memcpy(&ph.m_playerCarIndex, &bytes.at(8).front(), sizeof(std::uint8_t));
-  std::memcpy(&ph.m_secondaryPlayerCarIndex, &bytes.at(9).front(), sizeof(std::uint8_t));
-  return (ph);
+  PacketHeader obj;
+
+  std::memcpy(&obj.m_packetFormat, &bytes.at(0).front(), sizeof(std::uint16_t));
+  std::memcpy(&obj.m_gameMajorVersion, &bytes.at(1).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_gameMinorVersion, &bytes.at(2).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_packetVersion, &bytes.at(3).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_packetId, &bytes.at(4).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_sessionUID, &bytes.at(5).front(), sizeof(std::uint64_t));
+  std::memcpy(&obj.m_sessionTime, &bytes.at(6).front(), sizeof(float));
+  std::memcpy(&obj.m_frameIdentifier, &bytes.at(7).front(), sizeof(std::uint32_t));
+  std::memcpy(&obj.m_playerCarIndex, &bytes.at(8).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_secondaryPlayerCarIndex, &bytes.at(9).front(), sizeof(std::uint8_t));
+
+  return obj;
 };
 
 std::vector<std::pair<int, std::string>> PacketHeaderPairs = {
