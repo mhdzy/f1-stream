@@ -62,5 +62,5 @@ extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
 
 extern std::string PacketMotionDataCSVHeader();
 extern std::string PacketMotionDataString(PacketMotionData obj, std::string sep);
-extern PacketMotionData ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
+extern void ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;

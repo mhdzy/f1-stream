@@ -4,7 +4,7 @@ int main() {
   std::vector<std::string> filenames;
   std::vector<PacketMap> Packets;
   std::vector<PacketMap> MotionPackets;
-  std::string track = "spa";
+  std::string track = "brazil";
 
   // collect all filenames
   const std::filesystem::path path{"data/" + track + "-single-lap/"};
@@ -44,7 +44,7 @@ int main() {
     ParsePacketMotionData(pmd, packet_footer_bytes);
 
     // loop over the 22 car data packets
-    for (int i = 0; i < 22; i++) {
+    for (int i = 0; i < 1; i++) {
       std::vector<std::vector<unsigned char>> car_motion_data_bytes =
           parse_bytes_to_pairs(CarMotionDataPairs, filebytes, sizeof(PacketHeader) + (sizeof(CarMotionData) * i));
       pmd.m_carMotionData.at(i) = ParseCarMotionData(car_motion_data_bytes);
