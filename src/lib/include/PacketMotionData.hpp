@@ -51,11 +51,9 @@ struct ExtraCarMotionData {
 };
 
 struct PacketMotionData {
-  PacketHeader m_header;  // Header
-
-  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
-
-  ExtraCarMotionData m_extraCarMotionData;
+  PacketHeader m_header;                    // Header
+  CarMotionData m_carMotionData[22];        // Data for all cars on track
+  ExtraCarMotionData m_extraCarMotionData;  // Custom struct to simplify packet
 };
 
 #pragma pack(pop)

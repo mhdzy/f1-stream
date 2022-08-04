@@ -26,7 +26,7 @@ int main() {
       PacketMotionData pmd = ParsePacketMotionData(filebytes);
 
       // need to print 1 row per 'carID' (i)
-      for (int i = 0; i < 1; i++) {
+      for (int i = 0; i < 22; i++) {
         output_file << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
       }
     } else if (packet.file_id == 1) {

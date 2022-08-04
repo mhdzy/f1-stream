@@ -203,7 +203,7 @@ std::string PacketMotionDataCSVHeader() {
 }
 
 std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep) {
-  std::string str = PacketHeaderString(obj.m_header) + sep + CarMotionDataString(obj.m_carMotionData.at(carID)) + sep +
+  std::string str = PacketHeaderString(obj.m_header) + sep + CarMotionDataString(obj.m_carMotionData[carID]) + sep +
                     ExtraCarMotionDataString(obj.m_extraCarMotionData);
   return str;
 }
@@ -223,7 +223,7 @@ PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes) {
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
     offset = sizeof(PacketHeader) + (sizeof(CarMotionData) * i);
-    obj.m_carMotionData.at(i) = ParseCarMotionData(parse_bytes_to_pairs(CarMotionDataSizes(), bytes, offset));
+    obj.m_carMotionData[i] = ParseCarMotionData(parse_bytes_to_pairs(CarMotionDataSizes(), bytes, offset));
   }
 
   return obj;
