@@ -1,14 +1,82 @@
 #include "PacketMotionData.hpp"
 
-std::string CarMotionDataCSVHeader() {
-  std::string str =
-      "m_worldPositionX,m_worldPositionY,m_worldPositionZ,m_worldVelocityX,m_worldVelocityY,m_"
-      "worldVelocityZ,m_"
-      "worldForwardDirX,m_worldForwardDirY,m_worldForwardDirZ,m_worldRightDirX,m_worldRightDirY,m_worldRightDirZ,m_"
-      "gForceLateral,m_gForceLongitudinal,m_gForceVertical,m_yaw,m_pitch,m_roll";
+std::vector<std::size_t> CarMotionDataSizes = {
+    sizeof(((CarMotionData *)0)->m_worldPositionX),      // World space X position
+    sizeof(((CarMotionData *)0)->m_worldPositionY),      // World space Y position
+    sizeof(((CarMotionData *)0)->m_worldPositionZ),      // World space Z position
+    sizeof(((CarMotionData *)0)->m_worldVelocityX),      // Velocity in world space X
+    sizeof(((CarMotionData *)0)->m_worldVelocityY),      // Velocity in world space Y
+    sizeof(((CarMotionData *)0)->m_worldVelocityZ),      // Velocity in world space Z
+    sizeof(((CarMotionData *)0)->m_worldForwardDirX),    // World space forward X direction (normalised)
+    sizeof(((CarMotionData *)0)->m_worldForwardDirY),    // World space forward Y direction (normalised)
+    sizeof(((CarMotionData *)0)->m_worldForwardDirZ),    // World space forward Z direction (normalised)
+    sizeof(((CarMotionData *)0)->m_worldRightDirX),      // World space right X direction (normalised)
+    sizeof(((CarMotionData *)0)->m_worldRightDirY),      // World space right Y direction (normalised)
+    sizeof(((CarMotionData *)0)->m_worldRightDirZ),      // World space right Z direction (normalised)
+    sizeof(((CarMotionData *)0)->m_gForceLateral),       // Lateral G-Force component
+    sizeof(((CarMotionData *)0)->m_gForceLongitudinal),  // Longitudinal G-Force component
+    sizeof(((CarMotionData *)0)->m_gForceVertical),      // Vertical G-Force component
+    sizeof(((CarMotionData *)0)->m_yaw),                 // Yaw angle in radians
+    sizeof(((CarMotionData *)0)->m_pitch),               // Pitch angle in radians
+    sizeof(((CarMotionData *)0)->m_roll)                 // Roll angle in radians
+};
 
-  return str;
-}
+std::vector<std::string> CarMotionDataNames = {
+    "m_worldPositionX",      // World space X position
+    "m_worldPositionY",      // World space Y position
+    "m_worldPositionZ",      // World space Z position
+    "m_worldVelocityX",      // Velocity in world space X
+    "m_worldVelocityY",      // Velocity in world space Y
+    "m_worldVelocityZ",      // Velocity in world space Z
+    "m_worldForwardDirX",    // World space forward X direction (normalised)
+    "m_worldForwardDirY",    // World space forward Y direction (normalised)
+    "m_worldForwardDirZ",    // World space forward Z direction (normalised)
+    "m_worldRightDirX",      // World space right X direction (normalised)
+    "m_worldRightDirY",      // World space right Y direction (normalised)
+    "m_worldRightDirZ",      // World space right Z direction (normalised)
+    "m_gForceLateral",       // Lateral G-Force component
+    "m_gForceLongitudinal",  // Longitudinal G-Force component
+    "m_gForceVertical",      // Vertical G-Force component
+    "m_yaw",                 // Yaw angle in radians
+    "m_pitch",               // Pitch angle in radians
+    "m_roll"                 // Roll angle in radians
+};
+
+std::vector<std::size_t> ExtraCarMotionDataSizes = {
+    sizeof(((ExtraCarMotionData *)0)->m_suspensionPosition),      // Note: All wheel arrays have the following order:
+    sizeof(((ExtraCarMotionData *)0)->m_suspensionVelocity),      // RL, RR, FL, FR
+    sizeof(((ExtraCarMotionData *)0)->m_suspensionAcceleration),  // RL, RR, FL, FR
+    sizeof(((ExtraCarMotionData *)0)->m_wheelSpeed),              // Speed of each wheel
+    sizeof(((ExtraCarMotionData *)0)->m_wheelSlip),               // Slip ratio for each wheel
+    sizeof(((ExtraCarMotionData *)0)->m_localVelocityX),          // Velocity in local space
+    sizeof(((ExtraCarMotionData *)0)->m_localVelocityY),          // Velocity in local space
+    sizeof(((ExtraCarMotionData *)0)->m_localVelocityZ),          // Velocity in local space
+    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityX),        // Angular velocity x-component
+    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityY),        // Angular velocity y-component
+    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityZ),        // Angular velocity z-component
+    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationX),    // Angular velocity x-component
+    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationY),    // Angular velocity y-component
+    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationZ),    // Angular velocity z-component
+    sizeof(((ExtraCarMotionData *)0)->m_frontWheelsAngle)         // Curent front wheel angle in radians
+};
+
+std::vector<std::string> ExtraCarMotionDataNames = {
+    "m_suspensionPosition",      // Note: All wheel arrays have the following order:
+    "m_suspensionVelocity",      // RL, RR, FL, FR
+    "m_suspensionAcceleration",  // RL, RR, FL, FR
+    "m_wheelSpeed",              // Speed of each wheel
+    "m_wheelSlip",               // Slip ratio for each wheel
+    "m_localVelocityX",          // Velocity in local space
+    "m_localVelocityY",          // Velocity in local space
+    "m_localVelocityZ",          // Velocity in local space
+    "m_angularVelocityX",        // Angular velocity x-component
+    "m_angularVelocityY",        // Angular velocity y-component
+    "m_angularVelocityZ",        // Angular velocity z-component
+    "m_angularAccelerationX",    // Angular velocity x-component
+    "m_angularAccelerationY",    // Angular velocity y-component
+    "m_angularAccelerationZ",    // Angular velocity z-component
+    "m_frontWheelsAngle"         // Curent front wheel angle in radians
+};
 
 std::string CarMotionDataString(CarMotionData obj, std::string sep) {
   const char *fmt = "%f%s%f%s%f%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%f%s%f";
@@ -37,7 +105,6 @@ std::string CarMotionDataString(CarMotionData obj, std::string sep) {
 
 CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes) {
   CarMotionData obj;
-
   std::memcpy(&obj.m_worldPositionX, &bytes.at(0).front(), sizeof obj.m_worldPositionX);
   std::memcpy(&obj.m_worldPositionY, &bytes.at(1).front(), sizeof obj.m_worldPositionY);
   std::memcpy(&obj.m_worldPositionZ, &bytes.at(2).front(), sizeof obj.m_worldPositionZ);
@@ -56,41 +123,7 @@ CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes) 
   std::memcpy(&obj.m_yaw, &bytes.at(15).front(), sizeof obj.m_yaw);
   std::memcpy(&obj.m_pitch, &bytes.at(16).front(), sizeof obj.m_pitch);
   std::memcpy(&obj.m_roll, &bytes.at(17).front(), sizeof obj.m_roll);
-
   return obj;
-}
-
-std::vector<std::size_t> CarMotionDataSizes() {
-  CarMotionData obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_worldPositionX,      // World space X position
-      sizeof obj.m_worldPositionY,      // World space Y position
-      sizeof obj.m_worldPositionZ,      // World space Z position
-      sizeof obj.m_worldVelocityX,      // Velocity in world space X
-      sizeof obj.m_worldVelocityY,      // Velocity in world space Y
-      sizeof obj.m_worldVelocityZ,      // Velocity in world space Z
-      sizeof obj.m_worldForwardDirX,    // World space forward X direction (normalised)
-      sizeof obj.m_worldForwardDirY,    // World space forward Y direction (normalised)
-      sizeof obj.m_worldForwardDirZ,    // World space forward Z direction (normalised)
-      sizeof obj.m_worldRightDirX,      // World space right X direction (normalised)
-      sizeof obj.m_worldRightDirY,      // World space right Y direction (normalised)
-      sizeof obj.m_worldRightDirZ,      // World space right Z direction (normalised)
-      sizeof obj.m_gForceLateral,       // Lateral G-Force component
-      sizeof obj.m_gForceLongitudinal,  // Longitudinal G-Force component
-      sizeof obj.m_gForceVertical,      // Vertical G-Force component
-      sizeof obj.m_yaw,                 // Yaw angle in radians
-      sizeof obj.m_pitch,               // Pitch angle in radians
-      sizeof obj.m_roll                 // Roll angle in radians
-  };
-  return sizes;
-};
-
-std::string ExtraCarMotionDataCSVHeader() {
-  std::string str =
-      "m_suspensionPosition,m_suspensionVelocity,m_suspensionAcceleration,m_wheelSpeed,m_wheelSlip,m_localVelocityX,"
-      "m_localVelocityY,m_localVelocityZ,m_angularVelocityX,m_angularVelocityY,m_angularVelocityZ,"
-      "m_angularAccelerationX,m_angularAccelerationY,m_angularAccelerationZ,m_frontWheelsAngle";
-  return str;
 }
 
 std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep) {
@@ -174,57 +207,40 @@ ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char
   return obj;
 }
 
-std::vector<std::size_t> ExtraCarMotionDataSizes() {
-  ExtraCarMotionData obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_suspensionPosition,      // Note: All wheel arrays have the
-                                            // following order:
-      sizeof obj.m_suspensionVelocity,      // RL, RR, FL, FR
-      sizeof obj.m_suspensionAcceleration,  // RL, RR, FL, FR
-      sizeof obj.m_wheelSpeed,              // Speed of each wheel
-      sizeof obj.m_wheelSlip,               // Slip ratio for each wheel
-      sizeof obj.m_localVelocityX,          // Velocity in local space
-      sizeof obj.m_localVelocityY,          // Velocity in local space
-      sizeof obj.m_localVelocityZ,          // Velocity in local space
-      sizeof obj.m_angularVelocityX,        // Angular velocity x-component
-      sizeof obj.m_angularVelocityY,        // Angular velocity y-component
-      sizeof obj.m_angularVelocityZ,        // Angular velocity z-component
-      sizeof obj.m_angularAccelerationX,    // Angular velocity x-component
-      sizeof obj.m_angularAccelerationY,    // Angular velocity y-component
-      sizeof obj.m_angularAccelerationZ,    // Angular velocity z-component
-      sizeof obj.m_frontWheelsAngle         // Curent front wheel angle in radians
-  };
-  return sizes;
-}
-
 std::string PacketMotionDataCSVHeader(std::string sep) {
-  std::string str = PacketHeaderCSVHeader() + sep + CarMotionDataCSVHeader() + sep + ExtraCarMotionDataCSVHeader();
-  return str;
+  std::vector<std::string> vec = {
+      csvHeader(PacketHeaderNames, sep),       //
+      csvHeader(CarMotionDataNames, sep),      //
+      csvHeader(ExtraCarMotionDataNames, sep)  //
+  };
+  return csvHeader(vec, sep);
 }
 
 std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep) {
-  std::string str = PacketHeaderString(obj.m_header) + sep + CarMotionDataString(obj.m_carMotionData[carID]) + sep +
-                    ExtraCarMotionDataString(obj.m_extraCarMotionData);
-  return str;
+  std::vector<std::string> vec = {
+      PacketHeaderString(obj.m_header),                   //
+      CarMotionDataString(obj.m_carMotionData[carID]),    //
+      ExtraCarMotionDataString(obj.m_extraCarMotionData)  //
+  };
+  return csvHeader(vec, sep);
 }
 
 PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes) {
   PacketMotionData obj;
-  std::uint16_t offset;
+  std::uint16_t offset = 0;
 
   // parse header
-  offset = 0;
-  obj.m_header = ParsePacketHeader(parse_bytes_to_pairs(PacketHeaderSizes(), bytes, offset));
-
-  // parsing the motion data writes directly to object; requires passing by reference
-  offset = sizeof(PacketHeader) + (sizeof(CarMotionData) * 22);
-  obj.m_extraCarMotionData = ParseExtraCarMotionData(parse_bytes_to_pairs(ExtraCarMotionDataSizes(), bytes, offset));
+  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    offset = sizeof(PacketHeader) + (sizeof(CarMotionData) * i);
-    obj.m_carMotionData[i] = ParseCarMotionData(parse_bytes_to_pairs(CarMotionDataSizes(), bytes, offset));
+    obj.m_carMotionData[i] = ParseCarMotionData(parse_bytes_to_vec(CarMotionDataSizes, bytes, offset));
+    offset += sizeof(CarMotionData);
   }
+
+  // parse extra player car data
+  obj.m_extraCarMotionData = ParseExtraCarMotionData(parse_bytes_to_vec(ExtraCarMotionDataSizes, bytes, offset));
 
   return obj;
 }

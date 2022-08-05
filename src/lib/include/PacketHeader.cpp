@@ -1,11 +1,32 @@
 #include "PacketHeader.hpp"
 
-std::string PacketHeaderCSVHeader() {
-  std::string str =
-      "m_packetFormat,m_gameMajorVersion,m_gameMinorVersion,m_packetVersion,m_packetId,m_sessionUID,m_sessionTime,m_"
-      "frameIdentifier,m_playerCarIndex,m_secondaryPlayerCarIndex";
-  return str;
-}
+std::vector<std::size_t> PacketHeaderSizes = {
+    sizeof(((PacketHeader *)0)->m_packetFormat),            // 2022
+    sizeof(((PacketHeader *)0)->m_gameMajorVersion),        // Game major version - "X.00"
+    sizeof(((PacketHeader *)0)->m_gameMinorVersion),        // Game minor version - "1.XX"
+    sizeof(((PacketHeader *)0)->m_packetVersion),           // Version of this packet type, all start from 1
+    sizeof(((PacketHeader *)0)->m_packetId),                // Identifier for the packet type, see below
+    sizeof(((PacketHeader *)0)->m_sessionUID),              // Unique identifier for the session
+    sizeof(((PacketHeader *)0)->m_sessionTime),             // Session timestamp
+    sizeof(((PacketHeader *)0)->m_frameIdentifier),         // Identifier for the frame the data was retrieved on
+    sizeof(((PacketHeader *)0)->m_playerCarIndex),          // Index of player's car in the array
+    sizeof(((PacketHeader *)0)->m_secondaryPlayerCarIndex)  // Index of secondary player's car in the array
+                                                            // (splitscreen), 255 if no second player
+};
+
+std::vector<std::string> PacketHeaderNames = {
+    "m_packetFormat",            // 2022
+    "m_gameMajorVersion",        // Game major version - "X.00"
+    "m_gameMinorVersion",        // Game minor version - "1.XX"
+    "m_packetVersion",           // Version of this packet type", all start from 1
+    "m_packetId",                // Identifier for the packet type", see below
+    "m_sessionUID",              // Unique identifier for the session
+    "m_sessionTime",             // Session timestamp
+    "m_frameIdentifier",         // Identifier for the frame the data was retrieved on
+    "m_playerCarIndex",          // Index of player's car in the array
+    "m_secondaryPlayerCarIndex"  // Index of secondary player's car in the array
+                                 // (splitscreen), 255 if no second player
+};
 
 std::string PacketHeaderString(PacketHeader obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
@@ -47,21 +68,3 @@ PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes) {
   std::memcpy(&obj.m_secondaryPlayerCarIndex, &bytes.at(9).front(), sizeof(std::uint8_t));
   return obj;
 };
-
-std::vector<std::size_t> PacketHeaderSizes() {
-    PacketHeader obj;
-    std::vector<std::size_t> sizes = {
-        sizeof obj.m_packetFormat,           // 2022
-        sizeof obj.m_gameMajorVersion,       // Game major version - "X.00"
-        sizeof obj.m_gameMinorVersion,       // Game minor version - "1.XX"
-        sizeof obj.m_packetVersion,          // Version of this packet type, all start from 1
-        sizeof obj.m_packetId,               // Identifier for the packet type, see below
-        sizeof obj.m_sessionUID,             // Unique identifier for the session
-        sizeof obj.m_sessionTime,            // Session timestamp
-        sizeof obj.m_frameIdentifier,        // Identifier for the frame the data was retrieved on
-        sizeof obj.m_playerCarIndex,         // Index of player's car in the array
-        sizeof obj.m_secondaryPlayerCarIndex // Index of secondary player's car in the array
-                                                      // (splitscreen), 255 if no second player
-    };
-    return sizes;
-}

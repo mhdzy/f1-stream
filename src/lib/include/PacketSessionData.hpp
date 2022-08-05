@@ -94,12 +94,12 @@ struct PacketSessionData {
 
 #pragma pack(pop)
 
-extern std::string MarshalZoneCSVHeader();
+extern std::string MarshalZoneCSVHeader(std::string sep = ",");
 extern std::string MarshalZoneString(MarshalZone obj, std::string sep = ",");
 extern MarshalZone ParseMarshalZone(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::size_t> MarshalZoneSizes();
 
-extern std::string WeatherForecastSampleCSVHeader();
+extern std::string WeatherForecastSampleCSVHeader(std::string sep = ",");
 extern std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string sep = ",");
 extern WeatherForecastSample ParseWeatherForecastSample(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::size_t> WeatherForecastSampleSizes();
@@ -119,7 +119,7 @@ extern std::string PacketSessionDataBottomString(PacketSessionDataBottom obj, st
 extern PacketSessionDataBottom ParsePacketSessionDataBottom(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::size_t> PacketSessionDataBottomSizes();
 
-extern std::string PacketSessionDataCSVHeader(std::string sep = ",");
-extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",");
+extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string compr = "/");
+extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",", std::string compr = "/");
 extern PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes);
 extern std::vector<std::size_t> PacketSessionDataSizes();

@@ -1,8 +1,8 @@
 #include "main.hpp"
 
 int main() {
-  std::string track = "brazil";
-  std::string output_path = "data/" + track + "-session-data-parsed.csv";
+  std::string track = "singapore";
+  std::string output_path = "data/test-" + track + "-lap-data-parsed.csv";
   std::ofstream output_file;
 
   std::vector<std::string> filenames;
@@ -17,8 +17,8 @@ int main() {
 
   // open output file & write csv header (assuming PacketMotionData)
   output_file.open(output_path);
-  // output_file << "m_carID," + PacketMotionDataCSVHeader() + "\n";
-  output_file << PacketSessionDataCSVHeader() + "\n";
+  output_file << "m_carID," + PacketMotionDataCSVHeader() + "\n";
+  //output_file << PacketSessionDataCSVHeader() + "\n";
 
   for (PacketMap packet : Packets) {
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
@@ -28,18 +28,12 @@ int main() {
 
       // need to print 1 row per 'carID' (i)
       for (int i = 0; i < 22; i++) {
-        // output_file << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
+        output_file << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
       }
     } else if (packet.file_id == 1) {
-      for (std::size_t i = 0; i < filebytes.size(); i++) {
-        printf("%2x", filebytes.at(i));
-        if (i % 1 == 0) printf(" ");
-        if (i % 6 == 5) printf("\n");
-      }
-      printf("\n\n");
       PacketSessionData psd = ParsePacketSessionData(filebytes);
 
-      output_file << PacketSessionDataString(psd) + "\n";
+      //output_file << PacketSessionDataString(psd) + "\n";
     }
   }
   output_file.close();

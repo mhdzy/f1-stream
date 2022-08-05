@@ -58,15 +58,17 @@ struct PacketMotionData {
 
 #pragma pack(pop)
 
-extern std::string CarMotionDataCSVHeader();
+extern std::vector<std::size_t> CarMotionDataSizes;
+extern std::vector<std::string> CarMotionDataNames;
+
+extern std::vector<std::size_t> ExtraCarMotionDataSizes;
+extern std::vector<std::string> ExtraCarMotionDataNames;
+
 extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::size_t> CarMotionDataSizes();
 
-extern std::string ExtraCarMotionDataCSVHeader();
 extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
 extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::size_t> ExtraCarMotionDataSizes();
 
 extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
 extern std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep = ",");
