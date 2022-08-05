@@ -68,6 +68,6 @@ extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string 
 extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
 extern std::vector<std::size_t> ExtraCarMotionDataSizes();
 
-extern std::string PacketMotionDataCSVHeader();
+extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
 extern std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep = ",");
 extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);

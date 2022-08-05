@@ -197,8 +197,8 @@ std::vector<std::size_t> ExtraCarMotionDataSizes() {
   return sizes;
 }
 
-std::string PacketMotionDataCSVHeader() {
-  std::string str = PacketHeaderCSVHeader() + "," + CarMotionDataCSVHeader() + "," + ExtraCarMotionDataCSVHeader();
+std::string PacketMotionDataCSVHeader(std::string sep) {
+  std::string str = PacketHeaderCSVHeader() + sep + CarMotionDataCSVHeader() + sep + ExtraCarMotionDataCSVHeader();
   return str;
 }
 

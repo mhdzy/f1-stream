@@ -58,11 +58,14 @@ plotdf %>%
 library(dplyr)
 library(readr)
 
-track <- "spa"
+track <- "brazil"
 
 lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
   readr::read_csv() |>
   dplyr::arrange(m_frameIdentifier)
+
+sessiondata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
+  readr::read_csv()
 
 lapdata |>
   dplyr::filter(m_carID == 0) |>
