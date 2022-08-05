@@ -34,18 +34,19 @@ while True:
     tick = tick+1
     if tick > 65535:
         break
-    print(tick)
-    print("####### server is listening #######")
+    # print(tick)
+    # print("####### server is listening #######")
     data, address = s.recvfrom(4096)
     datastream.append(data)
-    print("\n\n [RECEIVE] Server received: ", data, "\n\n")
+    print("recv (" + str(tick) +")" + str(len(data)))
+    # print("\n\n [RECEIVE] Server received: ", data, "\n\n")
 
-subfolder = "data/brazil-single-lap"
+subfolder = "data/singapore-single-lap"
 if not genericpath.exists(subfolder):
     os.mkdir(subfolder)
 for i in range(0, len(datastream)):
   with open(subfolder + "/data"+str(i)+".raw", "wb") as file:
-      file.write(datastream[i])
+      tmp = file.write(datastream[i])
 
 
 def unique(l: list = []) -> int:
