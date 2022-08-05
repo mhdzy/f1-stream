@@ -126,7 +126,6 @@ std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep
 
 PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned char>> bytes) {
   PacketSessionDataTop obj;
-
   std::memcpy(&obj.m_weather, &bytes.at(0).front(), sizeof obj.m_weather);
   std::memcpy(&obj.m_trackTemperature, &bytes.at(1).front(), sizeof obj.m_trackTemperature);
   std::memcpy(&obj.m_airTemperature, &bytes.at(2).front(), sizeof obj.m_airTemperature);
@@ -143,7 +142,6 @@ PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned 
   std::memcpy(&obj.m_spectatorCarIndex, &bytes.at(13).front(), sizeof obj.m_spectatorCarIndex);
   std::memcpy(&obj.m_sliProNativeSupport, &bytes.at(14).front(), sizeof obj.m_sliProNativeSupport);
   std::memcpy(&obj.m_numMarshalZones, &bytes.at(15).front(), sizeof obj.m_numMarshalZones);
-
   return obj;
 }
 
@@ -181,6 +179,31 @@ std::string PacketSessionDataMidCSVHeader() {
   return str;
 }
 
+std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep) {
+  const char *fmt = "%d%s%d%s%d%s";
+  const char *ssep = sep.c_str();
+
+  const int size = std::snprintf(nullptr, 0, fmt, obj.m_safetyCarStatus, ssep, obj.m_networkGame, ssep,
+                                 obj.m_numWeatherForecastSamples);
+
+  std::vector<char> buf(size + 1);  // +1 for null terminator
+  std::snprintf(&buf[0], buf.size(), fmt, obj.m_safetyCarStatus, ssep, obj.m_networkGame, ssep,
+                obj.m_numWeatherForecastSamples);
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0'));  // remove null terminator
+
+  return str;
+}
+
+PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned char>> bytes) {
+  PacketSessionDataMid obj;
+  std::memcpy(&obj.m_safetyCarStatus, &bytes.at(0).front(), sizeof obj.m_safetyCarStatus);
+  std::memcpy(&obj.m_networkGame, &bytes.at(1).front(), sizeof obj.m_networkGame);
+  std::memcpy(&obj.m_numWeatherForecastSamples, &bytes.at(2).front(), sizeof obj.m_numWeatherForecastSamples);
+  return obj;
+}
+
 std::vector<std::size_t> PacketSessionDataMidSizes() {
   PacketSessionDataMid obj;
   std::vector<std::size_t> sizes = {
@@ -203,7 +226,27 @@ std::string PacketSessionDataBottomCSVHeader() {
 
 PacketSessionDataBottom ParsePacketSessionDataBottom(std::vector<std::vector<unsigned char>> bytes) {
   PacketSessionDataBottom obj;
-
+  std::memcpy(&obj.m_forecastAccuracy, &bytes.at(0).front(), sizeof obj.m_forecastAccuracy);
+  std::memcpy(&obj.m_aiDifficulty, &bytes.at(1).front(), sizeof obj.m_aiDifficulty);
+  std::memcpy(&obj.m_seasonLinkIdentifier, &bytes.at(2).front(), sizeof obj.m_seasonLinkIdentifier);
+  std::memcpy(&obj.m_weekendLinkIdentifier, &bytes.at(3).front(), sizeof obj.m_weekendLinkIdentifier);
+  std::memcpy(&obj.m_sessionLinkIdentifier, &bytes.at(4).front(), sizeof obj.m_sessionLinkIdentifier);
+  std::memcpy(&obj.m_pitStopWindowIdealLap, &bytes.at(5).front(), sizeof obj.m_pitStopWindowIdealLap);
+  std::memcpy(&obj.m_pitStopWindowLatestLap, &bytes.at(6).front(), sizeof obj.m_pitStopWindowLatestLap);
+  std::memcpy(&obj.m_pitStopRejoinPosition, &bytes.at(7).front(), sizeof obj.m_pitStopRejoinPosition);
+  std::memcpy(&obj.m_steeringAssist, &bytes.at(8).front(), sizeof obj.m_steeringAssist);
+  std::memcpy(&obj.m_brakingAssist, &bytes.at(9).front(), sizeof obj.m_brakingAssist);
+  std::memcpy(&obj.m_gearboxAssist, &bytes.at(10).front(), sizeof obj.m_gearboxAssist);
+  std::memcpy(&obj.m_pitAssist, &bytes.at(11).front(), sizeof obj.m_pitAssist);
+  std::memcpy(&obj.m_pitReleaseAssist, &bytes.at(12).front(), sizeof obj.m_pitReleaseAssist);
+  std::memcpy(&obj.m_ERSAssist, &bytes.at(13).front(), sizeof obj.m_ERSAssist);
+  std::memcpy(&obj.m_DRSAssist, &bytes.at(14).front(), sizeof obj.m_DRSAssist);
+  std::memcpy(&obj.m_dynamicRacingLine, &bytes.at(15).front(), sizeof obj.m_dynamicRacingLine);
+  std::memcpy(&obj.m_dynamicRacingLineType, &bytes.at(16).front(), sizeof obj.m_dynamicRacingLineType);
+  std::memcpy(&obj.m_gameMode, &bytes.at(17).front(), sizeof obj.m_gameMode);
+  std::memcpy(&obj.m_ruleSet, &bytes.at(18).front(), sizeof obj.m_ruleSet);
+  std::memcpy(&obj.m_timeOfDay, &bytes.at(19).front(), sizeof obj.m_timeOfDay);
+  std::memcpy(&obj.m_sessionLength, &bytes.at(20).front(), sizeof obj.m_sessionLength);
   return obj;
 }
 
@@ -250,22 +293,38 @@ std::string PacketSessionDataString(PacketSessionData obj, std::string sep) {
 
 PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes) {
   PacketSessionData obj;
-  std::uint16_t offset;
+  std::uint16_t offset = 0;
 
   // parse header
-  offset = 0;
   obj.m_header = ParsePacketHeader(parse_bytes_to_pairs(PacketHeaderSizes(), bytes, offset));
-
-  // parsing data directly on the object requires passing by reference
   offset = sizeof(PacketHeader);
+
+  // top pack data
   obj.m_packetSessionDataTop =
       ParsePacketSessionDataTop(parse_bytes_to_pairs(PacketSessionDataTopSizes(), bytes, offset));
+  offset = offset + sizeof(PacketSessionDataTop);
 
   // marshal zones
+  for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
+    obj.m_marshalZones[i] = ParseMarshalZone(parse_bytes_to_pairs(MarshalZoneSizes(), bytes, offset));
+    offset = offset + sizeof(MarshalZone);
+  }
+
+  // middle pack data
+  obj.m_packetSessionDataMid =
+      ParsePacketSessionDataMid(parse_bytes_to_pairs(PacketSessionDataMidSizes(), bytes, offset));
+  offset = offset + sizeof(PacketSessionDataMid);
 
   // weather forecast samples
+  for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
+    obj.m_weatherForecastSamples[i] =
+        ParseWeatherForecastSample(parse_bytes_to_pairs(WeatherForecastSampleSizes(), bytes, offset));
+    offset = offset + sizeof(WeatherForecastSample);
+  }
 
-  // write the rest directly to object
+  // bottom pack data
+  obj.m_packetSessionDataBottom =
+      ParsePacketSessionDataBottom(parse_bytes_to_pairs(PacketSessionDataBottomSizes(), bytes, offset));
 
   return obj;
 }
