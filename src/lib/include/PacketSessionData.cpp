@@ -1,5 +1,155 @@
 #include "PacketSessionData.hpp"
 
+std::vector<std::size_t> MarshalZoneSizes = {
+    sizeof(((MarshalZone *)0)->m_zoneStart),  // Fraction (0..1) of way through the lap the marshal zone starts
+    sizeof(((MarshalZone *)0)->m_zoneFlag)  // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
+};
+
+std::vector<std::string> MarshalZoneNames = {
+    "m_zoneStart",  // Fraction (0..1) of way through the lap the marshal zone starts
+    "m_zoneFlag"    // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
+};
+
+std::vector<std::size_t> WeatherForecastSampleSizes = {
+    sizeof(((WeatherForecastSample *)0)->m_sessionType),  // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P, 5 = Q1
+                                                          // 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ, 10 = R, 11 = R2
+                                                          // 12 = R3, 13 = Time Trial
+    sizeof(((WeatherForecastSample *)0)->m_timeOffset),   // Time in minutes the forecast is for
+    sizeof(((WeatherForecastSample *)0)->m_weather),      // Weather - 0 = clear, 1 = light cloud, 2 = overcast
+                                                          // 3 = light rain, 4 = heavy rain, 5 = storm
+    sizeof(((WeatherForecastSample *)0)->m_trackTemperature),        // Track temp. in degrees Celsius
+    sizeof(((WeatherForecastSample *)0)->m_trackTemperatureChange),  // Track temp. change – 0 = up 1 = down,
+                                                                     // 2 = no change
+    sizeof(((WeatherForecastSample *)0)->m_airTemperature),          // Air temp. in degrees celsius
+    sizeof(((WeatherForecastSample *)0)->m_airTemperatureChange),  // Air temp. change – 0 = up, 1 = down, 2 = no change
+    sizeof(((WeatherForecastSample *)0)->m_rainPercentage)         // Rain percentage (0-100)
+};
+
+std::vector<std::string> WeatherForecastSampleNames = {
+    "m_sessionType",             // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P, 5 = Q1
+                                 // 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ, 10 = R, 11 = R2
+                                 // 12 = R3, 13 = Time Trial
+    "m_timeOffset",              // Time in minutes the forecast is for
+    "m_weather",                 // Weather - 0 = clear, 1 = light cloud, 2 = overcast
+                                 // 3 = light rain, 4 = heavy rain, 5 = storm
+    "m_trackTemperature",        // Track temp. in degrees Celsius
+    "m_trackTemperatureChange",  // Track temp. change – 0 = up 1 = down, 2 = no change
+    "m_airTemperature",          // Air temp. in degrees celsius
+    "m_airTemperatureChange",    // Air temp. change – 0 = up, 1 = down, 2 = no change
+    "m_rainPercentage"           // Rain percentage (0-100)
+};
+
+std::vector<std::size_t> PacketSessionDataTopSizes = {
+    sizeof(((PacketSessionDataTop *)0)->m_weather),              // Weather - 0 = clear, 1 = light cloud, 2 = overcast
+                                                                 // 3 = light rain, 4 = heavy rain, 5 = storm
+    sizeof(((PacketSessionDataTop *)0)->m_trackTemperature),     // Track temp. in degrees celsius
+    sizeof(((PacketSessionDataTop *)0)->m_airTemperature),       // Air temp. in degrees celsius
+    sizeof(((PacketSessionDataTop *)0)->m_totalLaps),            // Total number of laps in this race
+    sizeof(((PacketSessionDataTop *)0)->m_trackLength),          // Track length in metres
+    sizeof(((PacketSessionDataTop *)0)->m_sessionType),          // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P
+                                                                 // 5 = Q1, 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ
+                                                                 // 10 = R, 11 = R2, 12 = R3, 13 = Time Trial
+    sizeof(((PacketSessionDataTop *)0)->m_trackId),              // -1 for unknown, see appendix
+    sizeof(((PacketSessionDataTop *)0)->m_formula),              // Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2,
+                                                                 // 3 = F1 Generic, 4 = Beta, 5 = Supercars
+                                                                 // 6 = Esports, 7 = F2 2021
+    sizeof(((PacketSessionDataTop *)0)->m_sessionTimeLeft),      // Time left in session in seconds
+    sizeof(((PacketSessionDataTop *)0)->m_sessionDuration),      // Session duration in seconds
+    sizeof(((PacketSessionDataTop *)0)->m_pitSpeedLimit),        // Pit speed limit in kilometres per hour
+    sizeof(((PacketSessionDataTop *)0)->m_gamePaused),           // Whether the game is paused – network game only
+    sizeof(((PacketSessionDataTop *)0)->m_isSpectating),         // Whether the player is spectating
+    sizeof(((PacketSessionDataTop *)0)->m_spectatorCarIndex),    // Index of the car being spectated
+    sizeof(((PacketSessionDataTop *)0)->m_sliProNativeSupport),  // SLI Pro support, 0 = inactive, 1 = active
+    sizeof(((PacketSessionDataTop *)0)->m_numMarshalZones)       // Number of marshal zones to follow
+};
+
+std::vector<std::string> PacketSessionDataTopNames = {
+    "m_weather",              // Weather - 0 = clear, 1 = light cloud, 2 = overcast
+                              // 3 = light rain, 4 = heavy rain, 5 = storm
+    "m_trackTemperature",     // Track temp. in degrees celsius
+    "m_airTemperature",       // Air temp. in degrees celsius
+    "m_totalLaps",            // Total number of laps in this race
+    "m_trackLength",          // Track length in metres
+    "m_sessionType",          // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P
+                              // 5 = Q1, 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ
+                              // 10 = R, 11 = R2, 12 = R3, 13 = Time Trial
+    "m_trackId",              // -1 for unknown, see appendix
+    "m_formula",              // Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2,
+                              // 3 = F1 Generic, 4 = Beta, 5 = Supercars
+                              // 6 = Esports, 7 = F2 2021
+    "m_sessionTimeLeft",      // Time left in session in seconds
+    "m_sessionDuration",      // Session duration in seconds
+    "m_pitSpeedLimit",        // Pit speed limit in kilometres per hour
+    "m_gamePaused",           // Whether the game is paused – network game only
+    "m_isSpectating",         // Whether the player is spectating
+    "m_spectatorCarIndex",    // Index of the car being spectated
+    "m_sliProNativeSupport",  // SLI Pro support, 0 = inactive, 1 = active
+    "m_numMarshalZones"       // Number of marshal zones to follow
+};
+
+std::vector<std::size_t> PacketSessionDataMidSizes = {
+    sizeof(((PacketSessionDataMid *)0)->m_safetyCarStatus),           // 0 = no safety car, 1 = full, 2 = virtual,
+                                                                      // 3 = formation lap
+    sizeof(((PacketSessionDataMid *)0)->m_networkGame),               // 0 = offline, 1 = online
+    sizeof(((PacketSessionDataMid *)0)->m_numWeatherForecastSamples)  // Number of weather samples to follow
+};
+
+std::vector<std::string> PacketSessionDataMidNames = {
+    "m_safetyCarStatus",           // 0 = no safety car, 1 = full, 2 = virtual, 3 = formation lap
+    "m_networkGame",               // 0 = offline, 1 = online
+    "m_numWeatherForecastSamples"  // Number of weather samples to follow
+};
+
+std::vector<std::size_t> PacketSessionDataBotSizes = {
+    sizeof(((PacketSessionDataBot *)0)->m_forecastAccuracy),        // 0 = Perfect, 1 = Approximate
+    sizeof(((PacketSessionDataBot *)0)->m_aiDifficulty),            // AI Difficulty rating – 0-110
+    sizeof(((PacketSessionDataBot *)0)->m_seasonLinkIdentifier),    // Identifier for season - persists across saves
+    sizeof(((PacketSessionDataBot *)0)->m_weekendLinkIdentifier),   // Identifier for weekend - persists across saves
+    sizeof(((PacketSessionDataBot *)0)->m_sessionLinkIdentifier),   // Identifier for session - persists across saves
+    sizeof(((PacketSessionDataBot *)0)->m_pitStopWindowIdealLap),   // Ideal lap to pit on for current strategy (player)
+    sizeof(((PacketSessionDataBot *)0)->m_pitStopWindowLatestLap),  // Latest lap to pit on for current strategy(player)
+    sizeof(((PacketSessionDataBot *)0)->m_pitStopRejoinPosition),   // Predicted position to rejoin at (player)
+    sizeof(((PacketSessionDataBot *)0)->m_steeringAssist),          // 0 = off, 1 = on
+    sizeof(((PacketSessionDataBot *)0)->m_brakingAssist),           // 0 = off, 1 = low, 2 = medium, 3 = high
+    sizeof(((PacketSessionDataBot *)0)->m_gearboxAssist),           // 1 = manual, 2 = manual & suggested gear, 3 = auto
+    sizeof(((PacketSessionDataBot *)0)->m_pitAssist),               // 0 = off, 1 = on
+    sizeof(((PacketSessionDataBot *)0)->m_pitReleaseAssist),        // 0 = off, 1 = on
+    sizeof(((PacketSessionDataBot *)0)->m_ERSAssist),               // 0 = off, 1 = on
+    sizeof(((PacketSessionDataBot *)0)->m_DRSAssist),               // 0 = off, 1 = on
+    sizeof(((PacketSessionDataBot *)0)->m_dynamicRacingLine),       // 0 = off, 1 = corners only, 2 = full
+    sizeof(((PacketSessionDataBot *)0)->m_dynamicRacingLineType),   // 0 = 2D, 1 = 3D
+    sizeof(((PacketSessionDataBot *)0)->m_gameMode),                // Game mode id - see appendix
+    sizeof(((PacketSessionDataBot *)0)->m_ruleSet),                 // Ruleset - see appendix
+    sizeof(((PacketSessionDataBot *)0)->m_timeOfDay),               // Local time of day - minutes since midnight
+    sizeof(((PacketSessionDataBot *)0)->m_sessionLength)            // 0 = None, 2 = Very Short, 3 = Short, 4 = Medium,
+                                                                    // 5 = Medium Long, 6 = Long, 7 = Full
+};
+
+std::vector<std::string> PacketSessionDataBotNames = {
+    "m_forecastAccuracy",        // 0 = Perfect, 1 = Approximate
+    "m_aiDifficulty",            // AI Difficulty rating – 0-110
+    "m_seasonLinkIdentifier",    // Identifier for season - persists across saves
+    "m_weekendLinkIdentifier",   // Identifier for weekend - persists across saves
+    "m_sessionLinkIdentifier",   // Identifier for session - persists across saves
+    "m_pitStopWindowIdealLap",   // Ideal lap to pit on for current strategy (player)
+    "m_pitStopWindowLatestLap",  // Latest lap to pit on for current strategy (player)
+    "m_pitStopRejoinPosition",   // Predicted position to rejoin at (player)
+    "m_steeringAssist",          // 0 = off, 1 = on
+    "m_brakingAssist",           // 0 = off, 1 = low, 2 = medium, 3 = high
+    "m_gearboxAssist",           // 1 = manual, 2 = manual & suggested gear, 3 = auto
+    "m_pitAssist",               // 0 = off, 1 = on
+    "m_pitReleaseAssist",        // 0 = off, 1 = on
+    "m_ERSAssist",               // 0 = off, 1 = on
+    "m_DRSAssist",               // 0 = off, 1 = on
+    "m_dynamicRacingLine",       // 0 = off, 1 = corners only, 2 = full
+    "m_dynamicRacingLineType",   // 0 = 2D, 1 = 3D
+    "m_gameMode",                // Game mode id - see appendix
+    "m_ruleSet",                 // Ruleset - see appendix
+    "m_timeOfDay",               // Local time of day - minutes since midnight
+    "m_sessionLength"            // 0 = None, 2 = Very Short, 3 = Short, 4 = Medium,
+                                 // 5 = Medium Long, 6 = Long, 7 = Full
+};
+
 std::string MarshalZoneCSVHeader(std::string sep) {
   std::string str = "m_ZoneStart" + sep + "m_zoneFlag";
   return str;
@@ -25,15 +175,6 @@ MarshalZone ParseMarshalZone(std::vector<std::vector<unsigned char>> bytes) {
   std::memcpy(&obj.m_zoneStart, &bytes.at(0).front(), sizeof obj.m_zoneStart);
   std::memcpy(&obj.m_zoneFlag, &bytes.at(1).front(), sizeof obj.m_zoneFlag);
   return obj;
-}
-
-std::vector<std::size_t> MarshalZoneSizes() {
-  MarshalZone obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_zoneStart,  // Fraction (0..1) of way through the lap the marshal zone starts
-      sizeof obj.m_zoneFlag    // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
-  };
-  return sizes;
 }
 
 std::string WeatherForecastSampleCSVHeader(std::string sep) {
@@ -74,24 +215,6 @@ WeatherForecastSample ParseWeatherForecastSample(std::vector<std::vector<unsigne
   std::memcpy(&obj.m_rainPercentage, &bytes.at(7).front(), sizeof obj.m_rainPercentage);
   return obj;
 }
-
-std::vector<std::size_t> WeatherForecastSampleSizes() {
-  WeatherForecastSample obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_sessionType,             // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P, 5 = Q1
-                                            // 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ, 10 = R, 11 = R2
-                                            // 12 = R3, 13 = Time Trial
-      sizeof obj.m_timeOffset,              // Time in minutes the forecast is for
-      sizeof obj.m_weather,                 // Weather - 0 = clear, 1 = light cloud, 2 = overcast
-                                            // 3 = light rain, 4 = heavy rain, 5 = storm
-      sizeof obj.m_trackTemperature,        // Track temp. in degrees Celsius
-      sizeof obj.m_trackTemperatureChange,  // Track temp. change – 0 = up 1 = down, 2 = no change
-      sizeof obj.m_airTemperature,          // Air temp. in degrees celsius
-      sizeof obj.m_airTemperatureChange,    // Air temp. change – 0 = up, 1 = down, 2 = no change
-      sizeof obj.m_rainPercentage           // Rain percentage (0-100)
-  };
-  return sizes;
-};
 
 std::string PacketSessionDataTopCSVHeader() {
   std::string str =
@@ -145,35 +268,6 @@ PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned 
   return obj;
 }
 
-// regex to replace std::int types (std::[u]*int[\d]{1,2}_t)
-std::vector<std::size_t> PacketSessionDataTopSizes() {
-  PacketSessionDataTop obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_weather,              // Weather - 0 = clear, 1 = light cloud, 2 = overcast
-                                         // 3 = light rain, 4 = heavy rain, 5 = storm
-      sizeof obj.m_trackTemperature,     // Track temp. in degrees celsius
-      sizeof obj.m_airTemperature,       // Air temp. in degrees celsius
-      sizeof obj.m_totalLaps,            // Total number of laps in this race
-      sizeof obj.m_trackLength,          // Track length in metres
-      sizeof obj.m_sessionType,          // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P
-                                         // 5 = Q1, 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ
-                                         // 10 = R, 11 = R2, 12 = R3, 13 = Time Trial
-      sizeof obj.m_trackId,              // -1 for unknown, see appendix
-      sizeof obj.m_formula,              // Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2,
-                                         // 3 = F1 Generic, 4 = Beta, 5 = Supercars
-                                         // 6 = Esports, 7 = F2 2021
-      sizeof obj.m_sessionTimeLeft,      // Time left in session in seconds
-      sizeof obj.m_sessionDuration,      // Session duration in seconds
-      sizeof obj.m_pitSpeedLimit,        // Pit speed limit in kilometres per hour
-      sizeof obj.m_gamePaused,           // Whether the game is paused – network game only
-      sizeof obj.m_isSpectating,         // Whether the player is spectating
-      sizeof obj.m_spectatorCarIndex,    // Index of the car being spectated
-      sizeof obj.m_sliProNativeSupport,  // SLI Pro support, 0 = inactive, 1 = active
-      sizeof obj.m_numMarshalZones       // Number of marshal zones to follow
-  };
-  return sizes;
-}
-
 std::string PacketSessionDataMidCSVHeader() {
   std::string str = "m_safetyCarStatus,m_networkGame,m_numWeatherForecastSamples";
   return str;
@@ -204,18 +298,7 @@ PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned 
   return obj;
 }
 
-std::vector<std::size_t> PacketSessionDataMidSizes() {
-  PacketSessionDataMid obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_safetyCarStatus,           // 0 = no safety car, 1 = full
-                                              // 2 = virtual, 3 = formation lap
-      sizeof obj.m_networkGame,               // 0 = offline, 1 = online
-      sizeof obj.m_numWeatherForecastSamples  // Number of weather samples to follow
-  };
-  return sizes;
-}
-
-std::string PacketSessionDataBottomCSVHeader() {
+std::string PacketSessionDataBotCSVHeader() {
   std::string str =
       "m_forecastAccuracy,m_aiDifficulty,m_seasonLinkIdentifier,m_weekendLinkIdentifier,m_sessionLinkIdentifier,m_"
       "pitStopWindowIdealLap,m_pitStopWindowLatestLap,m_pitStopRejoinPosition,m_steeringAssist,m_brakingAssist,m_"
@@ -224,7 +307,7 @@ std::string PacketSessionDataBottomCSVHeader() {
   return str;
 }
 
-std::string PacketSessionDataBottomString(PacketSessionDataBottom obj, std::string sep) {
+std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s";
   const char *ssep = sep.c_str();
 
@@ -251,8 +334,8 @@ std::string PacketSessionDataBottomString(PacketSessionDataBottom obj, std::stri
   return str;
 }
 
-PacketSessionDataBottom ParsePacketSessionDataBottom(std::vector<std::vector<unsigned char>> bytes) {
-  PacketSessionDataBottom obj;
+PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned char>> bytes) {
+  PacketSessionDataBot obj;
   std::memcpy(&obj.m_forecastAccuracy, &bytes.at(0).front(), sizeof obj.m_forecastAccuracy);
   std::memcpy(&obj.m_aiDifficulty, &bytes.at(1).front(), sizeof obj.m_aiDifficulty);
   std::memcpy(&obj.m_seasonLinkIdentifier, &bytes.at(2).front(), sizeof obj.m_seasonLinkIdentifier);
@@ -277,35 +360,6 @@ PacketSessionDataBottom ParsePacketSessionDataBottom(std::vector<std::vector<uns
   return obj;
 }
 
-std::vector<std::size_t> PacketSessionDataBottomSizes() {
-  PacketSessionDataBottom obj;
-  std::vector<std::size_t> sizes = {
-      sizeof obj.m_forecastAccuracy,        // 0 = Perfect, 1 = Approximate
-      sizeof obj.m_aiDifficulty,            // AI Difficulty rating – 0-110
-      sizeof obj.m_seasonLinkIdentifier,    // Identifier for season - persists across saves
-      sizeof obj.m_weekendLinkIdentifier,   // Identifier for weekend - persists across saves
-      sizeof obj.m_sessionLinkIdentifier,   // Identifier for session - persists across saves
-      sizeof obj.m_pitStopWindowIdealLap,   // Ideal lap to pit on for current strategy (player)
-      sizeof obj.m_pitStopWindowLatestLap,  // Latest lap to pit on for current strategy (player)
-      sizeof obj.m_pitStopRejoinPosition,   // Predicted position to rejoin at (player)
-      sizeof obj.m_steeringAssist,          // 0 = off, 1 = on
-      sizeof obj.m_brakingAssist,           // 0 = off, 1 = low, 2 = medium, 3 = high
-      sizeof obj.m_gearboxAssist,           // 1 = manual, 2 = manual & suggested gear, 3 = auto
-      sizeof obj.m_pitAssist,               // 0 = off, 1 = on
-      sizeof obj.m_pitReleaseAssist,        // 0 = off, 1 = on
-      sizeof obj.m_ERSAssist,               // 0 = off, 1 = on
-      sizeof obj.m_DRSAssist,               // 0 = off, 1 = on
-      sizeof obj.m_dynamicRacingLine,       // 0 = off, 1 = corners only, 2 = full
-      sizeof obj.m_dynamicRacingLineType,   // 0 = 2D, 1 = 3D
-      sizeof obj.m_gameMode,                // Game mode id - see appendix
-      sizeof obj.m_ruleSet,                 // Ruleset - see appendix
-      sizeof obj.m_timeOfDay,               // Local time of day - minutes since midnight
-      sizeof obj.m_sessionLength            // 0 = None, 2 = Very Short, 3 = Short, 4 = Medium,
-                                            // 5 = Medium Long, 6 = Long, 7 = Full
-  };
-  return sizes;
-}
-
 /**
  * @brief Returns a CSV header string.
  *
@@ -317,7 +371,7 @@ std::vector<std::size_t> PacketSessionDataBottomSizes() {
 std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
   std::string str = csvHeader(PacketHeaderNames, sep) + sep + PacketSessionDataTopCSVHeader() + sep +
                     MarshalZoneCSVHeader(sep = compr) + sep + PacketSessionDataMidCSVHeader() + sep +
-                    WeatherForecastSampleCSVHeader(sep = compr) + PacketSessionDataBottomCSVHeader();
+                    WeatherForecastSampleCSVHeader(sep = compr) + PacketSessionDataBotCSVHeader();
   return str;
 }
 
@@ -347,7 +401,7 @@ std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std:
 
   std::string str = PacketHeaderString(obj.m_header) + sep + PacketSessionDataTopString(obj.m_packetSessionDataTop) +
                     sep + compr_marshalZones + sep + PacketSessionDataMidString(obj.m_packetSessionDataMid) + sep +
-                    compr_weatherForecastSamples + sep + PacketSessionDataBottomString(obj.m_packetSessionDataBottom);
+                    compr_weatherForecastSamples + sep + PacketSessionDataBotString(obj.m_PacketSessionDataBot);
   return str;
 }
 
@@ -360,31 +414,28 @@ PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes) {
   offset = sizeof(PacketHeader);
 
   // top pack data
-  obj.m_packetSessionDataTop =
-      ParsePacketSessionDataTop(parse_bytes_to_vec(PacketSessionDataTopSizes(), bytes, offset));
+  obj.m_packetSessionDataTop = ParsePacketSessionDataTop(parse_bytes_to_vec(PacketSessionDataTopSizes, bytes, offset));
   offset = offset + sizeof(PacketSessionDataTop);
 
   // marshal zones
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
-    obj.m_marshalZones[i] = ParseMarshalZone(parse_bytes_to_vec(MarshalZoneSizes(), bytes, offset));
+    obj.m_marshalZones[i] = ParseMarshalZone(parse_bytes_to_vec(MarshalZoneSizes, bytes, offset));
     offset = offset + sizeof(MarshalZone);
   }
 
   // middle pack data
-  obj.m_packetSessionDataMid =
-      ParsePacketSessionDataMid(parse_bytes_to_vec(PacketSessionDataMidSizes(), bytes, offset));
+  obj.m_packetSessionDataMid = ParsePacketSessionDataMid(parse_bytes_to_vec(PacketSessionDataMidSizes, bytes, offset));
   offset = offset + sizeof(PacketSessionDataMid);
 
   // weather forecast samples
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
     obj.m_weatherForecastSamples[i] =
-        ParseWeatherForecastSample(parse_bytes_to_vec(WeatherForecastSampleSizes(), bytes, offset));
+        ParseWeatherForecastSample(parse_bytes_to_vec(WeatherForecastSampleSizes, bytes, offset));
     offset = offset + sizeof(WeatherForecastSample);
   }
 
   // bottom pack data
-  obj.m_packetSessionDataBottom =
-      ParsePacketSessionDataBottom(parse_bytes_to_vec(PacketSessionDataBottomSizes(), bytes, offset));
+  obj.m_PacketSessionDataBot = ParsePacketSessionDataBot(parse_bytes_to_vec(PacketSessionDataBotSizes, bytes, offset));
 
   return obj;
 }
