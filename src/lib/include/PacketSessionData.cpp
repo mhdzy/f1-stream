@@ -248,11 +248,6 @@ PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned 
   return obj;
 }
 
-std::string PacketSessionDataMidCSVHeader() {
-  std::string str = "m_safetyCarStatus,m_networkGame,m_numWeatherForecastSamples";
-  return str;
-}
-
 std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d";
   const char *ssep = sep.c_str();
@@ -279,7 +274,7 @@ PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned 
 }
 
 std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep) {
-  const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
+  const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
   const int size = std::snprintf(
@@ -340,14 +335,20 @@ PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned 
  *
  */
 std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
-  std::string str = csvHeader(PacketHeaderNames, sep) + sep + csvHeader(PacketSessionDataTopNames, sep) + sep +
-                    csvHeader(MarshalZoneNames, compr) + sep + csvHeader(PacketSessionDataMidNames, sep) + sep +
-                    csvHeader(WeatherForecastSampleNames, compr) + sep + csvHeader(PacketSessionDataBotNames, sep);
-  return str;
+  std::vector<std::string> vec = {
+      csvHeader(PacketHeaderNames, sep),             //
+      csvHeader(PacketSessionDataTopNames, sep),     //
+      csvHeader(MarshalZoneNames, compr),            //
+      csvHeader(PacketSessionDataMidNames, sep),     //
+      csvHeader(WeatherForecastSampleNames, compr),  //
+      csvHeader(PacketSessionDataBotNames, sep)      //
+  };
+
+  return csvHeader(vec, sep);
 }
 
 /**
- * @brief
+ * @brief Parse a string representation (default csv) of the PacketSessionData struct.
  *
  * @param obj
  * @param sep A string used to separate the individual field values.
@@ -357,7 +358,6 @@ std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
  */
 std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std::string compr, std::string compr2) {
   // compress marshal zones
-  // MarshalZoneString(obj.m_marshalZones)
   std::string compr_marshalZones;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
     compr_marshalZones += MarshalZoneString(obj.m_marshalZones[i], compr2) + compr;
@@ -365,10 +365,9 @@ std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std:
   if (!compr_marshalZones.empty()) compr_marshalZones.pop_back();
 
   // compress weather forecasts
-  // WeatherForecastSampleString(obj.m_weatherForecastSamples)
   std::string compr_weatherForecastSamples;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
-    compr_weatherForecastSamples += WeatherForecastSampleString(obj.m_weatherForecastSamples[i]) + compr;
+    compr_weatherForecastSamples += WeatherForecastSampleString(obj.m_weatherForecastSamples[i], compr2) + compr;
   }
   if (!compr_weatherForecastSamples.empty()) compr_weatherForecastSamples.pop_back();
 
@@ -388,35 +387,30 @@ PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes) {
   PacketSessionData obj;
   std::uint16_t offset = 0;
 
-  // parse header
   obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
-  // top pack data
   obj.m_packetSessionDataTop = ParsePacketSessionDataTop(parse_bytes_to_vec(PacketSessionDataTopSizes, bytes, offset));
   offset += sizeof(PacketSessionDataTop);
 
-  // marshal zones
-  for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
+  // iterate over all marshal zone array indices to correctly set the offset
+  for (std::uint8_t i = 0; i < 21; i++) {
     obj.m_marshalZones[i] = ParseMarshalZone(parse_bytes_to_vec(MarshalZoneSizes, bytes, offset));
     offset += sizeof(MarshalZone);
   }
 
-  // middle pack data
   obj.m_packetSessionDataMid = ParsePacketSessionDataMid(parse_bytes_to_vec(PacketSessionDataMidSizes, bytes, offset));
   offset += sizeof(PacketSessionDataMid);
 
-  // weather forecast samples
-  for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
+  // same reasoning as above (loop limit of 56)
+  for (std::uint8_t i = 0; i < 56; i++) {
     obj.m_weatherForecastSamples[i] =
         ParseWeatherForecastSample(parse_bytes_to_vec(WeatherForecastSampleSizes, bytes, offset));
     offset += sizeof(WeatherForecastSample);
   }
 
-  // bottom pack data
   obj.m_PacketSessionDataBot = ParsePacketSessionDataBot(parse_bytes_to_vec(PacketSessionDataBotSizes, bytes, offset));
-
-  print_hexb(bytes);
+  offset += sizeof(PacketSessionDataBot);
 
   return obj;
 }
