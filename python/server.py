@@ -30,9 +30,11 @@ print("remember: Ctrl+C to exit")
 
 tick=0
 datastream = []
+
 while True:
     tick = tick+1
-    if tick > 65535:
+    if tick > (2**17 - 1):
+        print("reached limit of" + str(2**17 - 1))
         break
     # print(tick)
     # print("####### server is listening #######")
@@ -41,13 +43,16 @@ while True:
     print("recv (" + str(tick) +")" + str(len(data)))
     # print("\n\n [RECEIVE] Server received: ", data, "\n\n")
 
-subfolder = "data/singapore-single-lap"
+track = "brazil2"
+subfolder = "data/" + track + "-single-lap"
 if not genericpath.exists(subfolder):
     os.mkdir(subfolder)
+
 for i in range(0, len(datastream)):
   with open(subfolder + "/data"+str(i)+".raw", "wb") as file:
+      if i % 10 == len(datastream) - 1:
+        print(str(round(i/len(datastream), 2)) + "%\n")
       tmp = file.write(datastream[i])
-
 
 def unique(l: list = []) -> int:
     res = []
