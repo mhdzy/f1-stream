@@ -30,23 +30,18 @@ std::vector<std::string> PacketHeaderNames = {
 
 std::string PacketHeaderString(PacketHeader obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
+  const char *ssep = sep.c_str();
 
-  int size = std::snprintf(
-      nullptr, 0, fmt, obj.m_packetFormat, sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMajorVersion), sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_gameMinorVersion), sep.c_str(), static_cast<std::uint32_t>(obj.m_packetVersion),
-      sep.c_str(), static_cast<std::uint32_t>(obj.m_packetId), sep.c_str(), obj.m_sessionUID, sep.c_str(),
-      obj.m_sessionTime, sep.c_str(), obj.m_frameIdentifier, sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_playerCarIndex), sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_secondaryPlayerCarIndex));
+  int size =
+      std::snprintf(nullptr, 0, fmt, obj.m_packetFormat, ssep, obj.m_gameMajorVersion, ssep, obj.m_gameMinorVersion,
+                    ssep, obj.m_packetVersion, ssep, obj.m_packetId, ssep, obj.m_sessionUID, ssep, obj.m_sessionTime,
+                    ssep, obj.m_frameIdentifier, ssep, obj.m_playerCarIndex, ssep, obj.m_secondaryPlayerCarIndex);
 
   std::vector<char> buf(size + 1);  // note +1 for null terminator
-  std::snprintf(
-      &buf[0], buf.size(), fmt, obj.m_packetFormat, sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMajorVersion),
-      sep.c_str(), static_cast<std::uint32_t>(obj.m_gameMinorVersion), sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_packetVersion), sep.c_str(), static_cast<std::uint32_t>(obj.m_packetId),
-      sep.c_str(), obj.m_sessionUID, sep.c_str(), obj.m_sessionTime, sep.c_str(), obj.m_frameIdentifier, sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_playerCarIndex), sep.c_str(),
-      static_cast<std::uint32_t>(obj.m_secondaryPlayerCarIndex));
+  std::snprintf(&buf[0], buf.size(), fmt, obj.m_packetFormat, ssep, obj.m_gameMajorVersion, ssep,
+                obj.m_gameMinorVersion, ssep, obj.m_packetVersion, ssep, obj.m_packetId, ssep, obj.m_sessionUID, ssep,
+                obj.m_sessionTime, ssep, obj.m_frameIdentifier, ssep, obj.m_playerCarIndex, ssep,
+                obj.m_secondaryPlayerCarIndex);
 
   std::string str(buf.begin(), buf.end());
   str.erase(str.find('\0'));  // remove null terminator

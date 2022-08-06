@@ -11,6 +11,7 @@ OBJECTS:= \
 	$(LDIR)/PacketSessionData.o \
 	$(LDIR)/PacketMap.o \
 	$(LDIR)/File.o \
+	$(LDIR)/Bytes.o
 
 TARGET_EXECUTABLE:= \
 	$(SDIR)/main

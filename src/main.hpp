@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 
+#include "lib/include/Bytes.hpp"
 #include "lib/include/File.hpp"
 #include "lib/include/PacketMap.hpp"
 

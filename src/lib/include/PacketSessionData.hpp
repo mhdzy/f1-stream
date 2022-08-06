@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "Bytes.hpp"
 #include "File.hpp"
 #include "PacketHeader.hpp"
 
@@ -89,42 +90,38 @@ struct PacketSessionData {
   MarshalZone m_marshalZones[21];                      // List of marshal zones – max 21
   PacketSessionDataMid m_packetSessionDataMid;         // middle portion of struct fields
   WeatherForecastSample m_weatherForecastSamples[56];  // Array of weather forecast samples
-  PacketSessionDataBot m_PacketSessionDataBot;   // bottom portion of struct fields
+  PacketSessionDataBot m_PacketSessionDataBot;         // bottom portion of struct fields
 };
 
 #pragma pack(pop)
 
 extern std::vector<std::size_t> MarshalZoneSizes;
 extern std::vector<std::string> MarshalZoneNames;
-extern std::string MarshalZoneCSVHeader(std::string sep = ",");
 extern std::string MarshalZoneString(MarshalZone obj, std::string sep = ",");
 extern MarshalZone ParseMarshalZone(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> WeatherForecastSampleSizes;
 extern std::vector<std::string> WeatherForecastSampleNames;
-extern std::string WeatherForecastSampleCSVHeader(std::string sep = ",");
 extern std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string sep = ",");
 extern WeatherForecastSample ParseWeatherForecastSample(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataTopSizes;
 extern std::vector<std::string> PacketSessionDataTopNames;
-extern std::string PacketSessionDataTopCSVHeader();
 extern std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep = ",");
 extern PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataMidSizes;
 extern std::vector<std::string> PacketSessionDataMidNames;
-extern std::string PacketSessionDataMidCSVHeader();
 extern std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep = ",");
 extern PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataBotSizes;
 extern std::vector<std::string> PacketSessionDataBotNames;
-extern std::string PacketSessionDataBotCSVHeader();
 extern std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep = ",");
 extern PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",", std::string compr = "/");
+extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",", std::string compr = "/",
+                                           std::string compr2 = ";");
 extern PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes);
 extern std::vector<std::size_t> PacketSessionDataSizes();
