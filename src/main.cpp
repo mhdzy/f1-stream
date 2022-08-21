@@ -45,18 +45,18 @@ int main() {
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
+  output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
+  
   spdlog::debug("wrote headers in for each file");
 
   for (PacketMap packet : Packets) {
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
-    
+
     if (packet.file_id == MotionPacketID) {
       PacketMotionData obj = ParsePacketMotionData(filebytes);
 
-      for (std::uint8_t i = 0; i < 22; i++) {
-        // need to print 1 row per 'carID' (i)
+      for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
-      }
     } else if (packet.file_id == SessionPacketID) {
       PacketSessionData obj = ParsePacketSessionData(filebytes);
 
@@ -64,9 +64,13 @@ int main() {
     } else if (packet.file_id == LapDataPacketID) {
       PacketLapData obj = ParsePacketLapData(filebytes);
 
-      for (std::uint8_t i = 0; i < 22; i++) {
+      for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
-      }
+    } else if (packet.file_id == CarSetupsPacketID) {
+      PacketCarSetupData obj = ParsePacketCarSetupData(filebytes);
+
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarSetupsPacketID) << std::to_string(i) + "," + PacketCarSetupDataString(obj, i) + "\n";
     }
   }
   spdlog::debug("parsed all packets");
