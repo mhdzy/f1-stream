@@ -154,7 +154,7 @@ std::string MarshalZoneString(MarshalZone obj, std::string sep) {
   const char *fmt = "%f%s%d";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(nullptr, 0, fmt, obj.m_zoneStart, ssep, obj.m_zoneFlag);
+  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_zoneStart, ssep, obj.m_zoneFlag);
 
   std::vector<char> buf(size + 1);  // +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, obj.m_zoneStart, ssep, obj.m_zoneFlag);
@@ -176,9 +176,10 @@ std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string s
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(nullptr, 0, fmt, obj.m_sessionType, ssep, obj.m_timeOffset, ssep, obj.m_weather, ssep,
-                                 obj.m_trackTemperature, ssep, obj.m_trackTemperatureChange, ssep, obj.m_airTemperature,
-                                 ssep, obj.m_airTemperatureChange, ssep, obj.m_rainPercentage);
+  const std::size_t size =
+      std::snprintf(nullptr, 0, fmt, obj.m_sessionType, ssep, obj.m_timeOffset, ssep, obj.m_weather, ssep,
+                    obj.m_trackTemperature, ssep, obj.m_trackTemperatureChange, ssep, obj.m_airTemperature, ssep,
+                    obj.m_airTemperatureChange, ssep, obj.m_rainPercentage);
 
   std::vector<char> buf(size + 1);  // +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, obj.m_sessionType, ssep, obj.m_timeOffset, ssep, obj.m_weather, ssep,
@@ -208,7 +209,7 @@ std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(
+  const std::size_t size = std::snprintf(
       nullptr, 0, fmt, obj.m_weather, ssep, obj.m_trackTemperature, ssep, obj.m_airTemperature, ssep, obj.m_totalLaps,
       ssep, obj.m_trackLength, ssep, obj.m_sessionType, ssep, obj.m_trackId, ssep, obj.m_formula, ssep,
       obj.m_sessionTimeLeft, ssep, obj.m_sessionDuration, ssep, obj.m_pitSpeedLimit, ssep, obj.m_gamePaused, ssep,
@@ -252,8 +253,8 @@ std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep
   const char *fmt = "%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(nullptr, 0, fmt, obj.m_safetyCarStatus, ssep, obj.m_networkGame, ssep,
-                                 obj.m_numWeatherForecastSamples);
+  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_safetyCarStatus, ssep, obj.m_networkGame, ssep,
+                                         obj.m_numWeatherForecastSamples);
 
   std::vector<char> buf(size + 1);  // +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, obj.m_safetyCarStatus, ssep, obj.m_networkGame, ssep,
@@ -277,7 +278,7 @@ std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(
+  const std::size_t size = std::snprintf(
       nullptr, 0, fmt, obj.m_forecastAccuracy, ssep, obj.m_aiDifficulty, ssep, obj.m_seasonLinkIdentifier, ssep,
       obj.m_weekendLinkIdentifier, ssep, obj.m_sessionLinkIdentifier, ssep, obj.m_pitStopWindowIdealLap, ssep,
       obj.m_pitStopWindowLatestLap, ssep, obj.m_pitStopRejoinPosition, ssep, obj.m_steeringAssist, ssep,

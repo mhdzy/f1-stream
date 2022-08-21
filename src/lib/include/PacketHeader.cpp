@@ -32,7 +32,7 @@ std::string PacketHeaderString(PacketHeader obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
-  int size =
+  std::size_t size =
       std::snprintf(nullptr, 0, fmt, obj.m_packetFormat, ssep, obj.m_gameMajorVersion, ssep, obj.m_gameMinorVersion,
                     ssep, obj.m_packetVersion, ssep, obj.m_packetId, ssep, obj.m_sessionUID, ssep, obj.m_sessionTime,
                     ssep, obj.m_frameIdentifier, ssep, obj.m_playerCarIndex, ssep, obj.m_secondaryPlayerCarIndex);

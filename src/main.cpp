@@ -5,6 +5,8 @@ int main() {
   spdlog::set_level(spdlog::level::debug);
   spdlog::info(" === le F1 2022 UDP parser === ");
 
+  spdlog::info(" track: {}", TRACK);
+
   // used to store metadata about each packet
   std::vector<PacketMap> Packets;
 
@@ -42,21 +44,29 @@ int main() {
 
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
+  output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
+  spdlog::debug("wrote headers in for each file");
 
   for (PacketMap packet : Packets) {
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
-
+    
     if (packet.file_id == MotionPacketID) {
-      PacketMotionData pmd = ParsePacketMotionData(filebytes);
+      PacketMotionData obj = ParsePacketMotionData(filebytes);
 
-      // need to print 1 row per 'carID' (i)
-      for (int i = 0; i < 22; i++) {
-        output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
+      for (std::uint8_t i = 0; i < 22; i++) {
+        // need to print 1 row per 'carID' (i)
+        output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
       }
     } else if (packet.file_id == SessionPacketID) {
-      PacketSessionData psd = ParsePacketSessionData(filebytes);
+      PacketSessionData obj = ParsePacketSessionData(filebytes);
 
-      output_files.at(SessionPacketID) << PacketSessionDataString(psd) + "\n";
+      output_files.at(SessionPacketID) << PacketSessionDataString(obj) + "\n";
+    } else if (packet.file_id == LapDataPacketID) {
+      PacketLapData obj = ParsePacketLapData(filebytes);
+
+      for (std::uint8_t i = 0; i < 22; i++) {
+        output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
+      }
     }
   }
   spdlog::debug("parsed all packets");

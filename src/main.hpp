@@ -23,9 +23,9 @@
 #include "lib/include/PacketHeader.hpp"
 #include "lib/include/PacketMotionData.hpp"
 #include "lib/include/PacketSessionData.hpp"
+#include "lib/include/PacketLapData.hpp"
 
 /*
-#include "lib/include/PacketLapData.hpp"
 #include "lib/include/PacketLobbyInfoData.hpp"
 #include "lib/include/PacketParticipantsData.hpp"
 #include "lib/include/PacketSessionHistoryData.hpp"
@@ -43,7 +43,7 @@
     code will store packet files to
       data/{track}/parsed/
 */
-const std::string TRACK = "singapore";
+const std::string TRACK = "spa";
 const std::string DATA_PATH = "data/";
 const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
 const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";

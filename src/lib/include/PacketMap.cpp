@@ -33,7 +33,7 @@ std::map<int, std::string> packet_id_to_string = {
 PacketMap packet_map_populate(std::string filename) {
   PacketMap map;
   map.file_name = filename;
-  map.file_size = (int)file_size(filename);
+  map.file_size = file_size(filename);
   map.file_id = packet_size_to_id.find(map.file_size)->second;
   map.file_packet_name = packet_id_to_string.find(map.file_id)->second.c_str();
   return (map);

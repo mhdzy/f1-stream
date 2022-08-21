@@ -82,12 +82,12 @@ std::string CarMotionDataString(CarMotionData obj, std::string sep) {
   const char *fmt = "%f%s%f%s%f%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%f%s%f";
   const char *ssep = sep.c_str();
 
-  const int size = std::snprintf(nullptr, 0, fmt, obj.m_worldPositionX, ssep, obj.m_worldPositionY, ssep,
-                                 obj.m_worldPositionZ, ssep, obj.m_worldVelocityX, ssep, obj.m_worldVelocityY, ssep,
-                                 obj.m_worldVelocityZ, ssep, obj.m_worldForwardDirX, ssep, obj.m_worldForwardDirY, ssep,
-                                 obj.m_worldForwardDirZ, ssep, obj.m_worldRightDirX, ssep, obj.m_worldRightDirY, ssep,
-                                 obj.m_worldRightDirZ, ssep, obj.m_gForceLateral, ssep, obj.m_gForceLongitudinal, ssep,
-                                 obj.m_gForceVertical, ssep, obj.m_yaw, ssep, obj.m_pitch, ssep, obj.m_roll);
+  const std::size_t size = std::snprintf(
+      nullptr, 0, fmt, obj.m_worldPositionX, ssep, obj.m_worldPositionY, ssep, obj.m_worldPositionZ, ssep,
+      obj.m_worldVelocityX, ssep, obj.m_worldVelocityY, ssep, obj.m_worldVelocityZ, ssep, obj.m_worldForwardDirX, ssep,
+      obj.m_worldForwardDirY, ssep, obj.m_worldForwardDirZ, ssep, obj.m_worldRightDirX, ssep, obj.m_worldRightDirY,
+      ssep, obj.m_worldRightDirZ, ssep, obj.m_gForceLateral, ssep, obj.m_gForceLongitudinal, ssep, obj.m_gForceVertical,
+      ssep, obj.m_yaw, ssep, obj.m_pitch, ssep, obj.m_roll);
 
   std::vector<char> buf(size + 1);  // note +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, obj.m_worldPositionX, ssep, obj.m_worldPositionY, ssep, obj.m_worldPositionZ,
@@ -149,12 +149,12 @@ std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep) {
   std::string m_wheelSlip(std::to_string(obj.m_wheelSlip[0]) + csep + std::to_string(obj.m_wheelSlip[1]) + csep +
                           std::to_string(obj.m_wheelSlip[2]) + csep + std::to_string(obj.m_wheelSlip[3]));
 
-  int size = std::snprintf(nullptr, 0, fmt, m_suspensionPosition.c_str(), ssep, m_suspensionVelocity.c_str(), ssep,
-                           m_suspensionAcceleration.c_str(), ssep, m_wheelSpeed.c_str(), ssep, m_wheelSlip.c_str(),
-                           ssep, obj.m_localVelocityX, ssep, obj.m_localVelocityY, ssep, obj.m_localVelocityZ, ssep,
-                           obj.m_angularVelocityX, ssep, obj.m_angularVelocityY, ssep, obj.m_angularVelocityZ, ssep,
-                           obj.m_angularAccelerationX, ssep, obj.m_angularAccelerationY, ssep,
-                           obj.m_angularAccelerationZ, ssep, obj.m_frontWheelsAngle);
+  const std::size_t size = std::snprintf(
+      nullptr, 0, fmt, m_suspensionPosition.c_str(), ssep, m_suspensionVelocity.c_str(), ssep,
+      m_suspensionAcceleration.c_str(), ssep, m_wheelSpeed.c_str(), ssep, m_wheelSlip.c_str(), ssep,
+      obj.m_localVelocityX, ssep, obj.m_localVelocityY, ssep, obj.m_localVelocityZ, ssep, obj.m_angularVelocityX, ssep,
+      obj.m_angularVelocityY, ssep, obj.m_angularVelocityZ, ssep, obj.m_angularAccelerationX, ssep,
+      obj.m_angularAccelerationY, ssep, obj.m_angularAccelerationZ, ssep, obj.m_frontWheelsAngle);
 
   std::vector<char> buf(size + 1);  // note +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, m_suspensionPosition.c_str(), ssep, m_suspensionVelocity.c_str(), ssep,
@@ -216,7 +216,7 @@ std::string PacketMotionDataCSVHeader(std::string sep) {
   return csvHeader(vec, sep);
 }
 
-std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep) {
+std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep) {
   std::vector<std::string> vec = {
       PacketHeaderString(obj.m_header),                   //
       CarMotionDataString(obj.m_carMotionData[carID]),    //

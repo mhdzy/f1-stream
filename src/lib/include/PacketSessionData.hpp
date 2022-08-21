@@ -124,4 +124,3 @@ extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string
 extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",", std::string compr = "/",
                                            std::string compr2 = ";");
 extern PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes);
-extern std::vector<std::size_t> PacketSessionDataSizes();

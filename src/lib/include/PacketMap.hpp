@@ -19,10 +19,10 @@
 #define SessionHistoryPacketID 11
 
 struct PacketMap {
-  std::string file_name;
-  std::string file_packet_name;
-  int file_size;
-  int file_id;
+  std::string file_name;         // used to identify the particular file being described
+  std::string file_packet_name;  // internal packet name (given by F1 spec sheet)
+  std::size_t file_size;         // size in bytes
+  std::uint8_t file_id;          // internal file id number (0-11)
 };
 
 extern std::map<int, int> packet_size_to_id;

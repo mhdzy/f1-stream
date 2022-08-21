@@ -22,7 +22,7 @@ std::string csvHeader(std::vector<std::string> fields, std::string sep) {
 /*
   Creates a directory if it does not exist.
 */
-int createDir(std::string directory) {
+std::uint8_t createDir(std::string directory) {
   // from <sys/stat.h>
   if (mkdir(directory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
     if (errno == EEXIST) {
@@ -58,7 +58,7 @@ std::vector<unsigned char> file_read(std::string filename) {
   @param filename a file whose size will be returned
   @param the file's size
 */
-int file_size(std::string filename) {
+std::size_t file_size(std::string filename) {
   std::streampos size;
   std::ifstream file(filename, std::ios::binary);
 
@@ -79,11 +79,12 @@ int file_size(std::string filename) {
 
   @param sizes a vector of item sizes
   @param filebytes a vector of raw bytes to split
-  @param int offset an offset to begin parsing the bytes at
+  @param int offset an offset to begin parsing the bytes at (files are < 65 kb)
   @return a vector of vectors, each element being a vector of bytes representing an item.
 */
 std::vector<std::vector<unsigned char>> parse_bytes_to_vec(std::vector<std::size_t> sizes,
-                                                           std::vector<unsigned char> filebytes, int offset = 0) {
+                                                           std::vector<unsigned char> filebytes,
+                                                           std::uint16_t offset = 0) {
   std::vector<std::vector<unsigned char>> pbytes;
 
   for (std::size_t size : sizes) {
