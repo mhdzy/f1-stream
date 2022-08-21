@@ -1,42 +1,69 @@
 #include "main.hpp"
 
 int main() {
-  std::string track = "singapore";
-  std::string output_path = "data/test-" + track + "-lap-data-parsed.csv";
-  std::ofstream output_file;
+  // make all messages visible
+  spdlog::set_level(spdlog::level::debug);
+  spdlog::info(" === le F1 2022 UDP parser === ");
 
-  std::vector<std::string> filenames;
+  // used to store metadata about each packet
   std::vector<PacketMap> Packets;
 
-  // collect all filenames
-  const std::filesystem::path path{"data/" + track + "-single-lap/"};
-  for (auto const &dir_entry : std::filesystem::directory_iterator{path}) filenames.push_back(dir_entry.path());
+  // TODO: implement output file per-packet
+  std::vector<std::string> raw_filenames;
+  std::vector<std::string> output_filenames;
+  std::vector<std::ofstream> output_files;
 
-  // fetch metadata for each filetype
-  for (std::string file : filenames) Packets.push_back(packet_map_populate(file));
+  // quick check to ensure output dirs exist
+  if (createDir(LOG_DATA_PATH) == 0) spdlog::warn("log data output path does not exist; creating");
+  if (createDir(RAW_DATA_PATH) == 0) spdlog::warn("raw data output path does not exist; creating");
+  if (createDir(OUT_DATA_PATH) == 0) spdlog::warn("out data output path does not exist; creating");
+
+  // extract all packet string names (to be used as filenames)
+  for (auto const& p : packet_id_to_string) output_filenames.push_back(p.second);
+  spdlog::info("extracted output filenames (packet names)");
+
+  // collect all raw packet filenames
+  for (auto const& dir_entry : std::filesystem::directory_iterator{std::filesystem::path{RAW_DATA_PATH}})
+    raw_filenames.push_back(dir_entry.path());
+  spdlog::info("extracted raw filenames (packet bytes as files)");
+
+  // fetch metadata for each raw packet
+  for (std::string file : raw_filenames) Packets.push_back(packet_map_populate(file));
+  spdlog::info("extracted packet metadata");
 
   // open output file & write csv header (assuming PacketMotionData)
-  output_file.open(output_path);
-  output_file << "m_carID," + PacketMotionDataCSVHeader() + "\n";
-  //output_file << PacketSessionDataCSVHeader() + "\n";
+  // open output file for all packet types
+  for (auto const& file : output_filenames) {
+    auto i = &file - &output_filenames[0];
+    std::string tmp_filename = OUT_DATA_PATH + output_filenames.at(i) + ".csv";
+    output_files.emplace_back(std::ofstream{tmp_filename});
+  }
+  spdlog::debug("opened each output file (csv) for each packet type");
+
+  output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
+  output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
 
   for (PacketMap packet : Packets) {
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
 
-    if (packet.file_id == 0) {
+    if (packet.file_id == MotionPacketID) {
       PacketMotionData pmd = ParsePacketMotionData(filebytes);
 
       // need to print 1 row per 'carID' (i)
       for (int i = 0; i < 22; i++) {
-        output_file << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
+        output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(pmd, i) + "\n";
       }
-    } else if (packet.file_id == 1) {
+    } else if (packet.file_id == SessionPacketID) {
       PacketSessionData psd = ParsePacketSessionData(filebytes);
 
-      //output_file << PacketSessionDataString(psd) + "\n";
+      output_files.at(SessionPacketID) << PacketSessionDataString(psd) + "\n";
     }
   }
-  output_file.close();
+  spdlog::debug("parsed all packets");
+
+  // close output files
+  for (auto& file : output_files) file.close();
+  spdlog::debug("closed output files");
 
   return 0;
 };

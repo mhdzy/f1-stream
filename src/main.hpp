@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <iostream>
 #include <vector>
 
@@ -30,12 +31,32 @@
 #include "lib/include/PacketSessionHistoryData.hpp"
 */
 
+/*
+  spdlog::info debug warn error critical
+*/
+#include "spdlog/spdlog.h"
+
+/*
+  given a track:
+    assumes data is stored at
+      data/{track}/raw/
+    code will store packet files to
+      data/{track}/parsed/
+*/
+const std::string TRACK = "singapore";
+const std::string DATA_PATH = "data/";
+const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
+const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";
+const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";
+
+const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {0, 1};
+
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @note regex to replace std::int types (std::[u]*int[\d]{1,2}_t)
- * 
- * @return int 
+ *
+ * @return int
  */
 
 int main();

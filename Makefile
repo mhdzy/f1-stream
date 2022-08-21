@@ -4,6 +4,9 @@ CCFLAGS:=-Wall -std=c++17
 SDIR:=src
 LDIR:=src/lib/include
 
+INC=/usr/local/include
+INC_DIRS = $(addprefix -I,$(INC))
+
 OBJECTS:= \
 	$(SDIR)/main.o \
 	$(LDIR)/PacketHeader.o \
@@ -20,7 +23,7 @@ all: $(TARGET_EXECUTABLE)
 
 %.o: %.cpp
 	@echo "compiling $<"
-	$(CC) $(CCFLAGS) -c -g $< -o $@
+	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
 
 $(TARGET_EXECUTABLE): $(OBJECTS)
 	@echo "linking $@"

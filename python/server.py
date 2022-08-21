@@ -26,32 +26,29 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # Bind the socket to the port
 server_address = (ip, port)
 s.bind(server_address)
-print("remember: Ctrl+C to exit")
 
 tick=0
+maxpackets = 2**17 - 1
 datastream = []
 
 while True:
-    tick = tick+1
-    if tick > (2**17 - 1):
-        print("reached limit of" + str(2**17 - 1))
+    if tick > maxpackets:
+        print("reached limit of" + str(maxpackets))
         break
-    # print(tick)
-    # print("####### server is listening #######")
     data, address = s.recvfrom(4096)
-    datastream.append(data)
     print("recv (" + str(tick) +")" + str(len(data)))
-    # print("\n\n [RECEIVE] Server received: ", data, "\n\n")
+    datastream.append(data)
+    tick = tick + 1
 
-track = "brazil2"
-subfolder = "data/" + track + "-single-lap"
+track = "monaco"
+subfolder = "data/" + track + "/raw"
 if not genericpath.exists(subfolder):
     os.mkdir(subfolder)
 
 for i in range(0, len(datastream)):
-  with open(subfolder + "/data"+str(i)+".raw", "wb") as file:
+  with open(subfolder + "/packet"+str(i)+".raw", "wb") as file:
       if i % 10 == len(datastream) - 1:
-        print(str(round(i/len(datastream), 2)) + "%\n")
+        print(str(round(i/len(datastream), 2) * 100) + "%\n")
       tmp = file.write(datastream[i])
 
 def unique(l: list = []) -> int:
@@ -66,9 +63,3 @@ def unique(l: list = []) -> int:
 
 # enter a local python session w/ all pdb variables
 # import code; code.interact(local=vars())
-
-packet_lengths = map(len, datastream)
-unique_packet_lengths = unique(map(len, datastream))
-
-print(list(packet_lengths))
-
