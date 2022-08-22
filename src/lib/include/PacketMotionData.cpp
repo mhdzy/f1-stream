@@ -209,11 +209,11 @@ ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char
 
 std::string PacketMotionDataCSVHeader(std::string sep) {
   std::vector<std::string> vec = {
-      csvHeader(PacketHeaderNames, sep),       //
-      csvHeader(CarMotionDataNames, sep),      //
-      csvHeader(ExtraCarMotionDataNames, sep)  //
+      vpaste(PacketHeaderNames, sep),       //
+      vpaste(CarMotionDataNames, sep),      //
+      vpaste(ExtraCarMotionDataNames, sep)  //
   };
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep) {
@@ -222,7 +222,7 @@ std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std
       CarMotionDataString(obj.m_carMotionData[carID]),    //
       ExtraCarMotionDataString(obj.m_extraCarMotionData)  //
   };
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes) {

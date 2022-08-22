@@ -8,7 +8,7 @@
   @param sep a string separator, defaults to ","
   @return a string whose contents is the fields separated by 'sep'
 */
-std::string csvHeader(std::vector<std::string> fields, std::string sep) {
+std::string vpaste(std::vector<std::string> fields, std::string sep) {
   std::string str;
 
   for (std::string s : fields) str += s + sep;

@@ -157,12 +157,12 @@ LapDataIdx ParseLapDataIdx(std::vector<std::vector<unsigned char>> bytes) {
 
 std::string PacketLapDataCSVHeader(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      csvHeader(PacketHeaderNames, sep),  //
-      csvHeader(LapDataNames, sep),       //
-      csvHeader(LapDataIdxNames, sep)     //
+      vpaste(PacketHeaderNames, sep),  //
+      vpaste(LapDataNames, sep),       //
+      vpaste(LapDataIdxNames, sep)     //
   };
 
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep, std::string compr,
@@ -172,7 +172,7 @@ std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::stri
       LapDataString(obj.m_lapData[carID]),  //
       LapDataIdxString(obj.m_lapDataIdx)    //
   };
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 PacketLapData ParsePacketLapData(std::vector<unsigned char> bytes) {

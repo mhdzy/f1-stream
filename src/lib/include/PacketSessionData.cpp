@@ -337,15 +337,15 @@ PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned 
  */
 std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      csvHeader(PacketHeaderNames, sep),             //
-      csvHeader(PacketSessionDataTopNames, sep),     //
-      csvHeader(MarshalZoneNames, compr),            //
-      csvHeader(PacketSessionDataMidNames, sep),     //
-      csvHeader(WeatherForecastSampleNames, compr),  //
-      csvHeader(PacketSessionDataBotNames, sep)      //
+      vpaste(PacketHeaderNames, sep),             //
+      vpaste(PacketSessionDataTopNames, sep),     //
+      vpaste(MarshalZoneNames, compr),            //
+      vpaste(PacketSessionDataMidNames, sep),     //
+      vpaste(WeatherForecastSampleNames, compr),  //
+      vpaste(PacketSessionDataBotNames, sep)      //
   };
 
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 /**
@@ -381,7 +381,7 @@ std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std:
       PacketSessionDataBotString(obj.m_PacketSessionDataBot),
   };
 
-  return csvHeader(vec, sep);
+  return vpaste(vec, sep);
 }
 
 PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes) {

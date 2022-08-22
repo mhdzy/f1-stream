@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-extern std::string csvHeader(std::vector<std::string> fields, std::string sep = ",");
+extern std::string vpaste(std::vector<std::string> fields, std::string sep = ",");
 extern std::uint8_t createDir(std::string directory);
 
 extern std::vector<unsigned char> file_read(std::string filename);
