@@ -49,7 +49,7 @@ const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
 const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";
 const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";
 
-const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {0, 1};
+const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {0, 1, 2, 5};
 
 /**
  * @brief
