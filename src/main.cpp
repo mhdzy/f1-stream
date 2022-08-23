@@ -45,6 +45,7 @@ int main() {
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
+  output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
 
@@ -54,34 +55,52 @@ int main() {
     std::vector<unsigned char> filebytes = file_read(packet.file_name);
 
     if (packet.file_id == MotionPacketID) {
+      // MOTION
+      
       if (DEBUG) spdlog::debug("parsing motion packet");
       PacketMotionData obj = ParsePacketMotionData(filebytes);
-
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
+
     } else if (packet.file_id == SessionPacketID) {
+      // SESSION
+
       if (DEBUG) spdlog::debug("parsing session packet");
       PacketSessionData obj = ParsePacketSessionData(filebytes);
-
       output_files.at(SessionPacketID) << PacketSessionDataString(obj) + "\n";
+
     } else if (packet.file_id == LapDataPacketID) {
+      // LAP DATA
+
       if (DEBUG) spdlog::debug("parsing lap data packet");
       PacketLapData obj = ParsePacketLapData(filebytes);
-
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
+
+    } else if (packet.file_id == ParticipantsPacketID) {
+      // PARTICIPANTS
+
+      if (DEBUG) spdlog::debug("parsing participants packet");
+      PacketParticipantsData obj = ParsePacketParticipantsData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(ParticipantsPacketID) << std::to_string(i) + "," + PacketParticipantsDataString(obj, i) + "\n";
+
     } else if (packet.file_id == CarSetupsPacketID) {
+      // SETUPS
+
       if (DEBUG) spdlog::debug("parsing car setups packet");
       PacketCarSetupData obj = ParsePacketCarSetupData(filebytes);
-
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(CarSetupsPacketID) << std::to_string(i) + "," + PacketCarSetupDataString(obj, i) + "\n";
+
     } else if (packet.file_id == CarTelemetryPacketID) {
+      // TELEMETRY
+
       if (DEBUG) spdlog::debug("parsing car telemetry packet");
       PacketCarTelemetryData obj = ParsePacketCarTelemetryData(filebytes);
-
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(CarTelemetryPacketID) << std::to_string(i) + "," + PacketCarTelemetryDataString(obj, i) + "\n";
+
     }
   }
   spdlog::debug("parsed all packets");

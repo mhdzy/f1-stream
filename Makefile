@@ -16,6 +16,7 @@ OBJECTS:= \
 	$(LDIR)/PacketCarSetupData.o \
 	$(LDIR)/PacketCarTelemetryData.o \
 	$(LDIR)/PacketMap.o \
+	$(LDIR)/PacketParticipantsData.o \
 	$(LDIR)/File.o \
 	$(LDIR)/Bytes.o
 

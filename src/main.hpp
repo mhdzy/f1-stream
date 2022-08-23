@@ -23,11 +23,11 @@
 #include "lib/include/PacketHeader.hpp"
 #include "lib/include/PacketLapData.hpp"
 #include "lib/include/PacketMotionData.hpp"
+#include "lib/include/PacketParticipantsData.hpp"
 #include "lib/include/PacketSessionData.hpp"
 
 /*
 #include "lib/include/PacketLobbyInfoData.hpp"
-#include "lib/include/PacketParticipantsData.hpp"
 #include "lib/include/PacketSessionHistoryData.hpp"
 */
 
@@ -51,11 +51,12 @@ const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";
 
 // note: there are a total of 12 packet types
 const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
-    0,  //
-    1,  //
-    2,  //
-    5,  //
-    6   //
+    0,  // motion
+    1,  // session
+    2,  // lap data
+    4,  // participants
+    5,  // (car) setup
+    6   // telemetry
 };
 
 const bool DEBUG = false;
