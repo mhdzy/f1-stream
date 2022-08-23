@@ -131,23 +131,50 @@ std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep) {
   const char *ssep = sep.c_str();
   const char csep = '/';
 
-  std::string m_suspensionPosition(
-      std::to_string(obj.m_suspensionPosition[0]) + csep + std::to_string(obj.m_suspensionPosition[1]) + csep +
-      std::to_string(obj.m_suspensionPosition[2]) + csep + std::to_string(obj.m_suspensionPosition[3]));
+  std::string m_suspensionPosition(vpaste(
+      std::vector<std::string>{
+          std::to_string(obj.m_suspensionPosition[0]),  //
+          std::to_string(obj.m_suspensionPosition[1]),  //
+          std::to_string(obj.m_suspensionPosition[2]),  //
+          std::to_string(obj.m_suspensionPosition[3])   //
+      },
+      std::to_string(csep)));
 
-  std::string m_suspensionVelocity(
-      std::to_string(obj.m_suspensionVelocity[0]) + csep + std::to_string(obj.m_suspensionVelocity[1]) + csep +
-      std::to_string(obj.m_suspensionVelocity[2]) + csep + std::to_string(obj.m_suspensionVelocity[3]));
+  std::string m_suspensionVelocity(vpaste(
+      std::vector<std::string>{
+          std::to_string(obj.m_suspensionVelocity[0]),  //
+          std::to_string(obj.m_suspensionVelocity[1]),  //
+          std::to_string(obj.m_suspensionVelocity[2]),  //
+          std::to_string(obj.m_suspensionVelocity[3])   //
+      },
+      std::to_string(csep)));
 
-  std::string m_suspensionAcceleration(
-      std::to_string(obj.m_suspensionAcceleration[0]) + csep + std::to_string(obj.m_suspensionAcceleration[1]) + csep +
-      std::to_string(obj.m_suspensionAcceleration[2]) + csep + std::to_string(obj.m_suspensionAcceleration[3]));
+  std::string m_suspensionAcceleration(vpaste(
+      std::vector<std::string>{
+          std::to_string(obj.m_suspensionAcceleration[0]),  //
+          std::to_string(obj.m_suspensionAcceleration[1]),  //
+          std::to_string(obj.m_suspensionAcceleration[2]),  //
+          std::to_string(obj.m_suspensionAcceleration[3])   //
+      },
+      std::to_string(csep)));
 
-  std::string m_wheelSpeed(std::to_string(obj.m_wheelSpeed[0]) + csep + std::to_string(obj.m_wheelSpeed[1]) + csep +
-                           std::to_string(obj.m_wheelSpeed[2]) + csep + std::to_string(obj.m_wheelSpeed[3]));
+  std::string m_wheelSpeed(vpaste(
+      std::vector<std::string>{
+          std::to_string(obj.m_wheelSpeed[0]),  //
+          std::to_string(obj.m_wheelSpeed[1]),  //
+          std::to_string(obj.m_wheelSpeed[2]),  //
+          std::to_string(obj.m_wheelSpeed[3])   //
+      },
+      std::to_string(csep)));
 
-  std::string m_wheelSlip(std::to_string(obj.m_wheelSlip[0]) + csep + std::to_string(obj.m_wheelSlip[1]) + csep +
-                          std::to_string(obj.m_wheelSlip[2]) + csep + std::to_string(obj.m_wheelSlip[3]));
+  std::string m_wheelSlip(vpaste(
+      std::vector<std::string>{
+          std::to_string(obj.m_wheelSlip[0]),  //
+          std::to_string(obj.m_wheelSlip[1]),  //
+          std::to_string(obj.m_wheelSlip[2]),  //
+          std::to_string(obj.m_wheelSlip[3])   //
+      },
+      std::to_string(csep)));
 
   const std::size_t size = std::snprintf(
       nullptr, 0, fmt, m_suspensionPosition.c_str(), ssep, m_suspensionVelocity.c_str(), ssep,

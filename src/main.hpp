@@ -13,13 +13,13 @@
 
 /*
 #include "lib/include/PacketCarDamageData.hpp"
-#include "lib/include/PacketCarTelemetryData.hpp"
 #include "lib/include/PacketCatStatusData.hpp"
 #include "lib/include/PacketEventData.hpp"
 #include "lib/include/PacketFinalClassificationData.hpp"
 */
 
 #include "lib/include/PacketCarSetupData.hpp"
+#include "lib/include/PacketCarTelemetryData.hpp"
 #include "lib/include/PacketHeader.hpp"
 #include "lib/include/PacketLapData.hpp"
 #include "lib/include/PacketMotionData.hpp"
@@ -43,13 +43,22 @@
     code will store packet files to
       data/{track}/parsed/
 */
-const std::string TRACK = "spa";
+const std::string TRACK = "portugal-prac";
 const std::string DATA_PATH = "data/";
 const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
 const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";
 const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";
 
-const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {0, 1, 2, 5};
+// note: there are a total of 12 packet types
+const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
+    0,  //
+    1,  //
+    2,  //
+    5,  //
+    6   //
+};
+
+const bool DEBUG = false;
 
 /**
  * @brief

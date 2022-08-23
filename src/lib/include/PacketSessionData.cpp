@@ -349,7 +349,8 @@ std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
 }
 
 /**
- * @brief Parse a string representation (default csv) of the PacketSessionData struct.
+ * @brief Parse a string representation (default csv) of the PacketSessionData struct. Use .pop_back() to remove the 
+ * lingering "compr" character that remains.
  *
  * @param obj
  * @param sep A string used to separate the individual field values.
