@@ -45,10 +45,10 @@ int main() {
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
+  // TODO: include some sort of EventPacketID
   output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
-
   spdlog::debug("wrote headers in for each file");
 
   for (PacketMap packet : Packets) {
@@ -56,7 +56,7 @@ int main() {
 
     if (packet.file_id == MotionPacketID) {
       // MOTION
-      
+
       if (DEBUG) spdlog::debug("parsing motion packet");
       PacketMotionData obj = ParsePacketMotionData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++)
@@ -76,6 +76,13 @@ int main() {
       PacketLapData obj = ParsePacketLapData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
+
+    } else if (packet.file_id == EventPacketID) {
+      // EVENT
+
+      if (DEBUG) spdlog::debug("parsing event data packet");
+      PacketEventData obj = ParsePacketEventData(filebytes);
+      output_files.at(EventPacketID) << PacketEventDataString(obj) + "\n";
 
     } else if (packet.file_id == ParticipantsPacketID) {
       // PARTICIPANTS

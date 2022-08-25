@@ -9,14 +9,15 @@ INC_DIRS = $(addprefix -I,$(INC))
 
 OBJECTS:= \
 	$(SDIR)/main.o \
-	$(LDIR)/PacketHeader.o \
-	$(LDIR)/PacketMotionData.o \
-	$(LDIR)/PacketSessionData.o \
-	$(LDIR)/PacketLapData.o \
 	$(LDIR)/PacketCarSetupData.o \
 	$(LDIR)/PacketCarTelemetryData.o \
+	$(LDIR)/PacketEventData.o \
+	$(LDIR)/PacketHeader.o \
+	$(LDIR)/PacketLapData.o \
 	$(LDIR)/PacketMap.o \
+	$(LDIR)/PacketMotionData.o \
 	$(LDIR)/PacketParticipantsData.o \
+	$(LDIR)/PacketSessionData.o \
 	$(LDIR)/File.o \
 	$(LDIR)/Bytes.o
 
@@ -40,3 +41,7 @@ clean:
 run:
 	@chmod +x $(TARGET_EXECUTABLE)
 	./$(TARGET_EXECUTABLE)
+
+trim:
+	@echo "cleaning object files"
+	rm -f $(OBJECTS)
