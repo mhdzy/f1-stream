@@ -45,11 +45,11 @@ int main() {
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
-  // TODO: include some sort of EventPacketID
   output_files.at(EventPacketID) << PacketEventDataCSVHeader() + "\n";
   output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
+  output_files.at(CarStatusPacketID) << "m_carID," + PacketCarStatusDataCSVHeader() + "\n";
   spdlog::debug("wrote headers in for each file");
 
   for (PacketMap packet : Packets) {
@@ -108,6 +108,15 @@ int main() {
       PacketCarTelemetryData obj = ParsePacketCarTelemetryData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(CarTelemetryPacketID) << std::to_string(i) + "," + PacketCarTelemetryDataString(obj, i) + "\n";
+
+    } else if (packet.file_id == CarStatusPacketID) {
+      // STATUS
+
+      if (DEBUG) spdlog::debug("parsing car status packet");
+      PacketCarStatusData obj = ParsePacketCarStatusData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarStatusPacketID) << std::to_string(i) + "," + PacketCarStatusDataString(obj, i) + "\n";
+
     }
   }
   spdlog::debug("parsed all packets");

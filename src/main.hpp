@@ -13,11 +13,13 @@
 
 /*
 #include "lib/include/PacketCarDamageData.hpp"
-#include "lib/include/PacketCatStatusData.hpp"
 #include "lib/include/PacketFinalClassificationData.hpp"
+#include "lib/include/PacketLobbyInfoData.hpp"
+#include "lib/include/PacketSessionHistoryData.hpp"
 */
 
 #include "lib/include/PacketCarSetupData.hpp"
+#include "lib/include/PacketCarStatusData.hpp"
 #include "lib/include/PacketCarTelemetryData.hpp"
 #include "lib/include/PacketEventData.hpp"
 #include "lib/include/PacketHeader.hpp"
@@ -25,11 +27,6 @@
 #include "lib/include/PacketMotionData.hpp"
 #include "lib/include/PacketParticipantsData.hpp"
 #include "lib/include/PacketSessionData.hpp"
-
-/*
-#include "lib/include/PacketLobbyInfoData.hpp"
-#include "lib/include/PacketSessionHistoryData.hpp"
-*/
 
 /*
   spdlog::info debug warn error critical
@@ -51,13 +48,14 @@ const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";
 
 // note: there are a total of 12 packet types
 const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
-    0,  // motion
-    1,  // session
+    0,  // motion data
+    1,  // session data
     2,  // lap data
-    3,  // event
-    4,  // participants
+    3,  // event data
+    4,  // participants data
     5,  // (car) setup
-    6   // telemetry
+    6,  // (car) telemetry
+    7   // (car) status
 };
 
 const bool DEBUG = false;

@@ -10,6 +10,7 @@ INC_DIRS = $(addprefix -I,$(INC))
 OBJECTS:= \
 	$(SDIR)/main.o \
 	$(LDIR)/PacketCarSetupData.o \
+	$(LDIR)/PacketCarStatusData.o \
 	$(LDIR)/PacketCarTelemetryData.o \
 	$(LDIR)/PacketEventData.o \
 	$(LDIR)/PacketHeader.o \
