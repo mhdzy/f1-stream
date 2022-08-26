@@ -46,6 +46,7 @@ int main() {
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
   // TODO: include some sort of EventPacketID
+  output_files.at(EventPacketID) << PacketEventDataCSVHeader() + "\n";
   output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
@@ -107,7 +108,6 @@ int main() {
       PacketCarTelemetryData obj = ParsePacketCarTelemetryData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(CarTelemetryPacketID) << std::to_string(i) + "," + PacketCarTelemetryDataString(obj, i) + "\n";
-
     }
   }
   spdlog::debug("parsed all packets");
