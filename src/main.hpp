@@ -54,6 +54,7 @@ const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
     0,  // motion
     1,  // session
     2,  // lap data
+    3,  // event
     4,  // participants
     5,  // (car) setup
     6   // telemetry

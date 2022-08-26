@@ -10,7 +10,7 @@
 
 // The event details packet is different for each type of event.
 // Make sure only the correct type is interpreted.
-union EventDataDetails {
+union EventDataDetailsOG {
   struct {
     std::uint8_t vehicleIdx;  // Vehicle index of car achieving fastest lap
     float lapTime;            // Lap time is in seconds
@@ -51,7 +51,7 @@ union EventDataDetails {
 
   struct {
     std::uint8_t numLights;  // Number of lights showing
-  } StartLIghts;
+  } StartLights;
 
   struct {
     std::uint8_t vehicleIdx;  // Vehicle index of the vehicle serving drive through
@@ -74,7 +74,7 @@ union EventDataDetails {
 
 // The event details packet is different for each type of event.
 // Make sure only the correct type is interpreted.
-struct EventDataDetailsStruct {
+struct EventDataDetails {
   std::string eventCode;  // string representation of the event code
 
   std::uint8_t vehicleIdx;  // Vehicle index of car achieving fastest lap
@@ -137,6 +137,8 @@ struct PacketEventData {
 };
 
 #pragma pack(pop)
+
+extern std::map<std::string, std::pair<std::string, std::string>> Events;
 
 extern std::vector<std::size_t> EventDataDetailsSizes;
 extern std::vector<std::string> EventDataDetailsNames;
