@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../utils/File.hpp"
+#include "File.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -51,26 +51,25 @@ struct ExtraCarMotionData {
 };
 
 struct PacketMotionData {
-  PacketHeader m_header;  // Header
-
-  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
-
-  ExtraCarMotionData m_extraCarMotionData;
+  PacketHeader m_header;                    // Header
+  CarMotionData m_carMotionData[22];        // Data for all cars on track
+  ExtraCarMotionData m_extraCarMotionData;  // Custom struct to simplify packet
 };
 
 #pragma pack(pop)
 
-extern std::string CarMotionDataCSVHeader();
+extern std::vector<std::size_t> CarMotionDataSizes;
+extern std::vector<std::string> CarMotionDataNames;
+
+extern std::vector<std::size_t> ExtraCarMotionDataSizes;
+extern std::vector<std::string> ExtraCarMotionDataNames;
+
 extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
 extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
 
-extern std::string ExtraCarMotionDataCSVHeader();
 extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
 extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> ExtraCarMotionDataPairs;
 
-extern std::string PacketMotionDataCSVHeader();
-extern std::string PacketMotionDataString(PacketMotionData obj, int carID, std::string sep = ",");
+extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
+extern std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep = ",");
 extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);
-extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;

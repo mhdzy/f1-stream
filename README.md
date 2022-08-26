@@ -4,6 +4,10 @@
 
 https://answers.ea.com/t5/General-Discussion/F1-22-UDP-Specification/td-p/11551274
 
+## Dependencies
+
+Requires `spdlog` from https://github.com/gabime/spdlog. Place the `spdlog/include/spdlog` folder in your `/usr/local/include` (or other include) directory.
+
 ## Build
 
 Requires raw telemetry output from an F1 2022 UDP stream to be present in the `data/` directory. This can be obtained by running the `python/server.py` script while streaming F1 2022 data.

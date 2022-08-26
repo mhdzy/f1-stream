@@ -58,11 +58,14 @@ plotdf %>%
 library(dplyr)
 library(readr)
 
-track <- "spa"
+track <- "singapore"
 
 lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
   readr::read_csv() |>
   dplyr::arrange(m_frameIdentifier)
+
+sessiondata <- paste0("~/prog/f1/data/", track, "-session-data-parsed.csv") |>
+  readr::read_csv()
 
 lapdata |>
   dplyr::filter(m_carID == 0) |>
@@ -98,14 +101,23 @@ rgl::plot3d(
 
 l2 <- lapdata |>
   dplyr::arrange(dplyr::desc(m_frameIdentifier)) |>
-  dplyr::pull(m_suspensionAcceleration) |>
+  dplyr::pull(m_wheelSlip) |>
   stringr::str_split("/") |>
   base::unique() |>
   lapply(function(x) c('rl' = x[1], 'rr' = x[2], 'fl' = x[3], 'fr' = x[4])) |>
   dplyr::bind_rows() |>
-  dplyr::distinct()
+  dplyr::distinct() |>
+  dplyr::mutate_if(
+    is.character,
+    function(x) as.numeric(x)
+  )
 
 plot(
   l2$rr/32767,
   l2$rl/32767
+)
+
+plot(
+  l2$fr/32767,
+  l2$fl/32767
 )
