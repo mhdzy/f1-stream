@@ -1,5 +1,9 @@
 #include "main.hpp"
 
+#define PORT 20777
+#define BUFSIZE 4096
+#define MAXPACKETS 2 ^ 20
+
 int main() {
   // make all messages visible
   spdlog::set_level(spdlog::level::debug);
@@ -10,7 +14,6 @@ int main() {
   // used to store metadata about each packet
   std::vector<PacketMap> Packets;
 
-  // TODO: implement output file per-packet
   std::vector<std::string> raw_filenames;
   std::vector<std::string> output_filenames;
   std::vector<std::ofstream> output_files;
@@ -20,10 +23,36 @@ int main() {
   if (createDir(RAW_DATA_PATH) == 0) spdlog::warn("raw data output path does not exist; creating");
   if (createDir(OUT_DATA_PATH) == 0) spdlog::warn("out data output path does not exist; creating");
 
+  /* UDP SOCKET */
+  struct sockaddr_in myaddr;           /* our address */
+  struct sockaddr_in remaddr;          /* remote address */
+  socklen_t addrlen = sizeof(remaddr); /* length of addresses */
+  std::uint32_t recvlen;               /* # bytes received */
+  std::uint32_t fd;                    /* our socket */
+  unsigned char buf[BUFSIZE];          /* receive buffer */
+
+  /* create a UDP socket */
+  if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    perror("cannot create socket\n");
+    return 0;
+  }
+
+  /* bind the socket to any valid IP address and a specific port */
+  memset((char*)&myaddr, 0, sizeof(myaddr));
+  myaddr.sin_family = AF_INET;
+  myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  myaddr.sin_port = htons(PORT);
+
+  if (bind(fd, (struct sockaddr*)&myaddr, sizeof(myaddr)) < 0) {
+    perror("bind failed\n");
+    return 0;
+  }
+
   // extract all packet string names (to be used as filenames)
   for (auto const& p : packet_id_to_string) output_filenames.push_back(p.second);
   spdlog::info("extracted output filenames (packet names)");
 
+  /*
   // collect all raw packet filenames
   for (auto const& dir_entry : std::filesystem::directory_iterator{std::filesystem::path{RAW_DATA_PATH}})
     raw_filenames.push_back(dir_entry.path());
@@ -32,6 +61,7 @@ int main() {
   // fetch metadata for each raw packet
   for (std::string file : raw_filenames) Packets.push_back(packet_map_populate(file));
   spdlog::info("extracted packet metadata");
+  */
 
   // open output file & write csv header (assuming PacketMotionData)
   // open output file for all packet types
@@ -52,8 +82,16 @@ int main() {
   output_files.at(CarStatusPacketID) << "m_carID," + PacketCarStatusDataCSVHeader() + "\n";
   spdlog::debug("wrote headers in for each file");
 
-  for (PacketMap packet : Packets) {
-    std::vector<unsigned char> filebytes = file_read(packet.file_name);
+  // for (PacketMap packet : Packets) {
+  // std::vector<unsigned char> filebytes = file_read(packet.file_name);
+  printf("%s %d\n", "waiting on port", PORT);
+  for (std::uint16_t i = 0; i < MAXPACKETS; i++) {
+    recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr*)&remaddr, &addrlen);
+    PacketMap packet = parse_raw_packet(recvlen);
+    std::vector<unsigned char> filebytes(buf, buf + recvlen);
+
+    printf("(%d) %s %d %s\n", i, "received", recvlen, "bytes");
+    if (recvlen > 0) buf[recvlen] = 0;
 
     if (packet.file_id == MotionPacketID) {
       // MOTION
@@ -116,7 +154,6 @@ int main() {
       PacketCarStatusData obj = ParsePacketCarStatusData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++)
         output_files.at(CarStatusPacketID) << std::to_string(i) + "," + PacketCarStatusDataString(obj, i) + "\n";
-
     }
   }
   spdlog::debug("parsed all packets");

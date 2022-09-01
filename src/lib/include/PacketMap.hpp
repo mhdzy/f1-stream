@@ -29,3 +29,4 @@ extern std::map<int, int> packet_size_to_id;
 extern std::map<int, std::string> packet_id_to_string;
 
 PacketMap packet_map_populate(std::string filename);
+PacketMap parse_raw_packet(std::uint16_t size);
