@@ -61,7 +61,7 @@ std::vector<std::string> CarTelemetryPanelNames = {
 std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
   const char *fmt = "%d%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%s%s%s%s%d%s%s%s%s";
   const char *ssep = sep.c_str();
-  const char csep = '/';
+  const std::string csep = "/";
 
   std::string m_brakesTemperature(vpaste(
       std::vector<std::string>{
@@ -70,7 +70,7 @@ std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
           std::to_string(obj.m_brakesTemperature[2]),  //
           std::to_string(obj.m_brakesTemperature[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_tyresSurfaceTemperature(vpaste(
       std::vector<std::string>{
@@ -79,7 +79,7 @@ std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
           std::to_string(obj.m_tyresSurfaceTemperature[2]),  //
           std::to_string(obj.m_tyresSurfaceTemperature[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_tyresInnerTemperature(vpaste(
       std::vector<std::string>{
@@ -88,16 +88,16 @@ std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
           std::to_string(obj.m_tyresInnerTemperature[2]),  //
           std::to_string(obj.m_tyresInnerTemperature[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_tyresPressure(vpaste(
       std::vector<std::string>{
-          std::to_string(obj.m_tyresPressure[0]),  //
-          std::to_string(obj.m_tyresPressure[1]),  //
-          std::to_string(obj.m_tyresPressure[2]),  //
-          std::to_string(obj.m_tyresPressure[3])   //
+          ftos(obj.m_tyresPressure[0]),  //
+          ftos(obj.m_tyresPressure[1]),  //
+          ftos(obj.m_tyresPressure[2]),  //
+          ftos(obj.m_tyresPressure[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_surfaceType(vpaste(
       std::vector<std::string>{
@@ -106,7 +106,7 @@ std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
           std::to_string(obj.m_surfaceType[2]),  //
           std::to_string(obj.m_surfaceType[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   const std::size_t size =
       std::snprintf(nullptr, 0, fmt, obj.m_speed, ssep, obj.m_throttle, ssep, obj.m_steer, ssep, obj.m_brake, ssep,

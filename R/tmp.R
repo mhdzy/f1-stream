@@ -53,20 +53,8 @@ arrows(plotdf$id,plotdf$avg_place-plotdf$avg_sd, plotdf$id, plotdf$avg_place+plo
 plotdf %>%
   ggplot2::ggplot(aes(x = avg_place, y = avg_sd)) + geom_point()
 
-## f1 stuff
 
-library(dplyr)
-library(readr)
-
-track <- "singapore"
-
-lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
-  readr::read_csv() |>
-  dplyr::arrange(m_frameIdentifier)
-
-sessiondata <- paste0("~/prog/f1/data/", track, "-session-data-parsed.csv") |>
-  readr::read_csv()
-
+# show position (2d graph)
 lapdata |>
   dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
@@ -78,12 +66,13 @@ lapdata |>
   ) +
   ggplot2::geom_point()
 
+# linear graph of lap time
 lapdata |>
   dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
     ggplot2::aes(
       x = m_frameIdentifier,
-      y = m_gForceLongitudinal,
+      y = m_currentLapTimeInMS,
       #y = m_gForceLateral,
       color = m_frameIdentifier
     )
