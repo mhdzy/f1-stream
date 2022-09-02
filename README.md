@@ -6,15 +6,35 @@ https://answers.ea.com/t5/General-Discussion/F1-22-UDP-Specification/td-p/115512
 
 ## Dependencies
 
-Requires `spdlog` from https://github.com/gabime/spdlog. Place the `spdlog/include/spdlog` folder in your `/usr/local/include` (or other include) directory.
+Requires `spdlog` from https://github.com/gabime/spdlog for logging. Place the `spdlog/include/spdlog` folder in your `/usr/local/include` directory.
+
+## Configure
+
+Run `ifconfig | pcre2grep -o "(?<=(inet ))([\d\.]*)(?=( netmask))"` to get your local IP and set this as the target IP in F1 2022's UDP Telemetry settings.
 
 ## Build
 
-Requires raw telemetry output from an F1 2022 UDP stream to be present in the `data/` directory. This can be obtained by running the `python/server.py` script while streaming F1 2022 data.
-
 ```sh
 $ make
-$ make run
 ```
 
-This will run the main program to parse the raw data.
+## Run
+
+```sh
+$ make run <tag> batch
+```
+
+This will collect F1 telemetry data and store it in `data/<tag>/raw`.
+
+```sh
+$ make run <tag> live
+```
+
+This will parse F1 telemetry data in real time to `data/<tag>/parsed`.
+
+## Output
+
+The data is output to the `data/<tag>/parsed` directory. Each packet type has its own csv file, and is continuously updated
+in both 'batch' and 'live' runtime modes.
+
+
