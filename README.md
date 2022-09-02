@@ -38,13 +38,13 @@ Parsed packet types have their own csv file which is continuously updated in bot
 
 ### batch
 
-Each raw packet received is stored individually in `data/<tag>/raw`.
+raw input data
+ - `data/<tag>/raw`
 
-Parsed data is stored in `data/<tag>/parsed` with a csv file for each packet type.
+parsed output data
+ - `data/<tag>/parsed`
 
 ### live
 
-Raw packets are not currently stored.
-
-Parsed data is stored in `data/<tag>/parsed`, the same as in batch mode.
-
+parsed output data
+ - `data/<tag>/parsed`
