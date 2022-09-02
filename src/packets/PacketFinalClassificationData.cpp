@@ -1,5 +1,13 @@
 #include "PacketFinalClassificationData.hpp"
 
+std::vector<std::size_t> FinalClassificationMetaSizes = {
+    sizeof(((FinalClassificationMeta *)0)->m_numCars)  //  Number of cars in the final classification
+};
+
+std::vector<std::string> FinalClassificationMetaNames = {
+    "m_numCars"  //  Number of cars in the final classification
+};
+
 std::vector<std::size_t> FinalClassificationDataSizes = {
     sizeof(((FinalClassificationData *)0)->m_position),         // Finishing position
     sizeof(((FinalClassificationData *)0)->m_numLaps),          // Number of laps completed
@@ -38,13 +46,28 @@ std::vector<std::string> FinalClassificationDataNames = {
     "m_tyreStintsEndLaps",  // The lap number stints end on
 };
 
-std::vector<std::size_t> FinalClassificationMetaSizes = {
-    sizeof(((FinalClassificationMeta *)0)->m_numCars)  //  Number of cars in the final classification
-};
+std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep) {
+  const char *fmt = "%d";
+  const char *ssep = sep.c_str();
 
-std::vector<std::string> FinalClassificationMetaNames = {
-    "m_numCars"  //  Number of cars in the final classification
-};
+  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_numCars);
+
+  std::vector<char> buf(size + 1);  // note +1 for null terminator
+  std::snprintf(&buf[0], buf.size(), fmt, obj.m_numCars);
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0'));  // remove null terminator
+
+  return str;
+}
+
+FinalClassificationMeta ParseFinalClassificationMeta(std::vector<std::vector<unsigned char>> bytes) {
+  FinalClassificationMeta obj;
+
+  std::memcpy(&obj.m_numCars, &bytes.at(0).front(), sizeof obj.m_numCars);
+
+  return obj;
+}
 
 std::string FinalClassificationDataString(FinalClassificationData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%d%s%d%s%d%s%s%s%s%s%s";
@@ -126,29 +149,6 @@ FinalClassificationData ParseFinalClassificationData(std::vector<std::vector<uns
   for (std::uint8_t i : idx)
     std::memcpy(&obj.m_tyreStintsEndLaps[i], &bytes.at(13).front() + (i * sizeof obj.m_tyreStintsEndLaps[i]),
                 sizeof obj.m_tyreStintsEndLaps[i]);
-
-  return obj;
-}
-
-std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep) {
-  const char *fmt = "%d";
-  const char *ssep = sep.c_str();
-
-  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_numCars);
-
-  std::vector<char> buf(size + 1);  // note +1 for null terminator
-  std::snprintf(&buf[0], buf.size(), fmt, obj.m_numCars);
-
-  std::string str(buf.begin(), buf.end());
-  str.erase(str.find('\0'));  // remove null terminator
-
-  return str;
-}
-
-FinalClassificationMeta ParseFinalClassificationMeta(std::vector<std::vector<unsigned char>> bytes) {
-  FinalClassificationMeta obj;
-
-  std::memcpy(&obj.m_numCars, &bytes.at(0).front(), sizeof obj.m_numCars);
 
   return obj;
 }

@@ -18,6 +18,7 @@ OBJECTS := \
 	$(PACKETS_DIR)/PacketFinalClassificationData.o \
 	$(PACKETS_DIR)/PacketHeader.o \
 	$(PACKETS_DIR)/PacketLapData.o \
+	$(PACKETS_DIR)/PacketLobbyInfoData.o \
 	$(PACKETS_DIR)/PacketMap.o \
 	$(PACKETS_DIR)/PacketMotionData.o \
 	$(PACKETS_DIR)/PacketParticipantsData.o \

@@ -29,7 +29,6 @@ std::vector<std::string> ParticipantDataNames = {
 std::vector<std::size_t> ParticipantMetadataSizes = {
     sizeof(((ParticipantMetadata *)0)->m_numActiveCars)  // Number of active cars in the data – should match number of
                                                          // cars on HUD
-
 };
 
 std::vector<std::string> ParticipantMetadataNames = {
@@ -55,6 +54,7 @@ std::string ParticipantDataString(ParticipantData obj, std::string sep) {
 
   return str;
 }
+
 ParticipantData ParseParticipantData(std::vector<std::vector<unsigned char>> bytes) {
   ParticipantData obj;
   std::memcpy(&obj.m_aiControlled, &bytes.at(0).front(), sizeof obj.m_aiControlled);
@@ -96,7 +96,6 @@ std::string PacketParticipantsDataCSVHeader(std::string sep) {
       vpaste(ParticipantMetadataNames, sep),  //
       vpaste(ParticipantDataNames, sep)       //
   };
-
   return vpaste(vec, sep);
 }
 

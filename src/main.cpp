@@ -15,6 +15,7 @@ const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
     6,  // (car) telemetry
     7,  // (car) status
     8,  // (final) classification data
+    9,  // (lobby) info
     10  // (car) damage
 };
 
@@ -113,7 +114,7 @@ int main(int argc, char** argv) {
 
   // extract all packet string names
   for (auto const& p : packet_id_to_string) output_filenames.push_back(p.second);
-  spdlog::info("extracted output filenames (packet names)");
+  if (DEBUG) spdlog::debug("extracted output filenames (packet names)");
 
   // open output file & write csv header (assuming PacketMotionData)
   // open output file for all packet types
@@ -122,7 +123,7 @@ int main(int argc, char** argv) {
     std::string tmp_filename = OUT_DATA_PATH + output_filenames.at(i) + ".csv";
     output_files.emplace_back(std::ofstream{tmp_filename});
   }
-  spdlog::debug("opened each output file (csv) for each packet type");
+  if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
   output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
@@ -133,8 +134,9 @@ int main(int argc, char** argv) {
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
   output_files.at(CarStatusPacketID) << "m_carID," + PacketCarStatusDataCSVHeader() + "\n";
   output_files.at(FinalClassificationPacketID) << "m_carID," + PacketFinalClassificationDataCSVHeader() + "\n";
+  output_files.at(LobbyInfoPacketID) << "m_carID," + PacketLobbyInfoDataCSVHeader() + "\n";
   output_files.at(CarDamagePacketID) << "m_carID," + PacketCarDamageDataCSVHeader() + "\n";
-  spdlog::debug("wrote headers in for each file");
+  if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");
   spdlog::info(" track: {}", TRACK);
@@ -249,6 +251,16 @@ int main(int argc, char** argv) {
         output_files.at(FinalClassificationPacketID)
             << std::to_string(i) + "," + PacketFinalClassificationDataString(obj, i) + "\n";
         if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketFinalClassificationDataString(obj, i).c_str());
+      }
+
+    } else if (packet.file_id == LobbyInfoPacketID) {
+      // LOBBY INFO
+
+      if (DEBUG) spdlog::debug("parsing lobby info packet");
+      PacketLobbyInfoData obj = ParsePacketLobbyInfoData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++) {
+        output_files.at(LobbyInfoPacketID) << std::to_string(i) + "," + PacketLobbyInfoDataString(obj, i) + "\n";
+        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketLobbyInfoDataString(obj, i).c_str());
       }
 
     } else if (packet.file_id == CarDamagePacketID) {

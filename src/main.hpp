@@ -18,7 +18,6 @@
 #include <vector>
 
 /*
-#include "packets/PacketLobbyInfoData.hpp"
 #include "packets/PacketSessionHistoryData.hpp"
 */
 
@@ -30,6 +29,7 @@
 #include "packets/PacketFinalClassificationData.hpp"
 #include "packets/PacketHeader.hpp"
 #include "packets/PacketLapData.hpp"
+#include "packets/PacketLobbyInfoData.hpp"
 #include "packets/PacketMap.hpp"
 #include "packets/PacketMotionData.hpp"
 #include "packets/PacketParticipantsData.hpp"
