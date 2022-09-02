@@ -3,7 +3,7 @@
 #define PORT 20777
 #define BUFSIZE 4096
 
-const bool DEBUG = true;
+const bool DEBUG = false;
 
 const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
     0,  // motion data
@@ -40,9 +40,10 @@ int main(int argc, char** argv) {
   const std::string MODE(argv[2]);
 
   const std::string DATA_PATH = "data/";
-  const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
-  const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";     // source for 'batch'
-  const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";  // destination for all modes
+  const std::string TRACK_PATH = DATA_PATH + TRACK;
+  const std::string LOG_DATA_PATH = TRACK_PATH + "/logs/";
+  const std::string RAW_DATA_PATH = TRACK_PATH + "/raw/";     // source for 'batch'
+  const std::string OUT_DATA_PATH = TRACK_PATH + "/parsed/";  // destination for all modes
 
   std::vector<PacketMap> Packets;             // stores metadata for each raw file (batch mode)
   std::vector<std::string> raw_filenames;     // raw input files (for batch mode)
@@ -73,6 +74,13 @@ int main(int argc, char** argv) {
     for (std::string file : raw_filenames) Packets.push_back(packet_map_populate(file));
     spdlog::info("extracted packet metadata");
   } else if (MODE == "live") {
+    // check that the live output folder exists
+    if (createDir(TRACK_PATH) == 0) {
+        spdlog::info("creating output dir at '{}'", TRACK_PATH);
+        createDir(OUT_DATA_PATH);
+        createDir(RAW_DATA_PATH);
+        createDir(LOG_DATA_PATH);
+    }
     /* create a UDP socket */
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
       std::perror("cannot create socket\n");

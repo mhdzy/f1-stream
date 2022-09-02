@@ -82,16 +82,16 @@ std::string CarDamageDataString(CarDamageData obj, std::string sep) {
 
   // TODO: figure out why this is segfaulting
   const std::size_t size = std::snprintf(
-      nullptr, 0, fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep, m_brakesDamage.c_str(),
+      nullptr, 0, fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep, m_brakesDamage.c_str(), ssep,
       obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep, obj.m_rearWingDamage, ssep, obj.m_floorDamage,
       ssep, obj.m_diffuserDamage, ssep, obj.m_sidepodDamage, ssep, obj.m_drsFault, ssep, obj.m_ersFault, ssep,
       obj.m_gearBoxDamage, ssep, obj.m_engineDamage, ssep, obj.m_engineMGUHWear, ssep, obj.m_engineESWear, ssep,
       obj.m_engineCEWear, ssep, obj.m_engineICEWear, ssep, obj.m_engineMGUKWear, ssep, obj.m_engineTCWear, ssep,
       obj.m_engineBlown, ssep, obj.m_engineSeized);
-  printf("test4\n");
+
   std::vector<char> buf(size + 1);  // note +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep,
-                m_brakesDamage.c_str(), obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep,
+                m_brakesDamage.c_str(), ssep, obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep,
                 obj.m_rearWingDamage, ssep, obj.m_floorDamage, ssep, obj.m_diffuserDamage, ssep, obj.m_sidepodDamage,
                 ssep, obj.m_drsFault, ssep, obj.m_ersFault, ssep, obj.m_gearBoxDamage, ssep, obj.m_engineDamage, ssep,
                 obj.m_engineMGUHWear, ssep, obj.m_engineESWear, ssep, obj.m_engineCEWear, ssep, obj.m_engineICEWear,
