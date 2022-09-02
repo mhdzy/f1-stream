@@ -1,48 +1,62 @@
-CC:=g++
-CCFLAGS:=-Wall -std=c++17
+CC := g++
+CCFLAGS := -Wall -std=c++17
 
-SDIR:=src
-LDIR:=src/lib/include
+SOURCE_DIR  := src
+UTILS_DIR   := src/utils
+PACKETS_DIR := src/packets
 
-INC=/usr/local/include
-INC_DIRS = $(addprefix -I,$(INC))
+INC := /usr/local/include $(UTILS_DIR) $(PACKET_DIR)
+INC_LIBS := $(addprefix -I,$(INC))
 
-OBJECTS:= \
-	$(SDIR)/main.o \
-	$(LDIR)/PacketCarSetupData.o \
-	$(LDIR)/PacketCarStatusData.o \
-	$(LDIR)/PacketCarTelemetryData.o \
-	$(LDIR)/PacketEventData.o \
-	$(LDIR)/PacketHeader.o \
-	$(LDIR)/PacketLapData.o \
-	$(LDIR)/PacketMap.o \
-	$(LDIR)/PacketMotionData.o \
-	$(LDIR)/PacketParticipantsData.o \
-	$(LDIR)/PacketSessionData.o \
-	$(LDIR)/File.o \
-	$(LDIR)/Bytes.o
+OBJECTS := \
+	$(SOURCE_DIR)/main.o \
+	$(PACKETS_DIR)/PacketCarDamageData.o \
+	$(PACKETS_DIR)/PacketCarSetupData.o \
+	$(PACKETS_DIR)/PacketCarStatusData.o \
+	$(PACKETS_DIR)/PacketCarTelemetryData.o \
+	$(PACKETS_DIR)/PacketEventData.o \
+	$(PACKETS_DIR)/PacketHeader.o \
+	$(PACKETS_DIR)/PacketLapData.o \
+	$(PACKETS_DIR)/PacketMap.o \
+	$(PACKETS_DIR)/PacketMotionData.o \
+	$(PACKETS_DIR)/PacketParticipantsData.o \
+	$(PACKETS_DIR)/PacketSessionData.o \
+	$(UTILS_DIR)/File.o \
+	$(UTILS_DIR)/Bytes.o
 
-TARGET_EXECUTABLE:= \
-	$(SDIR)/main
+TARGET := \
+	$(SOURCE_DIR)/main
 
-all: $(TARGET_EXECUTABLE)
+# setup 'make run' args
+ifeq (run, $(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "run"
+  RUN_ARGS := $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	@echo "linking $@"
+	$(CC) $(CCFLGAS) $(OBJECTS) -g -o $@ $(INC_LIBS)
 
 %.o: %.cpp
-	@echo "compiling $<"
+	@printf "%s\n" "compiling $<"
 	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
 
-$(TARGET_EXECUTABLE): $(OBJECTS)
-	@echo "linking $@"
-	$(CC) $(CCFLGAS) $(OBJECTS) -g -o $@
-
 clean:
-	@echo "cleaning up"
-	rm -f $(OBJECTS) $(TARGET_EXECUTABLE)
-
-run:
-	@chmod +x $(TARGET_EXECUTABLE)
-	./$(TARGET_EXECUTABLE)
+	@printf "%s\n" "cleaning up"
+	rm -f $(OBJECTS) $(TARGET)
 
 trim:
 	@echo "cleaning object files"
 	rm -f $(OBJECTS)
+
+run:
+	@printf "%s\n" "prog $(RUN_ARGS)"
+	@chmod +x $(TARGET)
+	./$(TARGET) $(RUN_ARGS)
+
+
+.PHONY: clean run trim
