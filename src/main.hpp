@@ -18,7 +18,6 @@
 #include <vector>
 
 /*
-#include "packets/PacketFinalClassificationData.hpp"
 #include "packets/PacketLobbyInfoData.hpp"
 #include "packets/PacketSessionHistoryData.hpp"
 */
@@ -28,6 +27,7 @@
 #include "packets/PacketCarStatusData.hpp"
 #include "packets/PacketCarTelemetryData.hpp"
 #include "packets/PacketEventData.hpp"
+#include "packets/PacketFinalClassificationData.hpp"
 #include "packets/PacketHeader.hpp"
 #include "packets/PacketLapData.hpp"
 #include "packets/PacketMap.hpp"

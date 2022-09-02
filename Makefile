@@ -15,6 +15,7 @@ OBJECTS := \
 	$(PACKETS_DIR)/PacketCarStatusData.o \
 	$(PACKETS_DIR)/PacketCarTelemetryData.o \
 	$(PACKETS_DIR)/PacketEventData.o \
+	$(PACKETS_DIR)/PacketFinalClassificationData.o \
 	$(PACKETS_DIR)/PacketHeader.o \
 	$(PACKETS_DIR)/PacketLapData.o \
 	$(PACKETS_DIR)/PacketMap.o \

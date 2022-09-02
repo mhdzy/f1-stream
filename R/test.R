@@ -37,35 +37,67 @@ track <- "solo"
   statusdata <- paste0("~/prog/f1/data/", track, "/parsed/CarStatus.csv") |>
     readr::read_csv() |>
     dplyr::arrange(m_frameIdentifier)
+
+  {
+    pd <- participantdata |>
+      dplyr::filter(
+        m_nationality == 83,
+        m_raceNumber %in% c(15, 69),
+        m_yourTelemetry == 1
+      ) |>
+      dplyr::select(
+        m_carID,
+        m_name,
+        m_networkId,
+        m_teamId,
+        m_nationality,
+        m_raceNumber,
+        m_yourTelemetry
+      ) |>
+      dplyr::distinct()
+
+    ids <- pd |> dplyr::pull(m_carID)
+
+    fani_id <- pd |>
+      dplyr::filter(m_name != "Sumosusa") |>
+      dplyr::pull(m_carID)
+
+    matej_id <- pd |>
+      dplyr::filter(m_name == "Sumosusa") |>
+      dplyr::pull(m_carID)
+    }
 }
+ids <- 0
+{
+  res <- dplyr::left_join(
+    motiondata,
+    telemetrydata,
+    by = c("m_carID", "m_frameIdentifier")
+  ) |> dplyr::filter(m_carID %in% ids)
 
-if (FALSE) {
-  pd <- participantdata |>
-    dplyr::filter(
-      m_nationality == 83,
-      m_raceNumber %in% c(15, 69),
-      m_yourTelemetry == 1
-    ) |>
-    dplyr::select(
-      m_carID,
-      m_name,
-      m_networkId,
-      m_teamId,
-      m_nationality,
-      m_raceNumber,
-      m_yourTelemetry
-    ) |>
-    dplyr::distinct()
-
-  ids <- pd |> dplyr::pull(m_carID)
-
-  fani_id <- pd |>
-    dplyr::filter(m_name != "Sumosusa") |>
-    dplyr::pull(m_carID)
-
-  matej_id <- pd |>
-    dplyr::filter(m_name == "Sumosusa") |>
-    dplyr::pull(m_carID)
+  # colored plot of spa laptime
+  res |>
+    ggplot2::ggplot() +
+    ggplot2::geom_point(
+      ggplot2::aes(
+        x = m_worldPositionX/32767L,
+        y = -1L * m_worldPositionZ/32767L,
+        fill = m_speed
+      ),
+      pch = 21,
+      stroke = NA,
+      size = 5
+    ) +
+    ggplot2::scale_color_gradient(
+      low = "#c20c00",
+      high = "#00c26d",
+      aesthetics = "fill"
+    ) +
+    ggplot2::labs(
+      x = "x",
+      y = "y",
+      title = "Multiplayer Lap Data"
+    ) + ggplot2::facet_wrap(~m_carID)
 }
 
 # check out ERS deployment
@@ -79,36 +111,6 @@ telemetrydata |>
   dplyr::filter(m_carID %in% ids) |>
   dplyr::pull(m_speed) |>
   plot()
-
-res <- dplyr::left_join(
-  motiondata,
-  telemetrydata,
-  by = c("m_carID", "m_frameIdentifier")
-) |> dplyr::filter(m_carID %in% ids)
-
-# colored plot of spa laptime
-res |>
-  ggplot2::ggplot() +
-  ggplot2::geom_point(
-    ggplot2::aes(
-      x = m_worldPositionX/32767L,
-      y = -1L * m_worldPositionZ/32767L,
-      fill = m_speed
-    ),
-    pch = 21,
-    stroke = NA,
-    size = 5
-  ) +
-  ggplot2::scale_color_gradient(
-    low = "#c20c00",
-    high = "#00c26d",
-    aesthetics = "fill"
-  ) +
-  ggplot2::labs(
-    x = "x",
-    y = "y",
-    title = "Multiplayer Lap Data"
-  ) + ggplot2::facet_wrap(~m_carID)
 
 # car 3 vs 10
 f1data <- motiondata |>
