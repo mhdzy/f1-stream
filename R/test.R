@@ -4,7 +4,7 @@
 library(dplyr)
 library(readr)
 
-track <- "multiplayer"
+track <- "solo"
 
 {
   motiondata <- paste0("~/prog/f1/data/", track, "/parsed/Motion.csv") |>
@@ -84,7 +84,7 @@ res <- dplyr::left_join(
   motiondata,
   telemetrydata,
   by = c("m_carID", "m_frameIdentifier")
-) |> dplyr::filter(m_carID %in% 16)
+) |> dplyr::filter(m_carID %in% ids)
 
 # colored plot of spa laptime
 res |>
