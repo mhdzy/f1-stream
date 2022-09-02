@@ -38,3 +38,12 @@ PacketMap packet_map_populate(std::string filename) {
   map.file_packet_name = packet_id_to_string.find(map.file_id)->second.c_str();
   return (map);
 };
+
+PacketMap parse_raw_packet(std::uint16_t size) {
+  PacketMap map;
+  map.file_name = "unknown";
+  map.file_size = size;
+  map.file_id = packet_size_to_id.find(map.file_size)->second;
+  map.file_packet_name = packet_id_to_string.find(map.file_id)->second.c_str();
+  return map;
+}

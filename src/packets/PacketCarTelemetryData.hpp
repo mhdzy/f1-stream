@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-#include "File.hpp"
+#include "../utils/Bytes.hpp"
+#include "../utils/File.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
