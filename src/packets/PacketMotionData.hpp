@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "../utils/Bytes.hpp"
 #include "../utils/File.hpp"
 #include "PacketHeader.hpp"
 

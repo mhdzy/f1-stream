@@ -8,3 +8,9 @@ void print_hexb(std::vector<unsigned char> bytes, std::uint8_t width, bool space
   }
   std::printf("\n");
 }
+
+std::string ftos(float f) {
+  std::stringstream stream;
+  stream << std::fixed << std::setprecision(8) << f;
+  return stream.str();
+}

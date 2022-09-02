@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -38,12 +39,12 @@
 #include "utils/File.hpp"
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @note regex to replace std::int types (std::[u]*int[\d]{1,2}_t)
- * 
- * @param argc 
- * @param argv 
- * @return int 
+ *
+ * @param argc
+ * @param argv
+ * @return int
  */
 int main(int argc, char** argv);

@@ -49,18 +49,18 @@ std::vector<std::string> CarDamageDataNames = {
 };
 
 std::string CarDamageDataString(CarDamageData obj, std::string sep) {
-  const char *fmt = "%s%s%s%s%s%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s";
+  const char *fmt = "%s%s%s%s%s%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
-  const char csep = '/';
+  const std::string csep = "/";
 
   std::string m_tyresWear(vpaste(
       std::vector<std::string>{
-          std::to_string(obj.m_tyresWear[0]),  //
-          std::to_string(obj.m_tyresWear[1]),  //
-          std::to_string(obj.m_tyresWear[2]),  //
-          std::to_string(obj.m_tyresWear[3])   //
+          ftos(obj.m_tyresWear[0]),  //
+          ftos(obj.m_tyresWear[1]),  //
+          ftos(obj.m_tyresWear[2]),  //
+          ftos(obj.m_tyresWear[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_tyresDamage(vpaste(
       std::vector<std::string>{
@@ -69,7 +69,7 @@ std::string CarDamageDataString(CarDamageData obj, std::string sep) {
           std::to_string(obj.m_tyresDamage[2]),  //
           std::to_string(obj.m_tyresDamage[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
   std::string m_brakesDamage(vpaste(
       std::vector<std::string>{
@@ -78,8 +78,9 @@ std::string CarDamageDataString(CarDamageData obj, std::string sep) {
           std::to_string(obj.m_brakesDamage[2]),  //
           std::to_string(obj.m_brakesDamage[3])   //
       },
-      std::to_string(csep)));
+      csep));
 
+  // TODO: figure out why this is segfaulting
   const std::size_t size = std::snprintf(
       nullptr, 0, fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep, m_brakesDamage.c_str(),
       obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep, obj.m_rearWingDamage, ssep, obj.m_floorDamage,
@@ -87,7 +88,7 @@ std::string CarDamageDataString(CarDamageData obj, std::string sep) {
       obj.m_gearBoxDamage, ssep, obj.m_engineDamage, ssep, obj.m_engineMGUHWear, ssep, obj.m_engineESWear, ssep,
       obj.m_engineCEWear, ssep, obj.m_engineICEWear, ssep, obj.m_engineMGUKWear, ssep, obj.m_engineTCWear, ssep,
       obj.m_engineBlown, ssep, obj.m_engineSeized);
-
+  printf("test4\n");
   std::vector<char> buf(size + 1);  // note +1 for null terminator
   std::snprintf(&buf[0], buf.size(), fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep,
                 m_brakesDamage.c_str(), obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep,
@@ -151,8 +152,8 @@ std::string PacketCarDamageDataCSVHeader(std::string sep) {
 
 std::string PacketCarDamageDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                 //
-      CarDamageDataString(obj.m_carDamageData[carID]),  //
+      PacketHeaderString(obj.m_header),                //
+      CarDamageDataString(obj.m_carDamageData[carID])  //
   };
   return vpaste(vec, sep);
 }

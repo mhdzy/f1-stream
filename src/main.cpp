@@ -2,11 +2,8 @@
 
 #define PORT 20777
 #define BUFSIZE 4096
-#define MAXPACKETS (2 ^ 20)
 
-const std::string DATA_PATH = "data/";
-
-const bool DEBUG = false;
+const bool DEBUG = true;
 
 const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
     0,  // motion data
@@ -37,16 +34,15 @@ int main(int argc, char** argv) {
 
   spdlog::set_level(spdlog::level::debug);  // make all logging visible
 
+  const std::uint32_t MAXPACKETS = pow(2, 20);
+
   const std::string TRACK(argv[1]);
   const std::string MODE(argv[2]);
 
+  const std::string DATA_PATH = "data/";
   const std::string LOG_DATA_PATH = DATA_PATH + TRACK + "/logs/";
   const std::string RAW_DATA_PATH = DATA_PATH + TRACK + "/raw/";     // source for 'batch'
   const std::string OUT_DATA_PATH = DATA_PATH + TRACK + "/parsed/";  // destination for all modes
-
-  spdlog::info(" === F1 2022 UDP parser === ");
-  spdlog::info(" track: {}", TRACK);
-  spdlog::info(" mode: {}", MODE);
 
   std::vector<PacketMap> Packets;             // stores metadata for each raw file (batch mode)
   std::vector<std::string> raw_filenames;     // raw input files (for batch mode)
@@ -126,105 +122,104 @@ int main(int argc, char** argv) {
   output_files.at(CarDamagePacketID) << "m_carID," + PacketCarDamageDataCSVHeader() + "\n";
   spdlog::debug("wrote headers in for each file");
 
+  spdlog::info(" === F1 2022 UDP parser === ");
+  spdlog::info(" track: {}", TRACK);
+  spdlog::info(" mode: {}", MODE);
+  if (MODE == "live") spdlog::info(" port {}", PORT);
+
   for (std::uint16_t i = 0; i < MAXPACKETS; i++) {
-      printf("%d\n", i);
-      PacketMap packet;
-      std::vector<unsigned char> filebytes;
+    PacketMap packet;
+    std::vector<unsigned char> filebytes;
 
-      if (MODE == "live") {
-          recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr *)&remaddr, &addrlen);
+    if (MODE == "live") {
+      recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr*)&remaddr, &addrlen);
 
-          printf("(%d) %s %d %s\n", i, "received", recvlen, "bytes");
-          if (recvlen > 0)
-              buf[recvlen] = 0;
+      if (DEBUG) spdlog::debug("(%d) %s %d %s\n", i, "received", recvlen, "bytes");
+      if (recvlen > 0) buf[recvlen] = 0;
 
-          packet = parse_raw_packet(recvlen);
-          filebytes = std::vector<unsigned char>(buf, buf + recvlen);
-      } else if (MODE == "batch") {
-          packet = Packets.at(i);
-          filebytes = file_read(packet.file_name);
-      }
+      packet = parse_raw_packet(recvlen);
+      filebytes = std::vector<unsigned char>(buf, buf + recvlen);
+    } else if (MODE == "batch") {
+      packet = Packets[i];
+      filebytes = file_read(packet.file_name);
+    }
 
-      printf("%d %d\n", packet.file_id, filebytes.size());
+    if (DEBUG) {
+      spdlog::debug("packet id : {}", packet.file_id);
+      spdlog::debug("packet name: {}", packet.file_packet_name);
+      spdlog::debug("packet size: {}", packet.file_size);
+    }
 
-      if (packet.file_id == MotionPacketID) {
-          // MOTION
+    if (packet.file_id == MotionPacketID) {
+      // MOTION
 
-          if (DEBUG)
-              spdlog::debug("parsing motion packet");
-          PacketMotionData obj = ParsePacketMotionData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
+      if (DEBUG) spdlog::debug("parsing motion packet");
+      PacketMotionData obj = ParsePacketMotionData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
 
-      } else if (packet.file_id == SessionPacketID) {
-          // SESSION
+    } else if (packet.file_id == SessionPacketID) {
+      // SESSION~
 
-          if (DEBUG)
-              spdlog::debug("parsing session packet");
-          PacketSessionData obj = ParsePacketSessionData(filebytes);
-          output_files.at(SessionPacketID) << PacketSessionDataString(obj) + "\n";
+      if (DEBUG) spdlog::debug("parsing session packet");
+      PacketSessionData obj = ParsePacketSessionData(filebytes);
+      output_files.at(SessionPacketID) << PacketSessionDataString(obj) + "\n";
 
-      } else if (packet.file_id == LapDataPacketID) {
-          // LAP DATA
+    } else if (packet.file_id == LapDataPacketID) {
+      // LAP DATA
 
-          if (DEBUG)
-              spdlog::debug("parsing lap data packet");
-          PacketLapData obj = ParsePacketLapData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
+      if (DEBUG) spdlog::debug("parsing lap data packet");
+      PacketLapData obj = ParsePacketLapData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
 
-      } else if (packet.file_id == EventPacketID) {
-          // EVENT
+    } else if (packet.file_id == EventPacketID) {
+      // EVENT
 
-          if (DEBUG)
-              spdlog::debug("parsing event data packet");
-          PacketEventData obj = ParsePacketEventData(filebytes);
-          output_files.at(EventPacketID) << PacketEventDataString(obj) + "\n";
+      if (DEBUG) spdlog::debug("parsing event data packet");
+      PacketEventData obj = ParsePacketEventData(filebytes);
+      output_files.at(EventPacketID) << PacketEventDataString(obj) + "\n";
 
-      } else if (packet.file_id == ParticipantsPacketID) {
-          // PARTICIPANTS
+    } else if (packet.file_id == ParticipantsPacketID) {
+      // PARTICIPANTS
 
-          if (DEBUG)
-              spdlog::debug("parsing participants packet");
-          PacketParticipantsData obj = ParsePacketParticipantsData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(ParticipantsPacketID) << std::to_string(i) + "," + PacketParticipantsDataString(obj, i) + "\n";
+      if (DEBUG) spdlog::debug("parsing participants packet");
+      PacketParticipantsData obj = ParsePacketParticipantsData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(ParticipantsPacketID) << std::to_string(i) + "," + PacketParticipantsDataString(obj, i) + "\n";
 
-      } else if (packet.file_id == CarSetupsPacketID) {
-          // SETUPS
+    } else if (packet.file_id == CarSetupsPacketID) {
+      // SETUPS
 
-          if (DEBUG)
-              spdlog::debug("parsing car setups packet");
-          PacketCarSetupData obj = ParsePacketCarSetupData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(CarSetupsPacketID) << std::to_string(i) + "," + PacketCarSetupDataString(obj, i) + "\n";
+      if (DEBUG) spdlog::debug("parsing car setups packet");
+      PacketCarSetupData obj = ParsePacketCarSetupData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarSetupsPacketID) << std::to_string(i) + "," + PacketCarSetupDataString(obj, i) + "\n";
 
-      } else if (packet.file_id == CarTelemetryPacketID) {
-          // TELEMETRY
+    } else if (packet.file_id == CarTelemetryPacketID) {
+      // TELEMETRY
 
-          if (DEBUG)
-              spdlog::debug("parsing car telemetry packet");
-          PacketCarTelemetryData obj = ParsePacketCarTelemetryData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(CarTelemetryPacketID) << std::to_string(i) + "," + PacketCarTelemetryDataString(obj, i) + "\n";
+      if (DEBUG) spdlog::debug("parsing car telemetry packet");
+      PacketCarTelemetryData obj = ParsePacketCarTelemetryData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarTelemetryPacketID) << std::to_string(i) + "," + PacketCarTelemetryDataString(obj, i) + "\n";
 
-      } else if (packet.file_id == CarStatusPacketID) {
-          // STATUS
+    } else if (packet.file_id == CarStatusPacketID) {
+      // STATUS
 
-          if (DEBUG)
-              spdlog::debug("parsing car status packet");
-          PacketCarStatusData obj = ParsePacketCarStatusData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(CarStatusPacketID) << std::to_string(i) + "," + PacketCarStatusDataString(obj, i) + "\n";
-      } else if (packet.file_id == CarDamagePacketID) {
-          // DAMAGE
+      if (DEBUG) spdlog::debug("parsing car status packet");
+      PacketCarStatusData obj = ParsePacketCarStatusData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarStatusPacketID) << std::to_string(i) + "," + PacketCarStatusDataString(obj, i) + "\n";
+    } else if (packet.file_id == CarDamagePacketID) {
+      // DAMAGE
 
-          if (DEBUG)
-              spdlog::debug("parsing car damage packet");
-          PacketCarDamageData obj = ParsePacketCarDamageData(filebytes);
-          for (std::uint8_t i = 0; i < 22; i++)
-              output_files.at(CarDamagePacketID) << std::to_string(i) + "," + PacketCarDamageDataString(obj, i) + "\n";
-      }
+      if (DEBUG) spdlog::debug("parsing car damage packet");
+      PacketCarDamageData obj = ParsePacketCarDamageData(filebytes);
+      for (std::uint8_t i = 0; i < 22; i++)
+        output_files.at(CarDamagePacketID) << std::to_string(i) + "," + PacketCarDamageDataString(obj, i) + "\n";
+    }
+    if (DEBUG) spdlog::debug("\n");
   }
   spdlog::debug("parsed all packets");
 

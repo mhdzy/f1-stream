@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "../utils/Bytes.hpp"
 #include "../utils/File.hpp"
 #include "PacketHeader.hpp"
 
