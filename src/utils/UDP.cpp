@@ -56,5 +56,5 @@ int main(int argc, char **argv) {
   /* never exits */
 }
 
-// g++ src/lib/include/UDP.cpp
+// g++ src/utils/UDP.cpp
 // ./a.out
