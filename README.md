@@ -34,7 +34,17 @@ This will parse F1 telemetry data in real time to `data/<tag>/parsed`.
 
 ## Output
 
-The data is output to the `data/<tag>/parsed` directory. Each packet type has its own csv file, and is continuously updated
-in both 'batch' and 'live' runtime modes.
+Parsed packet types have their own csv file which is continuously updated in both 'batch' and 'live' runtime modes.
 
+### batch
+
+Each raw packet received is stored individually in `data/<tag>/raw`.
+
+Parsed data is stored in `data/<tag>/parsed` with a csv file for each packet type.
+
+### live
+
+Raw packets are not currently stored.
+
+Parsed data is stored in `data/<tag>/parsed`, the same as in batch mode.
 
