@@ -31,7 +31,7 @@ std::vector<std::string> LobbyInfoDataNames = {
 
 std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep) {
   const char *fmt = "%d";
-  const char *ssep = sep.c_str();
+  // const char *ssep = sep.c_str();
 
   const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_numPlayers);
 

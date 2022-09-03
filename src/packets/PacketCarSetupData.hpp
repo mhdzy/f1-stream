@@ -46,6 +46,5 @@ extern std::string CarSetupDataString(CarSetupData obj, std::string sep = ",");
 extern CarSetupData ParseCarSetupData(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketCarSetupDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketCarSetupDataString(PacketCarSetupData obj, std::uint8_t carID, std::string sep = ",",
-                                            std::string compr = "/", std::string compr2 = ";");
+extern std::string PacketCarSetupDataString(PacketCarSetupData obj, std::uint8_t carID, std::string sep = ",");
 extern PacketCarSetupData ParsePacketCarSetupData(std::vector<unsigned char> bytes);

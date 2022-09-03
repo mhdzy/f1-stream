@@ -23,6 +23,7 @@ OBJECTS := \
 	$(PACKETS_DIR)/PacketMotionData.o \
 	$(PACKETS_DIR)/PacketParticipantsData.o \
 	$(PACKETS_DIR)/PacketSessionData.o \
+	$(PACKETS_DIR)/PacketSessionHistoryData.o \
 	$(UTILS_DIR)/File.o \
 	$(UTILS_DIR)/Bytes.o
 

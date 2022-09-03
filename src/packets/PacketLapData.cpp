@@ -165,8 +165,7 @@ std::string PacketLapDataCSVHeader(std::string sep, std::string compr) {
   return vpaste(vec, sep);
 }
 
-std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep, std::string compr,
-                                std::string compr2) {
+std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep) {
   std::vector<std::string> vec = {
       PacketHeaderString(obj.m_header),     //
       LapDataString(obj.m_lapData[carID]),  //

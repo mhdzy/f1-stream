@@ -17,10 +17,6 @@
 #include <iostream>
 #include <vector>
 
-/*
-#include "packets/PacketSessionHistoryData.hpp"
-*/
-
 #include "packets/PacketCarDamageData.hpp"
 #include "packets/PacketCarSetupData.hpp"
 #include "packets/PacketCarStatusData.hpp"
@@ -34,6 +30,7 @@
 #include "packets/PacketMotionData.hpp"
 #include "packets/PacketParticipantsData.hpp"
 #include "packets/PacketSessionData.hpp"
+#include "packets/PacketSessionHistoryData.hpp"
 #include "spdlog/spdlog.h"
 #include "utils/Bytes.hpp"
 #include "utils/File.hpp"

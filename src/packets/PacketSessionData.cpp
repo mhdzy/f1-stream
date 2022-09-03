@@ -354,22 +354,22 @@ std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
  *
  * @param obj
  * @param sep A string used to separate the individual field values.
- * @param compr A string used to compress the array-typed field values together.
- * @param compr2 A string used to compress the array-valued field values, should they be a struct or array themselves.
+ * @param compr A string used to compress the array-valued field values, should they be a struct or array themselves.
+ * @param compr2 A string used to compress the array-typed field values together.
  * @return std::string
  */
 std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std::string compr, std::string compr2) {
   // compress marshal zones
   std::string compr_marshalZones;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
-    compr_marshalZones += MarshalZoneString(obj.m_marshalZones[i], compr2) + compr;
+    compr_marshalZones += MarshalZoneString(obj.m_marshalZones[i], compr) + compr2;
   }
   if (!compr_marshalZones.empty()) compr_marshalZones.pop_back();
 
   // compress weather forecasts
   std::string compr_weatherForecastSamples;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
-    compr_weatherForecastSamples += WeatherForecastSampleString(obj.m_weatherForecastSamples[i], compr2) + compr;
+    compr_weatherForecastSamples += WeatherForecastSampleString(obj.m_weatherForecastSamples[i], compr) + compr2;
   }
   if (!compr_weatherForecastSamples.empty()) compr_weatherForecastSamples.pop_back();
 

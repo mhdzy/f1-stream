@@ -61,6 +61,11 @@ int main(int argc, char** argv) {
   std::uint32_t fd;                    /* our socket */
   unsigned char buf[BUFSIZE];          /* receive buffer */
 
+  // SETUP
+  /*
+    batch mode sets up 'raw' files to parse and restricts max packets
+    live mode sets up output dirs
+  */
   if (MODE == "batch") {
     // check that the batch folder source exists
     if (createDir(RAW_DATA_PATH) == 0) {
@@ -77,7 +82,7 @@ int main(int argc, char** argv) {
     for (std::string file : raw_filenames) Packets.push_back(packet_map_populate(file));
     spdlog::info("extracted packet metadata");
 
-    // resize the MAXPACKETS
+    // restrict the main loop to exit after parsing all known data files
     MAXPACKETS = Packets.size();
   } else if (MODE == "live") {
     // check that the live output folder exists
@@ -108,16 +113,18 @@ int main(int argc, char** argv) {
     return 0;
   }
 
+  // CREATE OUTPUT DIRS
   // we can create if logs & output dirs don't exist
   if (createDir(LOG_DATA_PATH) == 0) spdlog::warn("log data output path does not exist; creating");
   if (createDir(OUT_DATA_PATH) == 0) spdlog::warn("out data output path does not exist; creating");
 
+  // EXTRACT PACKET NAMES
   // extract all packet string names
   for (auto const& p : packet_id_to_string) output_filenames.push_back(p.second);
   if (DEBUG) spdlog::debug("extracted output filenames (packet names)");
 
-  // open output file & write csv header (assuming PacketMotionData)
-  // open output file for all packet types
+  // OPEN OUTPUT FILES
+  // open output file & write csv header for all packet types
   for (auto const& file : output_filenames) {
     auto i = &file - &output_filenames[0];
     std::string tmp_filename = OUT_DATA_PATH + output_filenames.at(i) + ".csv";
@@ -136,6 +143,7 @@ int main(int argc, char** argv) {
   output_files.at(FinalClassificationPacketID) << "m_carID," + PacketFinalClassificationDataCSVHeader() + "\n";
   output_files.at(LobbyInfoPacketID) << "m_carID," + PacketLobbyInfoDataCSVHeader() + "\n";
   output_files.at(CarDamagePacketID) << "m_carID," + PacketCarDamageDataCSVHeader() + "\n";
+  output_files.at(SessionHistoryPacketID) << "m_lapID," + PacketSessionHistoryDataCSVHeader() + "\n";
   if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");
@@ -144,18 +152,23 @@ int main(int argc, char** argv) {
   spdlog::info(" maxp: {}", MAXPACKETS);
   if (MODE == "live") spdlog::info(" port {}", PORT);
 
+  // main loop
   for (std::uint16_t i = 0; i < MAXPACKETS; i++) {
     PacketMap packet;
     std::vector<unsigned char> filebytes;
 
     if (MODE == "live") {
       recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr*)&remaddr, &addrlen);
-      if (recvlen > 0) buf[recvlen] = 0;
-
       if (DEBUG) spdlog::debug("(%d) %s %d %s\n", i, "received", recvlen, "bytes");
 
+      if (recvlen > 0) buf[recvlen] = 0;
       packet = parse_raw_packet(recvlen);
       filebytes = std::vector<unsigned char>(buf, buf + recvlen);
+
+      // write bytes to file
+      std::string raw_filename = RAW_DATA_PATH + "data" + std::to_string(i) + ".raw";
+      std::ofstream raw_file(raw_filename);
+      std::copy(filebytes.cbegin(), filebytes.cend(), std::ostream_iterator<char>(raw_file));
     } else if (MODE == "batch") {
       packet = Packets[i];
       filebytes = file_read(packet.file_name);
@@ -272,6 +285,20 @@ int main(int argc, char** argv) {
         output_files.at(CarDamagePacketID) << std::to_string(i) + "," + PacketCarDamageDataString(obj, i) + "\n";
         if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketCarDamageDataString(obj, i).c_str());
       }
+
+    } else if (packet.file_id == SessionHistoryPacketID) {
+      // SESSION HISTORY
+
+      if (DEBUG) spdlog::debug("parsing session history packet");
+      PacketSessionHistoryData obj = ParsePacketSessionHistoryData(filebytes);
+      for (std::uint8_t i = 0; i < 100; i++) {
+        output_files.at(SessionHistoryPacketID)
+            << std::to_string(i) + "," + PacketSessionHistoryDataString(obj, i) + "\n";
+        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketSessionHistoryDataString(obj, i).c_str());
+      }
+
+    } else {
+      spdlog::error("unknown packet id encountered: {}", packet.file_id);
     }
     if (DEBUG) spdlog::debug("\n");
   }
