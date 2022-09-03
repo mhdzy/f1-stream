@@ -22,9 +22,9 @@ packet_names <- list(
 )
 
 read_f1data <- function(
-  dir = "~/prog/f1/data/",
-  track = "spa",
-  packets = list()
+    dir = "~/prog/f1/data/",
+    track = "spa",
+    packets = list()
 ) {
   read_packet <- function(packet, ext = "csv") {
     paste0(dir, track, "/parsed/", packet, ".", ext) |>
@@ -77,21 +77,81 @@ f1data <- read_f1data(
     dplyr::pull(m_carID)
 }
 
-SLEEP_INTERVAL = 10;
-while (TRUE) {
-  telemetrydata <- read_f1data(
-    track = "test",
-    packets = "CarTelemetry"
-  )
+library(magrittr)
+library(shiny)
+# library(promises)
+# library(future)
+# future::plan(multisession)
 
-  motiondata <- read_f1data(
-    track = "test",
-    packets = "Motion"
-  )
+ui <- shiny::fluidPage(
+  shiny::h4("hello!"),
+  shiny::br(),
+  shiny::plotOutput("graph")
+)
+
+server <- function(input, output, session) {
+  TIMER_DELAY = 12L # seconds
+
+  output$graph <- shiny::renderPlot({
+    message("running")
+    shiny::invalidateLater(TIMER_DELAY * 1000L) # translate seconds to millis
+
+    vals <- list(
+      motion = read_f1data(
+        track = "test",
+        packets = "Motion"
+      ),
+      telemetry = read_f1data(
+        track = "test",
+        packets = "CarTelemetry"
+      )
+    )
+
+    pvals <- vals %>%
+      {
+        dplyr::left_join(
+          .$motion$Motion,
+          .$telemetry$CarTelemetry,
+          by = c("m_carID", "m_frameIdentifier")
+        )
+      } |>
+      dplyr::filter(m_carID %in% ids)
+
+    pvals |>
+      ggplot2::ggplot() +
+      ggplot2::geom_point(
+        ggplot2::aes(
+          x = m_worldPositionX/32767L,
+          y = -1L * m_worldPositionZ/32767L,
+          fill = m_speed
+        ),
+        pch = 21,
+        stroke = NA,
+        size = 5
+      ) +
+      ggplot2::scale_color_gradient(
+        low = "#c20c00",
+        high = "#00c26d",
+        aesthetics = "fill"
+      ) +
+      ggplot2::labs(
+        x = "x",
+        y = "y",
+        title = "Multiplayer Lap Data"
+      ) +
+      ggplot2::facet_wrap(
+        ~m_carID
+      )
+  })
+}
+
+shiny::shinyApp(ui, server)
+
+while (TRUE) {
 
   res <- dplyr::left_join(
-    motiondata$Motion,
-    telemetrydata$CarTelemetry,
+    f1data$Motion,
+    f1data$CarTelemetry,
     by = c("m_carID", "m_frameIdentifier")
   ) |> dplyr::filter(m_carID %in% ids)
 
@@ -119,84 +179,5 @@ while (TRUE) {
       title = "Multiplayer Lap Data"
     ) + ggplot2::facet_wrap(~m_carID)
 
-  Sys.sleep(SLEEP_INTERVAL);
-}
-
-
-
-
-
-
-
-### OTHER SMALL PLOTTING STUFF? IDK ###
-
-
-if (FALSE) {
-
-  # check out DRS deployment
-  f1data$status |>
-    dplyr::filter(m_carID %in% ids) |>
-    dplyr::pull(m_drsActivationDistance) |>
-    plot()
-
-  # show engine RPM
-  telemetrydata |>
-    dplyr::filter(m_carID %in% ids) |>
-    dplyr::pull(m_speed) |>
-    plot()
-
-  # car 3 vs 10
-  f1data <- motiondata |>
-    dplyr::filter(m_carID %in% ids) |>
-    dplyr::mutate(
-      m_gForceLateralIntegral = m_gForceLateral %>% cumsum()
-    )
-
-  f1data |>
-    dplyr::filter(m_carID %in% ids) |>
-    #dplyr::filter(m_gForceLongitudinal > -50) |>
-    ggplot2::ggplot(
-      ggplot2::aes(
-        x = m_frameIdentifier,
-        #y = m_gForceLateral,
-        y = m_gForceLateralIntegral,
-        color = m_frameIdentifier
-      )
-    ) +
-    ggplot2::geom_point()
-
-  p1data <- f1data |>
-    dplyr::filter(m_carID %in% ids) |>
-    dplyr::distinct()
-
-  options(rgl.printRglwidget = TRUE)
-  rgl::plot3d(
-    x = p1data$m_worldPositionX/32767,
-    y = -1L * p1data$m_worldPositionZ/32767,
-    z = p1data$m_worldPositionY/32767
-  )
-
-  l2 <- p1data |>
-    dplyr::arrange(dplyr::desc(m_frameIdentifier)) |>
-    dplyr::pull() |>
-    stringr::str_split("/") |>
-    base::unique() |>
-    lapply(function(x) c('rl' = x[1], 'rr' = x[2], 'fl' = x[3], 'fr' = x[4])) |>
-    dplyr::bind_rows() |>
-    dplyr::distinct() |>
-    dplyr::mutate_if(
-      is.character,
-      function(x) as.numeric(x)
-    )
-
-  plot(
-    l2$rr/32767,
-    l2$rl/32767
-  )
-
-  plot(
-    l2$fr/32767,
-    l2$fl/32767
-  )
-
+  Sys.sleep(SLEEP_INTERVAL)
 }
