@@ -1,6 +1,8 @@
 CC := g++
 CCFLAGS := -Wall -std=c++17
 
+LINK_OPTS := -lstdc++fs
+
 SOURCE_DIR  := src
 UTILS_DIR   := src/utils
 PACKETS_DIR := src/packets
@@ -42,7 +44,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	@echo "linking $@"
-	$(CC) $(CCFLGAS) $(OBJECTS) -g -o $@ $(INC_LIBS)
+	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(LINK_OPTS)
 
 %.o: %.cpp
 	@printf "%s\n" "compiling $<"
