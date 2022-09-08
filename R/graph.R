@@ -4,7 +4,7 @@
 library(dplyr)
 library(readr)
 
-track <- "test"
+track <- "pi4"
 
 packet_names <- list(
   "Motion",
@@ -44,7 +44,7 @@ read_f1data <- function(
 }
 
 f1data <- read_f1data(
-  track = "test",
+  track = track,
   packets = packet_names
 )
 
@@ -180,4 +180,19 @@ while (TRUE) {
     ) + ggplot2::facet_wrap(~m_carID)
 
   Sys.sleep(SLEEP_INTERVAL)
+}
+
+if (FALSE) {
+  dat <- tibble::tibble(
+    x = seq(1, nrow(f1data$Motion)),
+    y = f1data$Motion$m_frameIdentifier
+  )
+  library(ggplot2)
+  library(plotly)
+  plotly::ggplotly(
+  dat |>
+    ggplot() +
+    geom_line(aes(x = x, y = y))
+  )
+
 }
