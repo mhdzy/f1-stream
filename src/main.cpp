@@ -289,11 +289,8 @@ int main(int argc, char** argv) {
       // LOBBY INFO
 
       if (DEBUG) spdlog::debug("parsing lobby info packet");
-      PacketLobbyInfoData obj = ParsePacketLobbyInfoData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(LobbyInfoPacketID) << std::to_string(i) + "," + PacketLobbyInfoDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketLobbyInfoDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData<PacketLobbyInfoData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == CarDamagePacketID) {
       // DAMAGE

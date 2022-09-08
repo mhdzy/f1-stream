@@ -90,16 +90,19 @@ std::string PacketLobbyInfoDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketLobbyInfoDataString(PacketLobbyInfoData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketLobbyInfoData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),               //
-      LobbyInfoMetaString(obj.m_lobbyPlayer),         //
-      LobbyInfoDataString(obj.m_lobbyPlayers[carID])  //
+      PacketHeaderString(obj.m_header),            //
+      LobbyInfoMetaString(obj.m_lobbyPlayer),      //
+      LobbyInfoDataString(obj.m_lobbyPlayers[id])  //
   };
   return vpaste(vec, sep);
 }
 
-PacketLobbyInfoData ParsePacketLobbyInfoData(std::vector<unsigned char> bytes) {
+template <>
+PacketLobbyInfoData parsePacketData<PacketLobbyInfoData>(std::vector<unsigned char> bytes) {
   PacketLobbyInfoData obj;
   std::uint16_t offset = 0;
 

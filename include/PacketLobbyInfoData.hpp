@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -41,6 +42,10 @@ extern std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep = ",")
 extern LobbyInfoMeta ParseLobbyInfoMeta(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketLobbyInfoDataCSVHeader(std::string sep = ",");
-extern std::string PacketLobbyInfoDataString(PacketLobbyInfoData obj, std::uint8_t carID,
-                                                       std::string sep = ",");
-extern PacketLobbyInfoData ParsePacketLobbyInfoData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketLobbyInfoData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketLobbyInfoData parsePacketData<PacketLobbyInfoData>(std::vector<unsigned char> bytes);
