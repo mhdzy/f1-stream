@@ -4,7 +4,8 @@
 #include <string>
 
 template <class T>
-extern std::string packetDataString(T obj, std::uint8_t carID, std::string sep = ",");
+extern std::string packetDataString(T obj, std::uint8_t id, std::string sep = ",", std::string compr = "/",
+                                    std::string compr2 = ";");
 
 template <class T>
 extern T parsePacketData(std::vector<unsigned char> bytes);

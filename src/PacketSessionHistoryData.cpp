@@ -147,14 +147,15 @@ std::string PacketSessionHistoryDataCSVHeader(std::string sep, std::string compr
  * @brief
  *
  * @param obj
- * @param lapID
+ * @param id
  * @param sep
  * @param compr outside 'compression' string
  * @param compr2 inside 'compression' string
  * @return std::string
  */
-std::string PacketSessionHistoryDataString(PacketSessionHistoryData obj, std::uint8_t lapID, std::string sep,
-                                           std::string compr, std::string compr2) {
+template <>
+std::string packetDataString(PacketSessionHistoryData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::string compr_TyreStintsHistoryDataString;
 
   // the eight tyre stints of m_tyreStinsHistoryData are collapsed to a single string
@@ -164,15 +165,16 @@ std::string PacketSessionHistoryDataString(PacketSessionHistoryData obj, std::ui
   if (!compr_TyreStintsHistoryDataString.empty()) compr_TyreStintsHistoryDataString.pop_back();
 
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                   //
-      LapMetaDataString(obj.m_lapMetaData),               //
-      LapHistoryDataString(obj.m_lapHistoryData[lapID]),  //
-      compr_TyreStintsHistoryDataString                   //
+      PacketHeaderString(obj.m_header),                //
+      LapMetaDataString(obj.m_lapMetaData),            //
+      LapHistoryDataString(obj.m_lapHistoryData[id]),  //
+      compr_TyreStintsHistoryDataString                //
   };
   return vpaste(vec, sep);
 }
 
-PacketSessionHistoryData ParsePacketSessionHistoryData(std::vector<unsigned char> bytes) {
+template <>
+PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<unsigned char> bytes) {
   PacketSessionHistoryData obj;
   std::uint16_t offset = 0;
 

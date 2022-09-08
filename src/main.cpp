@@ -281,10 +281,9 @@ int main(int argc, char** argv) {
       // DAMAGE
 
       if (DEBUG) spdlog::debug("parsing car damage packet");
-      PacketCarDamageData obj = parsePacketData(filebytes);
+      auto obj = parsePacketData<PacketCarDamageData>(filebytes);
       for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(packet.file_id)
-            << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
+        output_files.at(packet.file_id) << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
         if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), packetDataString(obj, i).c_str());
       }
 
@@ -292,11 +291,10 @@ int main(int argc, char** argv) {
       // SESSION HISTORY
 
       if (DEBUG) spdlog::debug("parsing session history packet");
-      PacketSessionHistoryData obj = ParsePacketSessionHistoryData(filebytes);
+      auto obj = parsePacketData<PacketSessionHistoryData>(filebytes);
       for (std::uint8_t i = 0; i < 100; i++) {
-        output_files.at(SessionHistoryPacketID)
-            << std::to_string(i) + "," + PacketSessionHistoryDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketSessionHistoryDataString(obj, i).c_str());
+        output_files.at(packet.file_id) << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
+        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), packetDataString(obj, i).c_str());
       }
 
     } else {

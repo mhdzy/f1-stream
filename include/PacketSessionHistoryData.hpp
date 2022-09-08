@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -57,7 +58,10 @@ extern std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::str
 extern TyreStintHistoryData ParseTyreStintHistoryData(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketSessionHistoryDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketSessionHistoryDataString(PacketSessionHistoryData obj, std::uint8_t lapID,
-                                                  std::string sep = ",", std::string compr = "/",
-                                                  std::string compr2 = ";");
-extern PacketSessionHistoryData ParsePacketSessionHistoryData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketSessionHistoryData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<unsigned char> bytes);
