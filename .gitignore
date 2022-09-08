@@ -3,6 +3,7 @@
 build/*
 
 # compilation target
+main
 src/main
 
 # udp data output
