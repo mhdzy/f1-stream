@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -44,5 +45,5 @@ extern std::string CarDamageDataString(CarDamageData obj, std::string sep = ",")
 extern CarDamageData ParseCarDamageData(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketCarDamageDataCSVHeader(std::string sep = ",");
-extern std::string PacketCarDamageDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketCarDamageData ParsePacketCarDamageData(std::vector<unsigned char> bytes);
+extern std::string packetDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep = ",");
+extern PacketCarDamageData parsePacketData(std::vector<unsigned char> bytes);

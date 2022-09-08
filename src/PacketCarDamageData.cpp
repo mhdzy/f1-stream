@@ -150,7 +150,7 @@ std::string PacketCarDamageDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketCarDamageDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep) {
+std::string packetDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep) {
   std::vector<std::string> vec = {
       PacketHeaderString(obj.m_header),                //
       CarDamageDataString(obj.m_carDamageData[carID])  //
@@ -158,7 +158,7 @@ std::string PacketCarDamageDataString(PacketCarDamageData obj, std::uint8_t carI
   return vpaste(vec, sep);
 }
 
-PacketCarDamageData ParsePacketCarDamageData(std::vector<unsigned char> bytes) {
+PacketCarDamageData parsePacketData(std::vector<unsigned char> bytes) {
   PacketCarDamageData obj;
   std::uint16_t offset = 0;
 

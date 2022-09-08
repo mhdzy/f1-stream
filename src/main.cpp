@@ -281,10 +281,11 @@ int main(int argc, char** argv) {
       // DAMAGE
 
       if (DEBUG) spdlog::debug("parsing car damage packet");
-      PacketCarDamageData obj = ParsePacketCarDamageData(filebytes);
+      PacketCarDamageData obj = parsePacketData(filebytes);
       for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(CarDamagePacketID) << std::to_string(i) + "," + PacketCarDamageDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketCarDamageDataString(obj, i).c_str());
+        output_files.at(packet.file_id)
+            << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
+        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), packetDataString(obj, i).c_str());
       }
 
     } else if (packet.file_id == SessionHistoryPacketID) {

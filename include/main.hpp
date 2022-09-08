@@ -19,6 +19,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketCarDamageData.hpp"
 #include "PacketCarSetupData.hpp"
 #include "PacketCarStatusData.hpp"
