@@ -1,36 +1,29 @@
 CC := g++
 CCFLAGS := -Wall -std=c++17
 
-LINK_OPTS := -lstdc++fs
+# need to set '-lstdc++fs' on linux, breaks macOS builds
+OS_NAME := $(shell uname -s | tr A-Z a-z)
+OS_FLAGS :=
+ifeq ($(OS_NAME), "linux")
+	OS_FLAGS += -lstdc++fs
+endif
 
+BUILD_DIR   := build
+INCLUDE_DIR := include
 SOURCE_DIR  := src
-UTILS_DIR   := src/utils
-PACKETS_DIR := src/packets
 
-INC := /usr/local/include $(UTILS_DIR) $(PACKET_DIR)
+TARGET := main
+
+# some included libraries (spdlog)
+INC := /usr/local/include $(CURDIR)/$(INCLUDE_DIR)
 INC_LIBS := $(addprefix -I,$(INC))
 
-OBJECTS := \
-	$(SOURCE_DIR)/main.o \
-	$(PACKETS_DIR)/PacketCarDamageData.o \
-	$(PACKETS_DIR)/PacketCarSetupData.o \
-	$(PACKETS_DIR)/PacketCarStatusData.o \
-	$(PACKETS_DIR)/PacketCarTelemetryData.o \
-	$(PACKETS_DIR)/PacketEventData.o \
-	$(PACKETS_DIR)/PacketFinalClassificationData.o \
-	$(PACKETS_DIR)/PacketHeader.o \
-	$(PACKETS_DIR)/PacketLapData.o \
-	$(PACKETS_DIR)/PacketLobbyInfoData.o \
-	$(PACKETS_DIR)/PacketMap.o \
-	$(PACKETS_DIR)/PacketMotionData.o \
-	$(PACKETS_DIR)/PacketParticipantsData.o \
-	$(PACKETS_DIR)/PacketSessionData.o \
-	$(PACKETS_DIR)/PacketSessionHistoryData.o \
-	$(UTILS_DIR)/File.o \
-	$(UTILS_DIR)/Bytes.o
-
-TARGET := \
-	$(SOURCE_DIR)/main
+# auto-detect source .cpp files and derive .o names
+# assumes corresponding .hpp files exist in the $(INCLUDE_DIR)
+SOURCES := $(wildcard $(SOURCE_DIR)/*.cpp)
+OBJECTS := $(patsubst $(SOURCE_DIR)/%,%,$(SOURCES))
+OBJECTS := $(patsubst %.cpp,%.o,$(OBJECTS))
+OBJECTS := $(addprefix $(BUILD_DIR)/,$(OBJECTS))
 
 # setup 'make run' args
 ifeq (run, $(firstword $(MAKECMDGOALS)))
@@ -44,9 +37,9 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	@echo "linking $@"
-	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(LINK_OPTS)
+	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(OS_FLAGS)
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@printf "%s\n" "compiling $<"
 	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
 

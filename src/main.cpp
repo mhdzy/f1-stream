@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "../include/main.hpp"
 
 #define PORT 20777
 #define BUFSIZE 4096

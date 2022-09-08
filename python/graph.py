@@ -12,7 +12,11 @@ import pyqtgraph as pg
 import pyqtgraph.parametertree as ptree
 from pyqtgraph.Qt import QtCore, QtWidgets
 
-dat = pd.read_csv("data/spr-mp/parsed/Motion.csv")
+dmotion = pd.read_csv("data/spr-mp/parsed/Motion.csv")
+dplayers = pd.read_csv("data/spr-mp/parsed/Participants.csv")
+
+my_id = dplayers[dplayers.m_name == 'Sumosusa']['m_carID'].unique().item()
+dmotion
 
 translate = QtCore.QCoreApplication.translate
 
@@ -64,6 +68,7 @@ param = ptree.Parameter.create(
         ),
     ],
 )
+
 for c in param.children():
     c.setDefault(c.value())
 
