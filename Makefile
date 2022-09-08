@@ -1,6 +1,6 @@
 # compiler and flags
 CC := g++
-CCFLAGS := -Wall -std=c++17
+CCFLAGS := -Wall -std=c++20
 
 # need to set '-lstdc++fs' on linux, breaks macOS builds
 OS_NAME := $(shell uname -s | tr A-Z a-z)

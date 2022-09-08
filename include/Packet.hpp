@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cstdio>
+#include <iostream>
+#include <ostream>
 #include <string>
 
 template <class T>

@@ -21,6 +21,23 @@ const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
 };
 
 /**
+ * @brief All packets holding core info in arrays can be printed using this function.
+ * This is declared in main to avoid dealing with troubles handling ostream objects.
+ *
+ * @param obj An (auto) object, passed to the templated packetDataString().
+ * @param output_file A reference to the output stream file.
+ * @param loops Sets the upper loop boundary; if 0, prints once; 22 for car data; 100 for lap (session) data.
+ * @param debug A flag to enable extra output.
+ */
+void printPacket(auto obj, std::ofstream& output_file, std::uint8_t loops, bool debug = false) {
+  for (std::uint8_t i = 0; i < loops; i++) {
+    std::string str = packetDataString(obj, i);
+    output_file << std::to_string(i) + "," + str + "\n";
+    if (debug) printf("%s,%s\n", std::to_string(i).c_str(), str.c_str());
+  }
+}
+
+/**
  * @brief
  *
  * @param argc
@@ -28,7 +45,7 @@ const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
  * @return int
  */
 int main(int argc, char** argv) {
-  const char* USAGE = "Usage: ./f1stream <track> [live|batch]\n";
+  const char* USAGE = "Usage: ./main <track> [live|batch]\n";
 
   if (argc < 2) {
     std::perror(USAGE);
@@ -133,10 +150,11 @@ int main(int argc, char** argv) {
   }
   if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
+  // WRITE HEADERS
   output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
-  output_files.at(SessionPacketID) << PacketSessionDataCSVHeader() + "\n";
+  output_files.at(SessionPacketID) << "m_nopID," + PacketSessionDataCSVHeader() + "\n";
   output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
-  output_files.at(EventPacketID) << PacketEventDataCSVHeader() + "\n";
+  output_files.at(EventPacketID) << "m_nopID" + PacketEventDataCSVHeader() + "\n";
   output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
@@ -282,24 +300,20 @@ int main(int argc, char** argv) {
 
       if (DEBUG) spdlog::debug("parsing car damage packet");
       auto obj = parsePacketData<PacketCarDamageData>(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(packet.file_id) << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), packetDataString(obj, i).c_str());
-      }
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == SessionHistoryPacketID) {
       // SESSION HISTORY
 
       if (DEBUG) spdlog::debug("parsing session history packet");
       auto obj = parsePacketData<PacketSessionHistoryData>(filebytes);
-      for (std::uint8_t i = 0; i < 100; i++) {
-        output_files.at(packet.file_id) << std::to_string(i) + "," + packetDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), packetDataString(obj, i).c_str());
-      }
+      printPacket(obj, output_files.at(packet.file_id), 100, DEBUG);
 
     } else {
       spdlog::error("unknown packet id encountered: {}", packet.file_id);
+      perror("undefined packet type");
     }
+
     if (DEBUG) spdlog::debug("\n");
   }
   spdlog::debug("parsed all packets");
