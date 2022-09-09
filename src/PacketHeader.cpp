@@ -28,7 +28,8 @@ std::vector<std::string> PacketHeaderNames = {
                                  // (splitscreen), 255 if no second player
 };
 
-std::string PacketHeaderString(PacketHeader obj, std::string sep) {
+template <>
+std::string subpacketDataString(PacketHeader obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%llu%s%f%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 

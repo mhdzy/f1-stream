@@ -42,13 +42,19 @@ struct PacketFinalClassificationData {
 
 extern std::vector<std::size_t> FinalClassificationDataSizes;
 extern std::vector<std::string> FinalClassificationDataNames;
-extern std::string FinalClassificationDataString(FinalClassificationData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(FinalClassificationData obj, std::string sep);
+
 template <>
 FinalClassificationData parseSubpacketData<FinalClassificationData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> FinalClassificationMetaSizes;
 extern std::vector<std::string> FinalClassificationMetaNames;
-extern std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(FinalClassificationMeta obj, std::string sep);
+
 template <>
 FinalClassificationMeta parseSubpacketData<FinalClassificationMeta>(std::vector<std::vector<unsigned char>> bytes);
 

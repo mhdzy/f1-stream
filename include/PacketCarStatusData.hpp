@@ -55,7 +55,9 @@ struct PacketCarStatusData {
 
 extern std::vector<std::size_t> CarStatusDataSizes;
 extern std::vector<std::string> CarStatusDataNames;
-extern std::string CarStatusDataString(CarStatusData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(CarStatusData obj, std::string sep);
 
 template <>
 CarStatusData parseSubpacketData<CarStatusData>(std::vector<std::vector<unsigned char>> bytes);

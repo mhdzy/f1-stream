@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
   if (MODE == "live") spdlog::info(" port {}", PORT);
 
   // main loop
-  for (std::uint16_t i = 0; i < MAXPACKETS; i++) {
+  for (std::uint32_t i = 0; i < MAXPACKETS; i++) {
     PacketMap packet;
     std::vector<unsigned char> filebytes;
 

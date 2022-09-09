@@ -144,7 +144,9 @@ extern std::map<std::string, std::pair<std::string, std::string>> Events;
 
 extern std::vector<std::size_t> EventDataDetailsSizes;
 extern std::vector<std::string> EventDataDetailsNames;
-extern std::string EventDataDetailsString(EventDataDetails obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(EventDataDetails obj, std::string sep);
 
 template <>
 EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<unsigned char>> bytes);

@@ -58,7 +58,8 @@ std::vector<std::string> CarTelemetryPanelNames = {
                                        // 0 if no gear suggested
 };
 
-std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarTelemetryData obj, std::string sep) {
   const char *fmt = "%d%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%s%s%s%s%d%s%s%s%s";
   const char *ssep = sep.c_str();
   const std::string csep = "/";
@@ -170,7 +171,8 @@ CarTelemetryData parseSubpacketData<CarTelemetryData>(std::vector<std::vector<un
   return obj;
 }
 
-std::string CarTelemetryPanelString(CarTelemetryPanel obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarTelemetryPanel obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -211,9 +213,9 @@ template <>
 std::string packetDataString(PacketCarTelemetryData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                    //
-      CarTelemetryDataString(obj.m_carTelemetryData[id]),  //
-      CarTelemetryPanelString(obj.m_carTelemetryPanel)     //
+      subpacketDataString(obj.m_header),                //
+      subpacketDataString(obj.m_carTelemetryData[id]),  //
+      subpacketDataString(obj.m_carTelemetryPanel)      //
   };
   return vpaste(vec, sep);
 }

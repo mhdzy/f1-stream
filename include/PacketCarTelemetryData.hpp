@@ -49,14 +49,18 @@ struct PacketCarTelemetryData {
 
 extern std::vector<std::size_t> CarTelemetryDataSizes;
 extern std::vector<std::string> CarTelemetryDataNames;
-extern std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(CarTelemetryData obj, std::string sep);
 
 template <>
 CarTelemetryData parseSubpacketData<CarTelemetryData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> CarTelemetryPanelSizes;
 extern std::vector<std::string> CarTelemetryPanelNames;
-extern std::string CarTelemetryPanelString(CarTelemetryPanel obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(CarTelemetryPanel obj, std::string sep);
 
 template <>
 CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<unsigned char>> bytes);

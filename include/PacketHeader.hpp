@@ -29,6 +29,8 @@ struct PacketHeader {
 extern std::vector<std::size_t> PacketHeaderSizes;
 extern std::vector<std::string> PacketHeaderNames;
 
-extern std::string PacketHeaderString(PacketHeader obj, std::string sep = ",");
+template <>
+std::string subpacketDataString(PacketHeader obj, std::string sep);
+
 template <>
 PacketHeader parseSubpacketData<PacketHeader>(std::vector<std::vector<unsigned char>> bytes);

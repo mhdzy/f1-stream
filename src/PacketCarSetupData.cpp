@@ -50,7 +50,8 @@ std::vector<std::string> CarSetupDataNames = {
     "m_fuelLoad"                 // Fuel load
 };
 
-std::string CarSetupDataString(CarSetupData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarSetupData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%d%s%f";
   const char *ssep = sep.c_str();
 
@@ -119,8 +120,8 @@ template <>
 std::string packetDataString(PacketCarSetupData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),        //
-      CarSetupDataString(obj.m_carSetups[id])  //
+      subpacketDataString(obj.m_header),        //
+      subpacketDataString(obj.m_carSetups[id])  //
   };
   return vpaste(vec, sep);
 }

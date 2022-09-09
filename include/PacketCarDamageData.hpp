@@ -41,7 +41,9 @@ struct PacketCarDamageData {
 
 extern std::vector<std::size_t> CarDamageDataSizes;
 extern std::vector<std::string> CarDamageDataNames;
-extern std::string CarDamageDataString(CarDamageData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(CarDamageData obj, std::string sep);
 
 template <>
 CarDamageData parseSubpacketData<CarDamageData>(std::vector<std::vector<unsigned char>> bytes);

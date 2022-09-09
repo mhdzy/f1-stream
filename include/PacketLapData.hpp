@@ -56,13 +56,19 @@ struct PacketLapData {
 
 extern std::vector<std::size_t> LapDataSizes;
 extern std::vector<std::string> LapDataNames;
-extern std::string LapDataString(LapData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(LapData obj, std::string sep);
+
 template <>
 LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> LapDataIdxSizes;
 extern std::vector<std::string> LapDataIdxNames;
-extern std::string LapDataIdxString(LapDataIdx obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(LapDataIdx obj, std::string sep);
+
 template <>
 LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>> bytes);
 

@@ -66,11 +66,15 @@ extern std::vector<std::string> CarMotionDataNames;
 extern std::vector<std::size_t> ExtraCarMotionDataSizes;
 extern std::vector<std::string> ExtraCarMotionDataNames;
 
-extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
+template <>
+std::string subpacketDataString(CarMotionData obj, std::string sep);
+
 template <>
 CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
+template <>
+std::string subpacketDataString(ExtraCarMotionData obj, std::string sep);
+
 template <>
 ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vector<unsigned char>> bytes);
 

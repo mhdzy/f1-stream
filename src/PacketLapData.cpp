@@ -74,7 +74,8 @@ std::vector<std::string> LapDataIdxNames = {
     "m_timeTrialRivalCarIdx"  // Index of Rival car in time trial (255 if invalid)
 };
 
-std::string LapDataString(LapData obj, std::string sep) {
+template <>
+std::string subpacketDataString(LapData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -134,7 +135,8 @@ LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> byte
   return obj;
 }
 
-std::string LapDataIdxString(LapDataIdx obj, std::string sep) {
+template <>
+std::string subpacketDataString(LapDataIdx obj, std::string sep) {
   const char *fmt = "%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -172,9 +174,9 @@ template <>
 std::string packetDataString(PacketLapData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),   //
-      LapDataString(obj.m_lapData[id]),   //
-      LapDataIdxString(obj.m_lapDataIdx)  //
+      subpacketDataString(obj.m_header),       //
+      subpacketDataString(obj.m_lapData[id]),  //
+      subpacketDataString(obj.m_lapDataIdx)    //
   };
   return vpaste(vec, sep);
 }

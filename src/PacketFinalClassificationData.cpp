@@ -46,7 +46,8 @@ std::vector<std::string> FinalClassificationMetaNames = {
     "m_numCars"  //  Number of cars in the final classification
 };
 
-std::string FinalClassificationDataString(FinalClassificationData obj, std::string sep) {
+template <>
+std::string subpacketDataString(FinalClassificationData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%d%s%d%s%d%s%s%s%s%s%s";
   const char *ssep = sep.c_str();
   const std::string csep = "/";
@@ -131,7 +132,8 @@ FinalClassificationData parseSubpacketData<FinalClassificationData>(std::vector<
   return obj;
 }
 
-std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep) {
+template <>
+std::string subpacketDataString(FinalClassificationMeta obj, std::string sep) {
   const char *fmt = "%d";
   // const char *ssep = sep.c_str();
 
@@ -170,9 +172,9 @@ template <>
 std::string packetDataString(PacketFinalClassificationData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                            //
-      FinalClassificationMetaString(obj.m_classificationMeta),     //
-      FinalClassificationDataString(obj.m_classificationData[id])  //
+      subpacketDataString(obj.m_header),                 //
+      subpacketDataString(obj.m_classificationMeta),     //
+      subpacketDataString(obj.m_classificationData[id])  //
   };
 
   return vpaste(vec, sep);

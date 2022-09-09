@@ -48,7 +48,8 @@ std::vector<std::string> CarDamageDataNames = {
     "m_engineSeized"           // Engine seized, 0 = OK, 1 = fault
 };
 
-std::string CarDamageDataString(CarDamageData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarDamageData obj, std::string sep) {
   const char *fmt = "%s%s%s%s%s%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
   const std::string csep = "/";
@@ -156,8 +157,8 @@ template <>
 std::string packetDataString(PacketCarDamageData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),             //
-      CarDamageDataString(obj.m_carDamageData[id])  //
+      subpacketDataString(obj.m_header),            //
+      subpacketDataString(obj.m_carDamageData[id])  //
   };
   return vpaste(vec, sep);
 }

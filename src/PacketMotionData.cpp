@@ -78,7 +78,8 @@ std::vector<std::string> ExtraCarMotionDataNames = {
     "m_frontWheelsAngle"         // Curent front wheel angle in radians
 };
 
-std::string CarMotionDataString(CarMotionData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarMotionData obj, std::string sep) {
   const char *fmt = "%f%s%f%s%f%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%f%s%f%s%f";
   const char *ssep = sep.c_str();
 
@@ -127,7 +128,8 @@ CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned
   return obj;
 }
 
-std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep) {
+template <>
+std::string subpacketDataString(ExtraCarMotionData obj, std::string sep) {
   const char *fmt = "%s%s%s%s%s%s%s%s%s%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f%s%f";
   const char *ssep = sep.c_str();
   const std::string csep = "/";
@@ -250,9 +252,9 @@ template <>
 std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                   //
-      CarMotionDataString(obj.m_carMotionData[id]),       //
-      ExtraCarMotionDataString(obj.m_extraCarMotionData)  //
+      subpacketDataString(obj.m_header),             //
+      subpacketDataString(obj.m_carMotionData[id]),  //
+      subpacketDataString(obj.m_extraCarMotionData)  //
   };
   return vpaste(vec, sep);
 }

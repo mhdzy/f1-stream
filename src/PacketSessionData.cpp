@@ -150,7 +150,8 @@ std::vector<std::string> PacketSessionDataBotNames = {
                                  // 5 = Medium Long, 6 = Long, 7 = Full
 };
 
-std::string MarshalZoneString(MarshalZone obj, std::string sep) {
+template <>
+std::string subpacketDataString(MarshalZone obj, std::string sep) {
   const char *fmt = "%f%s%d";
   const char *ssep = sep.c_str();
 
@@ -173,7 +174,8 @@ MarshalZone parseSubpacketData<MarshalZone>(std::vector<std::vector<unsigned cha
   return obj;
 }
 
-std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string sep) {
+template <>
+std::string subpacketDataString(WeatherForecastSample obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -207,7 +209,8 @@ WeatherForecastSample parseSubpacketData<WeatherForecastSample>(std::vector<std:
   return obj;
 }
 
-std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep) {
+template <>
+std::string subpacketDataString(PacketSessionDataTop obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -252,7 +255,8 @@ PacketSessionDataTop parseSubpacketData<PacketSessionDataTop>(std::vector<std::v
   return obj;
 }
 
-std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep) {
+template <>
+std::string subpacketDataString(PacketSessionDataMid obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -278,7 +282,8 @@ PacketSessionDataMid parseSubpacketData<PacketSessionDataMid>(std::vector<std::v
   return obj;
 }
 
-std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep) {
+template <>
+std::string subpacketDataString(PacketSessionDataBot obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -371,24 +376,24 @@ std::string packetDataString(PacketSessionData obj, std::uint8_t id, std::string
   // compress marshal zones
   std::string compr_marshalZones;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
-    compr_marshalZones += MarshalZoneString(obj.m_marshalZones[i], compr) + compr2;
+    compr_marshalZones += subpacketDataString(obj.m_marshalZones[i], compr) + compr2;
   }
   if (!compr_marshalZones.empty()) compr_marshalZones.pop_back();
 
   // compress weather forecasts
   std::string compr_weatherForecastSamples;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataMid.m_numWeatherForecastSamples; i++) {
-    compr_weatherForecastSamples += WeatherForecastSampleString(obj.m_weatherForecastSamples[i], compr) + compr2;
+    compr_weatherForecastSamples += subpacketDataString(obj.m_weatherForecastSamples[i], compr) + compr2;
   }
   if (!compr_weatherForecastSamples.empty()) compr_weatherForecastSamples.pop_back();
 
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),
-      PacketSessionDataTopString(obj.m_packetSessionDataTop),
+      subpacketDataString(obj.m_header),
+      subpacketDataString(obj.m_packetSessionDataTop),
       compr_marshalZones,
-      PacketSessionDataMidString(obj.m_packetSessionDataMid),
+      subpacketDataString(obj.m_packetSessionDataMid),
       compr_weatherForecastSamples,
-      PacketSessionDataBotString(obj.m_PacketSessionDataBot),
+      subpacketDataString(obj.m_PacketSessionDataBot),
   };
 
   return vpaste(vec, sep);

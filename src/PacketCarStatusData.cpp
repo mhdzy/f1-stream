@@ -74,7 +74,8 @@ std::vector<std::string> CarStatusDataNames = {
     "m_networkPaused"             // Whether the car is paused in a network game
 };
 
-std::string CarStatusDataString(CarStatusData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarStatusData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%d%s%f%s%f%s%f%s%d";
   const char *ssep = sep.c_str();
 
@@ -144,8 +145,8 @@ template <>
 std::string packetDataString(PacketCarStatusData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),              //
-      CarStatusDataString(obj.m_carStatusData[id]),  //
+      subpacketDataString(obj.m_header),             //
+      subpacketDataString(obj.m_carStatusData[id]),  //
   };
   return vpaste(vec, sep);
 }

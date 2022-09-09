@@ -50,7 +50,8 @@ std::vector<std::string> TyreStintHistoryDataNames = {
     "m_tyreVisualCompound"   // Visual tyres used by this driver
 };
 
-std::string LapMetaDataString(LapMetaData obj, std::string sep) {
+template <>
+std::string subpacketDataString(LapMetaData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -82,7 +83,8 @@ LapMetaData parseSubpacketData<LapMetaData>(std::vector<std::vector<unsigned cha
   return obj;
 }
 
-std::string LapHistoryDataString(LapHistoryData obj, std::string sep) {
+template <>
+std::string subpacketDataString(LapHistoryData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -111,7 +113,8 @@ LapHistoryData parseSubpacketData<LapHistoryData>(std::vector<std::vector<unsign
   return obj;
 }
 
-std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::string sep) {
+template <>
+std::string subpacketDataString(TyreStintHistoryData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -164,15 +167,15 @@ std::string packetDataString(PacketSessionHistoryData obj, std::uint8_t id, std:
 
   // the eight tyre stints of m_tyreStinsHistoryData are collapsed to a single string
   for (std::uint8_t i = 0; i < 8; i++) {
-    compr_TyreStintsHistoryDataString += TyreStintHistoryDataString(obj.m_tyreStintsHistoryData[i], compr) + compr2;
+    compr_TyreStintsHistoryDataString += subpacketDataString(obj.m_tyreStintsHistoryData[i], compr) + compr2;
   }
   if (!compr_TyreStintsHistoryDataString.empty()) compr_TyreStintsHistoryDataString.pop_back();
 
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                //
-      LapMetaDataString(obj.m_lapMetaData),            //
-      LapHistoryDataString(obj.m_lapHistoryData[id]),  //
-      compr_TyreStintsHistoryDataString                //
+      subpacketDataString(obj.m_header),              //
+      subpacketDataString(obj.m_lapMetaData),         //
+      subpacketDataString(obj.m_lapHistoryData[id]),  //
+      compr_TyreStintsHistoryDataString               //
   };
   return vpaste(vec, sep);
 }

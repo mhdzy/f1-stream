@@ -33,13 +33,19 @@ struct PacketLobbyInfoData {
 
 extern std::vector<std::size_t> LobbyInfoDataSizes;
 extern std::vector<std::string> LobbyInfoDataNames;
-extern std::string LobbyInfoDataString(LobbyInfoData obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(LobbyInfoData obj, std::string sep);
+
 template <>
 LobbyInfoData parseSubpacketData<LobbyInfoData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> LobbyInfoMetaSizes;
 extern std::vector<std::string> LobbyInfoMetaNames;
-extern std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep = ",");
+
+template <>
+std::string subpacketDataString(LobbyInfoMeta obj, std::string sep);
+
 template <>
 LobbyInfoMeta parseSubpacketData<LobbyInfoMeta>(std::vector<std::vector<unsigned char>> bytes);
 

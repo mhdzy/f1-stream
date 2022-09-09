@@ -29,7 +29,8 @@ std::vector<std::string> LobbyInfoDataNames = {
     "m_readyStatus"    // 0 = not ready, 1 = ready, 2 = spectating
 };
 
-std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep) {
+template <>
+std::string subpacketDataString(LobbyInfoMeta obj, std::string sep) {
   const char *fmt = "%d";
   // const char *ssep = sep.c_str();
 
@@ -53,7 +54,8 @@ LobbyInfoMeta parseSubpacketData<LobbyInfoMeta>(std::vector<std::vector<unsigned
   return obj;
 }
 
-std::string LobbyInfoDataString(LobbyInfoData obj, std::string sep) {
+template <>
+std::string subpacketDataString(LobbyInfoData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%s%s%d%s%d";
   const char *ssep = sep.c_str();
 
@@ -97,9 +99,9 @@ template <>
 std::string packetDataString(PacketLobbyInfoData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),            //
-      LobbyInfoMetaString(obj.m_lobbyPlayer),      //
-      LobbyInfoDataString(obj.m_lobbyPlayers[id])  //
+      subpacketDataString(obj.m_header),           //
+      subpacketDataString(obj.m_lobbyPlayer),      //
+      subpacketDataString(obj.m_lobbyPlayers[id])  //
   };
   return vpaste(vec, sep);
 }

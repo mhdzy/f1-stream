@@ -36,7 +36,8 @@ std::vector<std::string> ParticipantMetadataNames = {
                        // cars on HUD
 };
 
-std::string ParticipantDataString(ParticipantData obj, std::string sep) {
+template <>
+std::string subpacketDataString(ParticipantData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%d";
   const char *ssep = sep.c_str();
 
@@ -70,7 +71,8 @@ ParticipantData parseSubpacketData<ParticipantData>(std::vector<std::vector<unsi
   return obj;
 }
 
-std::string ParticipantMetadataString(ParticipantMetadata obj, std::string sep) {
+template <>
+std::string subpacketDataString(ParticipantMetadata obj, std::string sep) {
   const char *fmt = "%d";
   // const char *ssep = sep.c_str();
 
@@ -106,9 +108,9 @@ template <>
 std::string packetDataString(PacketParticipantsData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),              //
-      ParticipantMetadataString(obj.m_participant),  //
-      ParticipantDataString(obj.m_participants[id])  //
+      subpacketDataString(obj.m_header),           //
+      subpacketDataString(obj.m_participant),      //
+      subpacketDataString(obj.m_participants[id])  //
   };
   return vpaste(vec, sep);
 }
