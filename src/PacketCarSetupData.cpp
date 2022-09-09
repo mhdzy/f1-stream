@@ -128,12 +128,12 @@ PacketCarSetupData parsePacketData<PacketCarSetupData>(std::vector<unsigned char
   PacketCarSetupData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // iterate over all car indices
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carSetups[i] = ParseCarSetupData(parse_bytes_to_vec(CarSetupDataSizes, bytes, offset));
+    obj.m_carSetups[i] = ParseCarSetupData(parseBytes(CarSetupDataSizes, bytes, offset));
     offset += sizeof(CarSetupData);
   }
 

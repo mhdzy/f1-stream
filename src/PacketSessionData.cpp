@@ -393,29 +393,29 @@ PacketSessionData parsePacketData<PacketSessionData>(std::vector<unsigned char> 
   PacketSessionData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
-  obj.m_packetSessionDataTop = ParsePacketSessionDataTop(parse_bytes_to_vec(PacketSessionDataTopSizes, bytes, offset));
+  obj.m_packetSessionDataTop = ParsePacketSessionDataTop(parseBytes(PacketSessionDataTopSizes, bytes, offset));
   offset += sizeof(PacketSessionDataTop);
 
   // iterate over all marshal zone array indices to correctly set the offset
   for (std::uint8_t i = 0; i < 21; i++) {
-    obj.m_marshalZones[i] = ParseMarshalZone(parse_bytes_to_vec(MarshalZoneSizes, bytes, offset));
+    obj.m_marshalZones[i] = ParseMarshalZone(parseBytes(MarshalZoneSizes, bytes, offset));
     offset += sizeof(MarshalZone);
   }
 
-  obj.m_packetSessionDataMid = ParsePacketSessionDataMid(parse_bytes_to_vec(PacketSessionDataMidSizes, bytes, offset));
+  obj.m_packetSessionDataMid = ParsePacketSessionDataMid(parseBytes(PacketSessionDataMidSizes, bytes, offset));
   offset += sizeof(PacketSessionDataMid);
 
   // same reasoning as above (loop limit of 56)
   for (std::uint8_t i = 0; i < 56; i++) {
     obj.m_weatherForecastSamples[i] =
-        ParseWeatherForecastSample(parse_bytes_to_vec(WeatherForecastSampleSizes, bytes, offset));
+        ParseWeatherForecastSample(parseBytes(WeatherForecastSampleSizes, bytes, offset));
     offset += sizeof(WeatherForecastSample);
   }
 
-  obj.m_PacketSessionDataBot = ParsePacketSessionDataBot(parse_bytes_to_vec(PacketSessionDataBotSizes, bytes, offset));
+  obj.m_PacketSessionDataBot = ParsePacketSessionDataBot(parseBytes(PacketSessionDataBotSizes, bytes, offset));
   offset += sizeof(PacketSessionDataBot);
 
   return obj;

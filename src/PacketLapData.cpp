@@ -182,16 +182,16 @@ PacketLapData parsePacketData<PacketLapData>(std::vector<unsigned char> bytes) {
 
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // iterate over all car indices
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_lapData[i] = ParseLapData(parse_bytes_to_vec(LapDataSizes, bytes, offset));
+    obj.m_lapData[i] = ParseLapData(parseBytes(LapDataSizes, bytes, offset));
     offset += sizeof(LapData);
   }
 
-  obj.m_lapDataIdx = ParseLapDataIdx(parse_bytes_to_vec(LapDataIdxSizes, bytes, offset));
+  obj.m_lapDataIdx = ParseLapDataIdx(parseBytes(LapDataIdxSizes, bytes, offset));
   offset += sizeof(LapDataIdx);
 
   return obj;

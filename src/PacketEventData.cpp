@@ -101,7 +101,7 @@ PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> byte
   PacketEventData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // extract packet type

@@ -166,12 +166,12 @@ PacketCarDamageData parsePacketData<PacketCarDamageData>(std::vector<unsigned ch
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carDamageData[i] = ParseCarDamageData(parse_bytes_to_vec(CarDamageDataSizes, bytes, offset));
+    obj.m_carDamageData[i] = ParseCarDamageData(parseBytes(CarDamageDataSizes, bytes, offset));
     offset += sizeof(CarDamageData);
   }
 

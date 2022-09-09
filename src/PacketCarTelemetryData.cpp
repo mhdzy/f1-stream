@@ -221,17 +221,17 @@ PacketCarTelemetryData parsePacketData<PacketCarTelemetryData>(std::vector<unsig
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carTelemetryData[i] = ParseCarTelemetryData(parse_bytes_to_vec(CarTelemetryDataSizes, bytes, offset));
+    obj.m_carTelemetryData[i] = ParseCarTelemetryData(parseBytes(CarTelemetryDataSizes, bytes, offset));
     offset += sizeof(CarTelemetryData);
   }
 
   // parse extra player car data
-  obj.m_carTelemetryPanel = ParseCarTelemetryPanel(parse_bytes_to_vec(CarTelemetryPanelSizes, bytes, offset));
+  obj.m_carTelemetryPanel = ParseCarTelemetryPanel(parseBytes(CarTelemetryPanelSizes, bytes, offset));
 
   return obj;
 }

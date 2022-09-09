@@ -107,16 +107,16 @@ PacketLobbyInfoData parsePacketData<PacketLobbyInfoData>(std::vector<unsigned ch
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // parse extra player car data
-  obj.m_lobbyPlayer = ParseLobbyInfoMeta(parse_bytes_to_vec(LobbyInfoMetaSizes, bytes, offset));
+  obj.m_lobbyPlayer = ParseLobbyInfoMeta(parseBytes(LobbyInfoMetaSizes, bytes, offset));
   offset += sizeof(LobbyInfoMeta);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_lobbyPlayers[i] = ParseLobbyInfoData(parse_bytes_to_vec(LobbyInfoDataSizes, bytes, offset));
+    obj.m_lobbyPlayers[i] = ParseLobbyInfoData(parseBytes(LobbyInfoDataSizes, bytes, offset));
     offset += sizeof(LobbyInfoData);
   }
 

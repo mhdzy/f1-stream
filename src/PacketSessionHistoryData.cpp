@@ -178,21 +178,21 @@ PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<u
   PacketSessionHistoryData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
-  obj.m_lapMetaData = ParseLapMetaData(parse_bytes_to_vec(LapMetaDataSizes, bytes, offset));
+  obj.m_lapMetaData = ParseLapMetaData(parseBytes(LapMetaDataSizes, bytes, offset));
   offset += sizeof(LapMetaData);
 
   // iterate over all marshal zone array indices to correctly set the offset
   for (std::uint8_t i = 0; i < 100; i++) {
-    obj.m_lapHistoryData[i] = ParseLapHistoryData(parse_bytes_to_vec(LapHistoryDataSizes, bytes, offset));
+    obj.m_lapHistoryData[i] = ParseLapHistoryData(parseBytes(LapHistoryDataSizes, bytes, offset));
     offset += sizeof(LapHistoryData);
   }
 
   for (std::uint8_t i = 0; i < 8; i++) {
     obj.m_tyreStintsHistoryData[i] =
-        ParseTyreStintHistoryData(parse_bytes_to_vec(TyreStintHistoryDataSizes, bytes, offset));
+        ParseTyreStintHistoryData(parseBytes(TyreStintHistoryDataSizes, bytes, offset));
     offset += sizeof(TyreStintHistoryData);
   }
 

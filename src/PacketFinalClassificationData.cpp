@@ -181,17 +181,17 @@ PacketFinalClassificationData parsePacketData<PacketFinalClassificationData>(std
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   obj.m_classificationMeta =
-      ParseFinalClassificationMeta(parse_bytes_to_vec(FinalClassificationMetaSizes, bytes, offset));
+      ParseFinalClassificationMeta(parseBytes(FinalClassificationMetaSizes, bytes, offset));
   offset += sizeof(FinalClassificationMeta);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
     obj.m_classificationData[i] =
-        ParseFinalClassificationData(parse_bytes_to_vec(FinalClassificationDataSizes, bytes, offset));
+        ParseFinalClassificationData(parseBytes(FinalClassificationDataSizes, bytes, offset));
     offset += sizeof(FinalClassificationData);
   }
 

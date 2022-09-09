@@ -260,17 +260,17 @@ PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> by
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carMotionData[i] = ParseCarMotionData(parse_bytes_to_vec(CarMotionDataSizes, bytes, offset));
+    obj.m_carMotionData[i] = ParseCarMotionData(parseBytes(CarMotionDataSizes, bytes, offset));
     offset += sizeof(CarMotionData);
   }
 
   // parse extra player car data
-  obj.m_extraCarMotionData = ParseExtraCarMotionData(parse_bytes_to_vec(ExtraCarMotionDataSizes, bytes, offset));
+  obj.m_extraCarMotionData = ParseExtraCarMotionData(parseBytes(ExtraCarMotionDataSizes, bytes, offset));
 
   return obj;
 }

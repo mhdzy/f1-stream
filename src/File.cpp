@@ -82,7 +82,7 @@ std::size_t file_size(std::string filename) {
  * @param offset an offset to begin parsing the bytes at (files are < 65 kb)
  * @return std::vector<std::vector<unsigned char>> each element being a vector of bytes representing an item.
  */
-std::vector<std::vector<unsigned char>> parse_bytes_to_vec(std::vector<std::size_t> sizes,
+std::vector<std::vector<unsigned char>> parseBytes(std::vector<std::size_t> sizes,
                                                            std::vector<unsigned char> filebytes,
                                                            std::uint16_t offset = 0) {
   std::vector<std::vector<unsigned char>> pbytes;

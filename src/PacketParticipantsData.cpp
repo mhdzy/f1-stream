@@ -116,16 +116,16 @@ PacketParticipantsData parsePacketData<PacketParticipantsData>(std::vector<unsig
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // parse extra player car data
-  obj.m_participant = ParseParticipantMetadata(parse_bytes_to_vec(ParticipantMetadataSizes, bytes, offset));
+  obj.m_participant = ParseParticipantMetadata(parseBytes(ParticipantMetadataSizes, bytes, offset));
   offset += sizeof(ParticipantMetadata);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_participants[i] = ParseParticipantData(parse_bytes_to_vec(ParticipantDataSizes, bytes, offset));
+    obj.m_participants[i] = ParseParticipantData(parseBytes(ParticipantDataSizes, bytes, offset));
     offset += sizeof(ParticipantData);
   }
 
