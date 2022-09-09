@@ -165,16 +165,19 @@ std::string PacketLapDataCSVHeader(std::string sep, std::string compr) {
   return vpaste(vec, sep);
 }
 
-std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketLapData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),     //
-      LapDataString(obj.m_lapData[carID]),  //
-      LapDataIdxString(obj.m_lapDataIdx)    //
+      PacketHeaderString(obj.m_header),   //
+      LapDataString(obj.m_lapData[id]),   //
+      LapDataIdxString(obj.m_lapDataIdx)  //
   };
   return vpaste(vec, sep);
 }
 
-PacketLapData ParsePacketLapData(std::vector<unsigned char> bytes) {
+template <>
+PacketLapData parsePacketData<PacketLapData>(std::vector<unsigned char> bytes) {
   PacketLapData obj;
 
   std::uint16_t offset = 0;

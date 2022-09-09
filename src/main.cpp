@@ -221,11 +221,8 @@ int main(int argc, char** argv) {
       // LAP DATA
 
       if (DEBUG) spdlog::debug("parsing lap data packet");
-      PacketLapData obj = ParsePacketLapData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(LapDataPacketID) << std::to_string(i) + "," + PacketLapDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketLapDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData < PacketLapData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == EventPacketID) {
       // EVENT

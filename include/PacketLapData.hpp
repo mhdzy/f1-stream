@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -64,5 +65,10 @@ extern std::string LapDataIdxString(LapDataIdx obj, std::string sep = ",");
 extern LapDataIdx ParseLapDataIdx(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketLapDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketLapData ParsePacketLapData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketLapData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketLapData parsePacketData<PacketLapData>(std::vector<unsigned char> bytes);
