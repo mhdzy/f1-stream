@@ -203,11 +203,8 @@ int main(int argc, char** argv) {
       // MOTION
 
       if (DEBUG) spdlog::debug("parsing motion packet");
-      PacketMotionData obj = ParsePacketMotionData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(MotionPacketID) << std::to_string(i) + "," + PacketMotionDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketMotionDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData<PacketMotionData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == SessionPacketID) {
       // SESSION~
@@ -220,7 +217,7 @@ int main(int argc, char** argv) {
       // LAP DATA
 
       if (DEBUG) spdlog::debug("parsing lap data packet");
-      auto obj = parsePacketData < PacketLapData>(filebytes);
+      auto obj = parsePacketData<PacketLapData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == EventPacketID) {

@@ -243,16 +243,19 @@ std::string PacketMotionDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
       PacketHeaderString(obj.m_header),                   //
-      CarMotionDataString(obj.m_carMotionData[carID]),    //
+      CarMotionDataString(obj.m_carMotionData[id]),       //
       ExtraCarMotionDataString(obj.m_extraCarMotionData)  //
   };
   return vpaste(vec, sep);
 }
 
-PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes) {
+template <>
+PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> bytes) {
   PacketMotionData obj;
   std::uint16_t offset = 0;
 

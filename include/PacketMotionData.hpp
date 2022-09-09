@@ -6,6 +6,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -72,5 +73,10 @@ extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string 
 extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
-extern std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> bytes);
