@@ -5,18 +5,20 @@
 
 #include "File.hpp"
 
-#define MotionPacketID 0
-#define SessionPacketID 1
-#define LapDataPacketID 2
-#define EventPacketID 3
-#define ParticipantsPacketID 4
-#define CarSetupsPacketID 5
-#define CarTelemetryPacketID 6
-#define CarStatusPacketID 7
-#define FinalClassificationPacketID 8
-#define LobbyInfoPacketID 9
-#define CarDamagePacketID 10
-#define SessionHistoryPacketID 11
+enum PacketID {
+  Motion = 0,               //
+  Session = 1,              //
+  Lap = 2,                  //
+  Event = 3,                //
+  Participants = 4,         //
+  CarSetups = 5,            //
+  CarTelemetry = 6,         //
+  CarStatus = 7,            //
+  FinalClassification = 8,  //
+  LobbyInfo = 9,            //
+  CarDamage = 10,           //
+  SessionHistory = 11       //
+};
 
 struct PacketMap {
   std::string file_name;         // used to identify the particular file being described

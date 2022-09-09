@@ -81,7 +81,6 @@ std::string subpacketDataString(CarDamageData obj, std::string sep) {
       },
       csep));
 
-  // TODO: figure out why this is segfaulting
   const std::size_t size = std::snprintf(
       nullptr, 0, fmt, m_tyresWear.c_str(), ssep, m_tyresDamage.c_str(), ssep, m_brakesDamage.c_str(), ssep,
       obj.m_frontLeftWingDamage, ssep, obj.m_frontRightWingDamage, ssep, obj.m_rearWingDamage, ssep, obj.m_floorDamage,

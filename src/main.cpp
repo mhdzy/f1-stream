@@ -151,18 +151,18 @@ int main(int argc, char** argv) {
   if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
   // WRITE HEADERS
-  output_files.at(MotionPacketID) << "m_carID," + packetDataHeader<PacketMotionData>() + "\n";
-  output_files.at(SessionPacketID) << "m_nopID," + packetDataHeader<PacketSessionData>() + "\n";
-  output_files.at(LapDataPacketID) << "m_carID," + packetDataHeader<PacketLapData>() + "\n";
-  output_files.at(EventPacketID) << "m_nopID" + packetDataHeader<PacketEventData>() + "\n";
-  output_files.at(ParticipantsPacketID) << "m_carID," + packetDataHeader<PacketParticipantsData>() + "\n";
-  output_files.at(CarSetupsPacketID) << "m_carID," + packetDataHeader<PacketCarSetupData>() + "\n";
-  output_files.at(CarTelemetryPacketID) << "m_carID," + packetDataHeader<PacketCarTelemetryData>() + "\n";
-  output_files.at(CarStatusPacketID) << "m_carID," + packetDataHeader<PacketCarStatusData>() + "\n";
-  output_files.at(FinalClassificationPacketID) << "m_carID," + packetDataHeader<PacketFinalClassificationData>() + "\n";
-  output_files.at(LobbyInfoPacketID) << "m_carID," + packetDataHeader<PacketLobbyInfoData>() + "\n";
-  output_files.at(CarDamagePacketID) << "m_carID," + packetDataHeader<PacketCarDamageData>() + "\n";
-  output_files.at(SessionHistoryPacketID) << "m_lapID," + packetDataHeader<PacketSessionHistoryData>() + "\n";
+  output_files.at(PacketID::Motion) << "m_carID," + packetDataHeader<PacketMotionData>() + "\n";
+  output_files.at(PacketID::Session) << "m_nopID," + packetDataHeader<PacketSessionData>() + "\n";
+  output_files.at(PacketID::Lap) << "m_carID," + packetDataHeader<PacketLapData>() + "\n";
+  output_files.at(PacketID::Event) << "m_nopID" + packetDataHeader<PacketEventData>() + "\n";
+  output_files.at(PacketID::Participants) << "m_carID," + packetDataHeader<PacketParticipantsData>() + "\n";
+  output_files.at(PacketID::CarSetups) << "m_carID," + packetDataHeader<PacketCarSetupData>() + "\n";
+  output_files.at(PacketID::CarTelemetry) << "m_carID," + packetDataHeader<PacketCarTelemetryData>() + "\n";
+  output_files.at(PacketID::CarStatus) << "m_carID," + packetDataHeader<PacketCarStatusData>() + "\n";
+  output_files.at(PacketID::FinalClassification) << "m_carID," + packetDataHeader<PacketFinalClassificationData>() + "\n";
+  output_files.at(PacketID::LobbyInfo) << "m_carID," + packetDataHeader<PacketLobbyInfoData>() + "\n";
+  output_files.at(PacketID::CarDamage) << "m_carID," + packetDataHeader<PacketCarDamageData>() + "\n";
+  output_files.at(PacketID::SessionHistory) << "m_lapID," + packetDataHeader<PacketSessionHistoryData>() + "\n";
   if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");
@@ -199,84 +199,84 @@ int main(int argc, char** argv) {
       spdlog::debug("packet size: {}", packet.file_size);
     }
 
-    if (packet.file_id == MotionPacketID) {
+    if (packet.file_id == PacketID::Motion) {
       // MOTION
 
       if (DEBUG) spdlog::debug("parsing motion packet");
       auto obj = parsePacketData<PacketMotionData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == SessionPacketID) {
+    } else if (packet.file_id == PacketID::Session) {
       // SESSION~
 
       if (DEBUG) spdlog::debug("parsing session packet");
       auto obj = parsePacketData<PacketSessionData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 0, DEBUG);
 
-    } else if (packet.file_id == LapDataPacketID) {
+    } else if (packet.file_id == PacketID::Lap) {
       // LAP DATA
 
       if (DEBUG) spdlog::debug("parsing lap data packet");
       auto obj = parsePacketData<PacketLapData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == EventPacketID) {
+    } else if (packet.file_id == PacketID::Event) {
       // EVENT
 
       if (DEBUG) spdlog::debug("parsing event data packet");
       auto obj = parsePacketData<PacketEventData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 0, DEBUG);
 
-    } else if (packet.file_id == ParticipantsPacketID) {
+    } else if (packet.file_id == PacketID::Participants) {
       // PARTICIPANTS
 
       if (DEBUG) spdlog::debug("parsing participants packet");
       auto obj = parsePacketData<PacketParticipantsData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == CarSetupsPacketID) {
+    } else if (packet.file_id == PacketID::CarSetups) {
       // SETUPS
 
       if (DEBUG) spdlog::debug("parsing car setups packet");
       auto obj = parsePacketData<PacketCarSetupData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == CarTelemetryPacketID) {
+    } else if (packet.file_id == PacketID::CarTelemetry) {
       // TELEMETRY
 
       if (DEBUG) spdlog::debug("parsing car telemetry packet");
       auto obj = parsePacketData<PacketCarTelemetryData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == CarStatusPacketID) {
+    } else if (packet.file_id == PacketID::CarStatus) {
       // STATUS
 
       if (DEBUG) spdlog::debug("parsing car status packet");
       auto obj = parsePacketData<PacketCarStatusData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == FinalClassificationPacketID) {
+    } else if (packet.file_id == PacketID::FinalClassification) {
       // FINAL CLASSIFICATION
 
       if (DEBUG) spdlog::debug("parsing final classification packet");
       auto obj = parsePacketData<PacketFinalClassificationData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == LobbyInfoPacketID) {
+    } else if (packet.file_id == PacketID::LobbyInfo) {
       // LOBBY INFO
 
       if (DEBUG) spdlog::debug("parsing lobby info packet");
       auto obj = parsePacketData<PacketLobbyInfoData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == CarDamagePacketID) {
+    } else if (packet.file_id == PacketID::CarDamage) {
       // DAMAGE
 
       if (DEBUG) spdlog::debug("parsing car damage packet");
       auto obj = parsePacketData<PacketCarDamageData>(filebytes);
       printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
-    } else if (packet.file_id == SessionHistoryPacketID) {
+    } else if (packet.file_id == PacketID::SessionHistory) {
       // SESSION HISTORY
 
       if (DEBUG) spdlog::debug("parsing session history packet");
