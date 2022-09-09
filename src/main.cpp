@@ -5,21 +5,6 @@
 
 const bool DEBUG = false;
 
-const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
-    0,   // motion data
-    1,   // session data
-    2,   // lap data
-    3,   // event data
-    4,   // participants data
-    5,   // (car) setup
-    6,   // (car) telemetry
-    7,   // (car) status
-    8,   // (final) classification data
-    9,   // (lobby) info
-    10,  // (car) damage
-    11   // (session) history
-};
-
 /**
  * @brief All packets holding core info in arrays can be printed using this function.
  * This is declared in main to avoid dealing with troubles handling ostream objects.
