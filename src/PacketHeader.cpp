@@ -53,15 +53,15 @@ std::string subpacketDataString(PacketHeader obj, std::string sep) {
 template <>
 PacketHeader parseSubpacketData<PacketHeader>(std::vector<std::vector<unsigned char>> bytes) {
   PacketHeader obj;
-  std::memcpy(&obj.m_packetFormat, &bytes.at(0).front(), sizeof(std::uint16_t));
-  std::memcpy(&obj.m_gameMajorVersion, &bytes.at(1).front(), sizeof(std::uint8_t));
-  std::memcpy(&obj.m_gameMinorVersion, &bytes.at(2).front(), sizeof(std::uint8_t));
-  std::memcpy(&obj.m_packetVersion, &bytes.at(3).front(), sizeof(std::uint8_t));
-  std::memcpy(&obj.m_packetId, &bytes.at(4).front(), sizeof(std::uint8_t));
-  std::memcpy(&obj.m_sessionUID, &bytes.at(5).front(), sizeof(std::uint64_t));
-  std::memcpy(&obj.m_sessionTime, &bytes.at(6).front(), sizeof(float));
-  std::memcpy(&obj.m_frameIdentifier, &bytes.at(7).front(), sizeof(std::uint32_t));
-  std::memcpy(&obj.m_playerCarIndex, &bytes.at(8).front(), sizeof(std::uint8_t));
-  std::memcpy(&obj.m_secondaryPlayerCarIndex, &bytes.at(9).front(), sizeof(std::uint8_t));
+  std::memcpy(&obj.m_packetFormat, &bytes.at(0).front(), sizeof obj.m_packetFormat);
+  std::memcpy(&obj.m_gameMajorVersion, &bytes.at(1).front(), sizeof obj.m_gameMajorVersion);
+  std::memcpy(&obj.m_gameMinorVersion, &bytes.at(2).front(), sizeof obj.m_gameMinorVersion);
+  std::memcpy(&obj.m_packetVersion, &bytes.at(3).front(), sizeof obj.m_packetVersion);
+  std::memcpy(&obj.m_packetId, &bytes.at(4).front(), sizeof obj.m_packetId);
+  std::memcpy(&obj.m_sessionUID, &bytes.at(5).front(), sizeof obj.m_sessionUID);
+  std::memcpy(&obj.m_sessionTime, &bytes.at(6).front(), sizeof obj.m_sessionTime);
+  std::memcpy(&obj.m_frameIdentifier, &bytes.at(7).front(), sizeof obj.m_frameIdentifier);
+  std::memcpy(&obj.m_playerCarIndex, &bytes.at(8).front(), sizeof obj.m_playerCarIndex);
+  std::memcpy(&obj.m_secondaryPlayerCarIndex, &bytes.at(9).front(), sizeof obj.m_secondaryPlayerCarIndex);
   return obj;
 };

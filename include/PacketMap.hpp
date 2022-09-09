@@ -5,7 +5,7 @@
 
 #include "File.hpp"
 
-enum PacketID {
+enum PacketID : std::uint8_t {
   Motion = 0,               //
   Session = 1,              //
   Lap = 2,                  //
@@ -27,8 +27,10 @@ struct PacketMap {
   std::uint8_t file_id;          // internal file id number (0-11)
 };
 
-extern std::map<int, int> packet_size_to_id;
-extern std::map<int, std::string> packet_id_to_string;
+extern std::map<std::uint8_t, std::uint8_t> packet_size_to_id;
+extern std::map<std::uint8_t, std::string> packet_id_to_string;
 
-PacketMap packet_map_populate(std::string filename);
-PacketMap parse_raw_packet(std::uint16_t size);
+extern PacketMap packet_map_populate(std::string filename);
+extern PacketMap parse_raw_packet(std::uint16_t size);
+
+extern std::uint8_t packet_loop_limit(std::uint8_t packetid);
