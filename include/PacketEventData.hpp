@@ -145,7 +145,9 @@ extern std::map<std::string, std::pair<std::string, std::string>> Events;
 extern std::vector<std::size_t> EventDataDetailsSizes;
 extern std::vector<std::string> EventDataDetailsNames;
 extern std::string EventDataDetailsString(EventDataDetails obj, std::string sep = ",");
-extern EventDataDetails ParseEventDataDetails(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketEventDataCSVHeader(std::string sep = ",", std::string compr = "/");
 

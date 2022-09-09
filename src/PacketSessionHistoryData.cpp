@@ -69,7 +69,8 @@ std::string LapMetaDataString(LapMetaData obj, std::string sep) {
   return str;
 }
 
-LapMetaData ParseLapMetaData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LapMetaData parseSubpacketData<LapMetaData>(std::vector<std::vector<unsigned char>> bytes) {
   LapMetaData obj;
   std::memcpy(&obj.m_carIdx, &bytes.at(0).front(), sizeof obj.m_carIdx);
   std::memcpy(&obj.m_numLaps, &bytes.at(1).front(), sizeof obj.m_numLaps);
@@ -99,7 +100,8 @@ std::string LapHistoryDataString(LapHistoryData obj, std::string sep) {
   return str;
 }
 
-LapHistoryData ParseLapHistoryData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LapHistoryData parseSubpacketData<LapHistoryData>(std::vector<std::vector<unsigned char>> bytes) {
   LapHistoryData obj;
   std::memcpy(&obj.m_lapTimeInMS, &bytes.at(0).front(), sizeof obj.m_lapTimeInMS);
   std::memcpy(&obj.m_sector1TimeInMS, &bytes.at(1).front(), sizeof obj.m_sector1TimeInMS);
@@ -125,7 +127,8 @@ std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::string sep
   return str;
 }
 
-TyreStintHistoryData ParseTyreStintHistoryData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::vector<unsigned char>> bytes) {
   TyreStintHistoryData obj;
   std::memcpy(&obj.m_endLap, &bytes.at(0).front(), sizeof obj.m_endLap);
   std::memcpy(&obj.m_tyreActualCompound, &bytes.at(1).front(), sizeof obj.m_tyreActualCompound);
@@ -178,21 +181,21 @@ PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<u
   PacketSessionHistoryData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
-  obj.m_lapMetaData = ParseLapMetaData(parseBytes(LapMetaDataSizes, bytes, offset));
+  obj.m_lapMetaData = parseSubpacketData<LapMetaData>(parseBytes(LapMetaDataSizes, bytes, offset));
   offset += sizeof(LapMetaData);
 
   // iterate over all marshal zone array indices to correctly set the offset
   for (std::uint8_t i = 0; i < 100; i++) {
-    obj.m_lapHistoryData[i] = ParseLapHistoryData(parseBytes(LapHistoryDataSizes, bytes, offset));
+    obj.m_lapHistoryData[i] = parseSubpacketData<LapHistoryData>(parseBytes(LapHistoryDataSizes, bytes, offset));
     offset += sizeof(LapHistoryData);
   }
 
   for (std::uint8_t i = 0; i < 8; i++) {
     obj.m_tyreStintsHistoryData[i] =
-        ParseTyreStintHistoryData(parseBytes(TyreStintHistoryDataSizes, bytes, offset));
+        parseSubpacketData<TyreStintHistoryData>(parseBytes(TyreStintHistoryDataSizes, bytes, offset));
     offset += sizeof(TyreStintHistoryData);
   }
 

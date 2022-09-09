@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Packet.hpp"
+
 #pragma pack(push, 1)
 
 struct PacketHeader {
@@ -28,4 +30,5 @@ extern std::vector<std::size_t> PacketHeaderSizes;
 extern std::vector<std::string> PacketHeaderNames;
 
 extern std::string PacketHeaderString(PacketHeader obj, std::string sep = ",");
-extern PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes);
+template <>
+PacketHeader parseSubpacketData<PacketHeader>(std::vector<std::vector<unsigned char>> bytes);

@@ -45,17 +45,20 @@ struct PacketSessionHistoryData {
 extern std::vector<std::size_t> LapMetaDataSizes;
 extern std::vector<std::string> LapMetaDataNames;
 extern std::string LapMetaDataString(LapMetaData obj, std::string sep = ",");
-extern LapMetaData ParseLapMetaData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+LapMetaData parseSubpacketData<LapMetaData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> LapHistoryDataSizes;
 extern std::vector<std::string> LapHistoryDataNames;
 extern std::string LapHistoryDataString(LapHistoryData obj, std::string sep = ",");
-extern LapHistoryData ParseLapHistoryData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+LapHistoryData parseSubpacketData<LapHistoryData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> TyreStintHistoryDataSizes;
 extern std::vector<std::string> TyreStintHistoryDataNames;
 extern std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::string sep = ",");
-extern TyreStintHistoryData ParseTyreStintHistoryData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketSessionHistoryDataCSVHeader(std::string sep = ",", std::string compr = "/");
 

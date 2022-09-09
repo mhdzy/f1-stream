@@ -37,12 +37,14 @@ struct PacketParticipantsData {
 extern std::vector<std::size_t> ParticipantDataSizes;
 extern std::vector<std::string> ParticipantDataNames;
 extern std::string ParticipantDataString(ParticipantData obj, std::string sep = ",");
-extern ParticipantData ParseParticipantData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+ParticipantData parseSubpacketData<ParticipantData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> ParticipantMetadataSizes;
 extern std::vector<std::string> ParticipantMetadataNames;
 extern std::string ParticipantMetadataString(ParticipantMetadata obj, std::string sep = ",");
-extern ParticipantMetadata ParseParticipantMetadata(std::vector<std::vector<unsigned char>> bytes);
+template <>
+ParticipantMetadata parseSubpacketData<ParticipantMetadata>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketParticipantsDataCSVHeader(std::string sep = ",");
 

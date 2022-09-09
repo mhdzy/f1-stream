@@ -77,7 +77,8 @@ std::string CarSetupDataString(CarSetupData obj, std::string sep) {
   return str;
 }
 
-CarSetupData ParseCarSetupData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarSetupData parseSubpacketData<CarSetupData>(std::vector<std::vector<unsigned char>> bytes) {
   CarSetupData obj;
   std::memcpy(&obj.m_frontWing, &bytes.at(0).front(), CarSetupDataSizes.at(0));
   std::memcpy(&obj.m_rearWing, &bytes.at(1).front(), CarSetupDataSizes.at(1));
@@ -128,12 +129,12 @@ PacketCarSetupData parsePacketData<PacketCarSetupData>(std::vector<unsigned char
   PacketCarSetupData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // iterate over all car indices
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carSetups[i] = ParseCarSetupData(parseBytes(CarSetupDataSizes, bytes, offset));
+    obj.m_carSetups[i] = parseSubpacketData<CarSetupData>(parseBytes(CarSetupDataSizes, bytes, offset));
     offset += sizeof(CarSetupData);
   }
 

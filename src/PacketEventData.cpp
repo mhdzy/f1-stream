@@ -71,7 +71,8 @@ std::string EventDataDetailsString(EventDataDetails obj, std::string sep) {
   return str;
 }
 
-EventDataDetails ParseEventDataDetails(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<unsigned char>> bytes) {
   EventDataDetails obj;
   // could be used to parse the event struct, but requires taking in a "ec" event code,
   // vector<uchar> and offset
@@ -101,7 +102,7 @@ PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> byte
   PacketEventData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // extract packet type

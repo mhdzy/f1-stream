@@ -57,12 +57,14 @@ struct PacketLapData {
 extern std::vector<std::size_t> LapDataSizes;
 extern std::vector<std::string> LapDataNames;
 extern std::string LapDataString(LapData obj, std::string sep = ",");
-extern LapData ParseLapData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> LapDataIdxSizes;
 extern std::vector<std::string> LapDataIdxNames;
 extern std::string LapDataIdxString(LapDataIdx obj, std::string sep = ",");
-extern LapDataIdx ParseLapDataIdx(std::vector<std::vector<unsigned char>> bytes);
+template <>
+LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketLapDataCSVHeader(std::string sep = ",", std::string compr = "/");
 

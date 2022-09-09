@@ -55,7 +55,8 @@ std::string ParticipantDataString(ParticipantData obj, std::string sep) {
   return str;
 }
 
-ParticipantData ParseParticipantData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+ParticipantData parseSubpacketData<ParticipantData>(std::vector<std::vector<unsigned char>> bytes) {
   ParticipantData obj;
   std::memcpy(&obj.m_aiControlled, &bytes.at(0).front(), sizeof obj.m_aiControlled);
   std::memcpy(&obj.m_driverId, &bytes.at(1).front(), sizeof obj.m_driverId);
@@ -84,7 +85,8 @@ std::string ParticipantMetadataString(ParticipantMetadata obj, std::string sep) 
   return str;
 }
 
-ParticipantMetadata ParseParticipantMetadata(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+ParticipantMetadata parseSubpacketData<ParticipantMetadata>(std::vector<std::vector<unsigned char>> bytes) {
   ParticipantMetadata obj;
   std::memcpy(&obj.m_numActiveCars, &bytes.at(0).front(), sizeof obj.m_numActiveCars);
   return obj;
@@ -116,16 +118,16 @@ PacketParticipantsData parsePacketData<PacketParticipantsData>(std::vector<unsig
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // parse extra player car data
-  obj.m_participant = ParseParticipantMetadata(parseBytes(ParticipantMetadataSizes, bytes, offset));
+  obj.m_participant = parseSubpacketData<ParticipantMetadata>(parseBytes(ParticipantMetadataSizes, bytes, offset));
   offset += sizeof(ParticipantMetadata);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_participants[i] = ParseParticipantData(parseBytes(ParticipantDataSizes, bytes, offset));
+    obj.m_participants[i] = parseSubpacketData<ParticipantData>(parseBytes(ParticipantDataSizes, bytes, offset));
     offset += sizeof(ParticipantData);
   }
 

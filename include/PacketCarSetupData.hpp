@@ -44,7 +44,9 @@ struct PacketCarSetupData {
 extern std::vector<std::size_t> CarSetupDataSizes;
 extern std::vector<std::string> CarSetupDataNames;
 extern std::string CarSetupDataString(CarSetupData obj, std::string sep = ",");
-extern CarSetupData ParseCarSetupData(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+CarSetupData parseSubpacketData<CarSetupData>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketCarSetupDataCSVHeader(std::string sep = ",", std::string compr = "/");
 

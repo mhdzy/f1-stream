@@ -128,7 +128,8 @@ std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep) {
   return str;
 }
 
-CarTelemetryData ParseCarTelemetryData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarTelemetryData parseSubpacketData<CarTelemetryData>(std::vector<std::vector<unsigned char>> bytes) {
   CarTelemetryData obj;
   std::uint8_t idx[4] = {0, 1, 2, 3};
 
@@ -186,7 +187,8 @@ std::string CarTelemetryPanelString(CarTelemetryPanel obj, std::string sep) {
   return str;
 }
 
-CarTelemetryPanel ParseCarTelemetryPanel(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<unsigned char>> bytes) {
   CarTelemetryPanel obj;
   std::memcpy(&obj.m_mfdPanelIndex, &bytes.at(0).front(), sizeof obj.m_mfdPanelIndex);
   std::memcpy(&obj.m_mfdPanelIndexSecondaryPlayer, &bytes.at(1).front(), sizeof obj.m_mfdPanelIndexSecondaryPlayer);
@@ -221,17 +223,17 @@ PacketCarTelemetryData parsePacketData<PacketCarTelemetryData>(std::vector<unsig
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carTelemetryData[i] = ParseCarTelemetryData(parseBytes(CarTelemetryDataSizes, bytes, offset));
+    obj.m_carTelemetryData[i] = parseSubpacketData<CarTelemetryData>(parseBytes(CarTelemetryDataSizes, bytes, offset));
     offset += sizeof(CarTelemetryData);
   }
 
   // parse extra player car data
-  obj.m_carTelemetryPanel = ParseCarTelemetryPanel(parseBytes(CarTelemetryPanelSizes, bytes, offset));
+  obj.m_carTelemetryPanel = parseSubpacketData<CarTelemetryPanel>(parseBytes(CarTelemetryPanelSizes, bytes, offset));
 
   return obj;
 }

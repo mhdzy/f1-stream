@@ -14,4 +14,4 @@ template <class T>
 extern T parsePacketData(std::vector<unsigned char> bytes);
 
 template <class T>
-extern T parseSubPacketData(std::vector<std::vector<unsigned char>> bytes);
+extern T parseSubpacketData(std::vector<std::vector<unsigned char>> bytes);

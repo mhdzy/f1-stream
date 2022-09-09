@@ -102,7 +102,8 @@ std::string LapDataString(LapData obj, std::string sep) {
   return str;
 }
 
-LapData ParseLapData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> bytes) {
   LapData obj;
 
   std::memcpy(&obj.m_lastLapTimeInMS, &bytes.at(0).front(), LapDataSizes.at(0));
@@ -148,7 +149,8 @@ std::string LapDataIdxString(LapDataIdx obj, std::string sep) {
   return str;
 }
 
-LapDataIdx ParseLapDataIdx(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>> bytes) {
   LapDataIdx obj;
   std::memcpy(&obj.m_timeTrialPBCarIdx, &bytes.at(0).front(), LapDataIdxSizes.at(0));
   std::memcpy(&obj.m_timeTrialRivalCarIdx, &bytes.at(1).front(), LapDataIdxSizes.at(1));
@@ -182,16 +184,16 @@ PacketLapData parsePacketData<PacketLapData>(std::vector<unsigned char> bytes) {
 
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // iterate over all car indices
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_lapData[i] = ParseLapData(parseBytes(LapDataSizes, bytes, offset));
+    obj.m_lapData[i] = parseSubpacketData<LapData>(parseBytes(LapDataSizes, bytes, offset));
     offset += sizeof(LapData);
   }
 
-  obj.m_lapDataIdx = ParseLapDataIdx(parseBytes(LapDataIdxSizes, bytes, offset));
+  obj.m_lapDataIdx = parseSubpacketData<LapDataIdx>(parseBytes(LapDataIdxSizes, bytes, offset));
   offset += sizeof(LapDataIdx);
 
   return obj;

@@ -102,7 +102,8 @@ std::string CarStatusDataString(CarStatusData obj, std::string sep) {
   return str;
 }
 
-CarStatusData ParseCarStatusData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarStatusData parseSubpacketData<CarStatusData>(std::vector<std::vector<unsigned char>> bytes) {
   CarStatusData obj;
   std::memcpy(&obj.m_tractionControl, &bytes.at(0).front(), sizeof obj.m_tractionControl);
   std::memcpy(&obj.m_antiLockBrakes, &bytes.at(1).front(), sizeof obj.m_antiLockBrakes);
@@ -154,12 +155,12 @@ PacketCarStatusData parsePacketData<PacketCarStatusData>(std::vector<unsigned ch
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carStatusData[i] = ParseCarStatusData(parseBytes(CarStatusDataSizes, bytes, offset));
+    obj.m_carStatusData[i] = parseSubpacketData<CarStatusData>(parseBytes(CarStatusDataSizes, bytes, offset));
     offset += sizeof(CarStatusData);
   }
 

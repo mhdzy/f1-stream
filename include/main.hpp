@@ -36,6 +36,8 @@
 #include "PacketSessionHistoryData.hpp"
 #include "spdlog/spdlog.h"
 
+void printPacket(auto obj, std::ofstream &output_file, std::uint8_t loops, bool debug = false);
+
 /**
  * @brief
  *
@@ -45,4 +47,4 @@
  * @param argv
  * @return int
  */
-int main(int argc, char** argv);
+int main(int argc, char **argv);

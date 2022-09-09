@@ -29,7 +29,7 @@ const std::vector<std::uint8_t> IMPLEMENTED_PACKET_IDS = {
  * @param loops Sets the upper loop boundary; if 0, prints once; 22 for car data; 100 for lap (session) data.
  * @param debug A flag to enable extra output.
  */
-void printPacket(auto obj, std::ofstream& output_file, std::uint8_t loops, bool debug = false) {
+void printPacket(auto obj, std::ofstream& output_file, std::uint8_t loops, bool debug) {
   for (std::uint8_t i = 0; i < loops; i++) {
     std::string str = packetDataString(obj, i);
     output_file << std::to_string(i) + "," + str + "\n";

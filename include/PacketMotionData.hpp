@@ -67,16 +67,18 @@ extern std::vector<std::size_t> ExtraCarMotionDataSizes;
 extern std::vector<std::string> ExtraCarMotionDataNames;
 
 extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
-extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
 
 extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
-extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
 
 extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
-
 template <>
 std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
                              std::string compr2);
-
 template <>
 PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> bytes);

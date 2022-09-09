@@ -1,13 +1,5 @@
 #include "../include/PacketFinalClassificationData.hpp"
 
-std::vector<std::size_t> FinalClassificationMetaSizes = {
-    sizeof(((FinalClassificationMeta *)0)->m_numCars)  //  Number of cars in the final classification
-};
-
-std::vector<std::string> FinalClassificationMetaNames = {
-    "m_numCars"  //  Number of cars in the final classification
-};
-
 std::vector<std::size_t> FinalClassificationDataSizes = {
     sizeof(((FinalClassificationData *)0)->m_position),         // Finishing position
     sizeof(((FinalClassificationData *)0)->m_numLaps),          // Number of laps completed
@@ -46,28 +38,13 @@ std::vector<std::string> FinalClassificationDataNames = {
     "m_tyreStintsEndLaps",  // The lap number stints end on
 };
 
-std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep) {
-  const char *fmt = "%d";
-  // const char *ssep = sep.c_str();
+std::vector<std::size_t> FinalClassificationMetaSizes = {
+    sizeof(((FinalClassificationMeta *)0)->m_numCars)  //  Number of cars in the final classification
+};
 
-  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_numCars);
-
-  std::vector<char> buf(size + 1);  // note +1 for null terminator
-  std::snprintf(&buf[0], buf.size(), fmt, obj.m_numCars);
-
-  std::string str(buf.begin(), buf.end());
-  str.erase(str.find('\0'));  // remove null terminator
-
-  return str;
-}
-
-FinalClassificationMeta ParseFinalClassificationMeta(std::vector<std::vector<unsigned char>> bytes) {
-  FinalClassificationMeta obj;
-
-  std::memcpy(&obj.m_numCars, &bytes.at(0).front(), sizeof obj.m_numCars);
-
-  return obj;
-}
+std::vector<std::string> FinalClassificationMetaNames = {
+    "m_numCars"  //  Number of cars in the final classification
+};
 
 std::string FinalClassificationDataString(FinalClassificationData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%d%s%d%s%s%s%d%s%d%s%d%s%s%s%s%s%s";
@@ -122,7 +99,8 @@ std::string FinalClassificationDataString(FinalClassificationData obj, std::stri
   return str;
 }
 
-FinalClassificationData ParseFinalClassificationData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+FinalClassificationData parseSubpacketData<FinalClassificationData>(std::vector<std::vector<unsigned char>> bytes) {
   FinalClassificationData obj;
   std::uint8_t idx[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -149,6 +127,30 @@ FinalClassificationData ParseFinalClassificationData(std::vector<std::vector<uns
   for (std::uint8_t i : idx)
     std::memcpy(&obj.m_tyreStintsEndLaps[i], &bytes.at(13).front() + (i * sizeof obj.m_tyreStintsEndLaps[i]),
                 sizeof obj.m_tyreStintsEndLaps[i]);
+
+  return obj;
+}
+
+std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep) {
+  const char *fmt = "%d";
+  // const char *ssep = sep.c_str();
+
+  const std::size_t size = std::snprintf(nullptr, 0, fmt, obj.m_numCars);
+
+  std::vector<char> buf(size + 1);  // note +1 for null terminator
+  std::snprintf(&buf[0], buf.size(), fmt, obj.m_numCars);
+
+  std::string str(buf.begin(), buf.end());
+  str.erase(str.find('\0'));  // remove null terminator
+
+  return str;
+}
+
+template <>
+FinalClassificationMeta parseSubpacketData<FinalClassificationMeta>(std::vector<std::vector<unsigned char>> bytes) {
+  FinalClassificationMeta obj;
+
+  std::memcpy(&obj.m_numCars, &bytes.at(0).front(), sizeof obj.m_numCars);
 
   return obj;
 }
@@ -181,17 +183,17 @@ PacketFinalClassificationData parsePacketData<PacketFinalClassificationData>(std
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   obj.m_classificationMeta =
-      ParseFinalClassificationMeta(parseBytes(FinalClassificationMetaSizes, bytes, offset));
+      parseSubpacketData<FinalClassificationMeta>(parseBytes(FinalClassificationMetaSizes, bytes, offset));
   offset += sizeof(FinalClassificationMeta);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
     obj.m_classificationData[i] =
-        ParseFinalClassificationData(parseBytes(FinalClassificationDataSizes, bytes, offset));
+        parseSubpacketData<FinalClassificationData>(parseBytes(FinalClassificationDataSizes, bytes, offset));
     offset += sizeof(FinalClassificationData);
   }
 

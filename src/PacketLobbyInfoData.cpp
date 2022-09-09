@@ -44,7 +44,8 @@ std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep) {
   return str;
 }
 
-LobbyInfoMeta ParseLobbyInfoMeta(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LobbyInfoMeta parseSubpacketData<LobbyInfoMeta>(std::vector<std::vector<unsigned char>> bytes) {
   LobbyInfoMeta obj;
 
   std::memcpy(&obj.m_numPlayers, &bytes.at(0).front(), sizeof obj.m_numPlayers);
@@ -70,7 +71,8 @@ std::string LobbyInfoDataString(LobbyInfoData obj, std::string sep) {
   return str;
 }
 
-LobbyInfoData ParseLobbyInfoData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+LobbyInfoData parseSubpacketData<LobbyInfoData>(std::vector<std::vector<unsigned char>> bytes) {
   LobbyInfoData obj;
   std::memcpy(&obj.m_aiControlled, &bytes.at(0).front(), sizeof obj.m_aiControlled);
   std::memcpy(&obj.m_teamId, &bytes.at(1).front(), sizeof obj.m_teamId);
@@ -107,16 +109,16 @@ PacketLobbyInfoData parsePacketData<PacketLobbyInfoData>(std::vector<unsigned ch
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // parse extra player car data
-  obj.m_lobbyPlayer = ParseLobbyInfoMeta(parseBytes(LobbyInfoMetaSizes, bytes, offset));
+  obj.m_lobbyPlayer = parseSubpacketData<LobbyInfoMeta>(parseBytes(LobbyInfoMetaSizes, bytes, offset));
   offset += sizeof(LobbyInfoMeta);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_lobbyPlayers[i] = ParseLobbyInfoData(parseBytes(LobbyInfoDataSizes, bytes, offset));
+    obj.m_lobbyPlayers[i] = parseSubpacketData<LobbyInfoData>(parseBytes(LobbyInfoDataSizes, bytes, offset));
     offset += sizeof(LobbyInfoData);
   }
 

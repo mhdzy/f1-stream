@@ -49,7 +49,8 @@ std::string PacketHeaderString(PacketHeader obj, std::string sep) {
   return str;
 }
 
-PacketHeader ParsePacketHeader(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+PacketHeader parseSubpacketData<PacketHeader>(std::vector<std::vector<unsigned char>> bytes) {
   PacketHeader obj;
   std::memcpy(&obj.m_packetFormat, &bytes.at(0).front(), sizeof(std::uint16_t));
   std::memcpy(&obj.m_gameMajorVersion, &bytes.at(1).front(), sizeof(std::uint8_t));

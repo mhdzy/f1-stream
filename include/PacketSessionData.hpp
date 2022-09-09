@@ -99,27 +99,32 @@ struct PacketSessionData {
 extern std::vector<std::size_t> MarshalZoneSizes;
 extern std::vector<std::string> MarshalZoneNames;
 extern std::string MarshalZoneString(MarshalZone obj, std::string sep = ",");
-extern MarshalZone ParseMarshalZone(std::vector<std::vector<unsigned char>> bytes);
+template <>
+MarshalZone parseSubpacketData<MarshalZone>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> WeatherForecastSampleSizes;
 extern std::vector<std::string> WeatherForecastSampleNames;
 extern std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string sep = ",");
-extern WeatherForecastSample ParseWeatherForecastSample(std::vector<std::vector<unsigned char>> bytes);
+template <>
+WeatherForecastSample parseSubpacketData<WeatherForecastSample>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataTopSizes;
 extern std::vector<std::string> PacketSessionDataTopNames;
 extern std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep = ",");
-extern PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned char>> bytes);
+template <>
+PacketSessionDataTop parseSubpacketData<PacketSessionDataTop>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataMidSizes;
 extern std::vector<std::string> PacketSessionDataMidNames;
 extern std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep = ",");
-extern PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned char>> bytes);
+template <>
+PacketSessionDataMid parseSubpacketData<PacketSessionDataMid>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::vector<std::size_t> PacketSessionDataBotSizes;
 extern std::vector<std::string> PacketSessionDataBotNames;
 extern std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep = ",");
-extern PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned char>> bytes);
+template <>
+PacketSessionDataBot parseSubpacketData<PacketSessionDataBot>(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string compr = "/");
 

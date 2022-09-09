@@ -165,7 +165,8 @@ std::string MarshalZoneString(MarshalZone obj, std::string sep) {
   return str;
 }
 
-MarshalZone ParseMarshalZone(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+MarshalZone parseSubpacketData<MarshalZone>(std::vector<std::vector<unsigned char>> bytes) {
   MarshalZone obj;
   std::memcpy(&obj.m_zoneStart, &bytes.at(0).front(), sizeof obj.m_zoneStart);
   std::memcpy(&obj.m_zoneFlag, &bytes.at(1).front(), sizeof obj.m_zoneFlag);
@@ -192,7 +193,8 @@ std::string WeatherForecastSampleString(WeatherForecastSample obj, std::string s
   return str;
 }
 
-WeatherForecastSample ParseWeatherForecastSample(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+WeatherForecastSample parseSubpacketData<WeatherForecastSample>(std::vector<std::vector<unsigned char>> bytes) {
   WeatherForecastSample obj;
   std::memcpy(&obj.m_sessionType, &bytes.at(0).front(), sizeof obj.m_sessionType);
   std::memcpy(&obj.m_timeOffset, &bytes.at(1).front(), sizeof obj.m_timeOffset);
@@ -228,7 +230,8 @@ std::string PacketSessionDataTopString(PacketSessionDataTop obj, std::string sep
   return str;
 }
 
-PacketSessionDataTop ParsePacketSessionDataTop(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+PacketSessionDataTop parseSubpacketData<PacketSessionDataTop>(std::vector<std::vector<unsigned char>> bytes) {
   PacketSessionDataTop obj;
   std::memcpy(&obj.m_weather, &bytes.at(0).front(), sizeof obj.m_weather);
   std::memcpy(&obj.m_trackTemperature, &bytes.at(1).front(), sizeof obj.m_trackTemperature);
@@ -266,7 +269,8 @@ std::string PacketSessionDataMidString(PacketSessionDataMid obj, std::string sep
   return str;
 }
 
-PacketSessionDataMid ParsePacketSessionDataMid(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+PacketSessionDataMid parseSubpacketData<PacketSessionDataMid>(std::vector<std::vector<unsigned char>> bytes) {
   PacketSessionDataMid obj;
   std::memcpy(&obj.m_safetyCarStatus, &bytes.at(0).front(), sizeof obj.m_safetyCarStatus);
   std::memcpy(&obj.m_networkGame, &bytes.at(1).front(), sizeof obj.m_networkGame);
@@ -301,7 +305,8 @@ std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::string sep
   return str;
 }
 
-PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+PacketSessionDataBot parseSubpacketData<PacketSessionDataBot>(std::vector<std::vector<unsigned char>> bytes) {
   PacketSessionDataBot obj;
   std::memcpy(&obj.m_forecastAccuracy, &bytes.at(0).front(), sizeof obj.m_forecastAccuracy);
   std::memcpy(&obj.m_aiDifficulty, &bytes.at(1).front(), sizeof obj.m_aiDifficulty);
@@ -393,29 +398,32 @@ PacketSessionData parsePacketData<PacketSessionData>(std::vector<unsigned char> 
   PacketSessionData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
-  obj.m_packetSessionDataTop = ParsePacketSessionDataTop(parseBytes(PacketSessionDataTopSizes, bytes, offset));
+  obj.m_packetSessionDataTop =
+      parseSubpacketData<PacketSessionDataTop>(parseBytes(PacketSessionDataTopSizes, bytes, offset));
   offset += sizeof(PacketSessionDataTop);
 
   // iterate over all marshal zone array indices to correctly set the offset
   for (std::uint8_t i = 0; i < 21; i++) {
-    obj.m_marshalZones[i] = ParseMarshalZone(parseBytes(MarshalZoneSizes, bytes, offset));
+    obj.m_marshalZones[i] = parseSubpacketData<MarshalZone>(parseBytes(MarshalZoneSizes, bytes, offset));
     offset += sizeof(MarshalZone);
   }
 
-  obj.m_packetSessionDataMid = ParsePacketSessionDataMid(parseBytes(PacketSessionDataMidSizes, bytes, offset));
+  obj.m_packetSessionDataMid =
+      parseSubpacketData<PacketSessionDataMid>(parseBytes(PacketSessionDataMidSizes, bytes, offset));
   offset += sizeof(PacketSessionDataMid);
 
   // same reasoning as above (loop limit of 56)
   for (std::uint8_t i = 0; i < 56; i++) {
     obj.m_weatherForecastSamples[i] =
-        ParseWeatherForecastSample(parseBytes(WeatherForecastSampleSizes, bytes, offset));
+        parseSubpacketData<WeatherForecastSample>(parseBytes(WeatherForecastSampleSizes, bytes, offset));
     offset += sizeof(WeatherForecastSample);
   }
 
-  obj.m_PacketSessionDataBot = ParsePacketSessionDataBot(parseBytes(PacketSessionDataBotSizes, bytes, offset));
+  obj.m_PacketSessionDataBot =
+      parseSubpacketData<PacketSessionDataBot>(parseBytes(PacketSessionDataBotSizes, bytes, offset));
   offset += sizeof(PacketSessionDataBot);
 
   return obj;

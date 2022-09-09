@@ -103,7 +103,8 @@ std::string CarMotionDataString(CarMotionData obj, std::string sep) {
   return str;
 }
 
-CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned char>> bytes) {
   CarMotionData obj;
   std::memcpy(&obj.m_worldPositionX, &bytes.at(0).front(), sizeof obj.m_worldPositionX);
   std::memcpy(&obj.m_worldPositionY, &bytes.at(1).front(), sizeof obj.m_worldPositionY);
@@ -197,7 +198,8 @@ std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep) {
   return str;
 }
 
-ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vector<unsigned char>> bytes) {
   ExtraCarMotionData obj;
   std::uint8_t idx[4] = {0, 1, 2, 3};
 
@@ -260,17 +262,18 @@ PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> by
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carMotionData[i] = ParseCarMotionData(parseBytes(CarMotionDataSizes, bytes, offset));
+    obj.m_carMotionData[i] = parseSubpacketData<CarMotionData>(parseBytes(CarMotionDataSizes, bytes, offset));
     offset += sizeof(CarMotionData);
   }
 
   // parse extra player car data
-  obj.m_extraCarMotionData = ParseExtraCarMotionData(parseBytes(ExtraCarMotionDataSizes, bytes, offset));
+  obj.m_extraCarMotionData = parseSubpacketData<ExtraCarMotionData>(parseBytes(ExtraCarMotionDataSizes, bytes, offset));
+  offset += sizeof(ExtraCarMotionData);
 
   return obj;
 }
