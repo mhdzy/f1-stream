@@ -204,16 +204,19 @@ std::string PacketCarTelemetryDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketCarTelemetryDataString(PacketCarTelemetryData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketCarTelemetryData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                       //
-      CarTelemetryDataString(obj.m_carTelemetryData[carID]),  //
-      CarTelemetryPanelString(obj.m_carTelemetryPanel)        //
+      PacketHeaderString(obj.m_header),                    //
+      CarTelemetryDataString(obj.m_carTelemetryData[id]),  //
+      CarTelemetryPanelString(obj.m_carTelemetryPanel)     //
   };
   return vpaste(vec, sep);
 }
 
-PacketCarTelemetryData ParsePacketCarTelemetryData(std::vector<unsigned char> bytes) {
+template <>
+PacketCarTelemetryData parsePacketData<PacketCarTelemetryData>(std::vector<unsigned char> bytes) {
   PacketCarTelemetryData obj;
   std::uint16_t offset = 0;
 
