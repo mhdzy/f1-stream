@@ -131,7 +131,8 @@ CarStatusData parseSubpacketData<CarStatusData>(std::vector<std::vector<unsigned
   return obj;
 }
 
-std::string PacketCarStatusDataCSVHeader(std::string sep, std::string compr) {
+template <>
+std::string packetDataHeader<PacketCarStatusData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),   //
       vpaste(CarStatusDataNames, sep),  //
