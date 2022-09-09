@@ -269,11 +269,9 @@ int main(int argc, char** argv) {
       // STATUS
 
       if (DEBUG) spdlog::debug("parsing car status packet");
-      PacketCarStatusData obj = ParsePacketCarStatusData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(CarStatusPacketID) << std::to_string(i) + "," + PacketCarStatusDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketCarStatusDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData<PacketCarStatusData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
+
     } else if (packet.file_id == FinalClassificationPacketID) {
       // FINAL CLASSIFICATION
 
