@@ -107,21 +107,24 @@ CarSetupData ParseCarSetupData(std::vector<std::vector<unsigned char>> bytes) {
 std::string PacketCarSetupDataCSVHeader(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),  //
-      vpaste(CarSetupDataNames, sep)  //
+      vpaste(CarSetupDataNames, sep)   //
   };
 
   return vpaste(vec, sep);
 }
 
-std::string PacketCarSetupDataString(PacketCarSetupData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketCarSetupData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),     //
-      CarSetupDataString(obj.m_carSetups[carID])  //
+      PacketHeaderString(obj.m_header),        //
+      CarSetupDataString(obj.m_carSetups[id])  //
   };
   return vpaste(vec, sep);
 }
 
-PacketCarSetupData ParsePacketCarSetupData(std::vector<unsigned char> bytes) {
+template <>
+PacketCarSetupData parsePacketData<PacketCarSetupData>(std::vector<unsigned char> bytes) {
   PacketCarSetupData obj;
   std::uint16_t offset = 0;
 

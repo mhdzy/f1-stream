@@ -249,11 +249,8 @@ int main(int argc, char** argv) {
       // SETUPS
 
       if (DEBUG) spdlog::debug("parsing car setups packet");
-      PacketCarSetupData obj = ParsePacketCarSetupData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(CarSetupsPacketID) << std::to_string(i) + "," + PacketCarSetupDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketCarSetupDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData<PacketCarSetupData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == CarTelemetryPacketID) {
       // TELEMETRY
