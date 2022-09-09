@@ -142,7 +142,8 @@ CarDamageData parseSubpacketData<CarDamageData>(std::vector<std::vector<unsigned
   return obj;
 }
 
-std::string PacketCarDamageDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketCarDamageData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),  //
       vpaste(CarDamageDataNames, sep)  //
