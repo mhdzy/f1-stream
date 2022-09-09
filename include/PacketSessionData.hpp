@@ -4,6 +4,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -121,6 +122,10 @@ extern std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::str
 extern PacketSessionDataBot ParsePacketSessionDataBot(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketSessionDataString(PacketSessionData obj, std::string sep = ",", std::string compr = "/",
-                                           std::string compr2 = ";");
-extern PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketSessionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketSessionData parsePacketData<PacketSessionData>(std::vector<unsigned char> bytes);

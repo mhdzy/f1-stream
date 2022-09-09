@@ -213,9 +213,8 @@ int main(int argc, char** argv) {
       // SESSION~
 
       if (DEBUG) spdlog::debug("parsing session packet");
-      PacketSessionData obj = ParsePacketSessionData(filebytes);
-      output_files.at(SessionPacketID) << PacketSessionDataString(obj) + "\n";
-      if (DEBUG) printf("%s\n", PacketSessionDataString(obj).c_str());
+      auto obj = parsePacketData<PacketSessionData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 0, DEBUG);
 
     } else if (packet.file_id == LapDataPacketID) {
       // LAP DATA

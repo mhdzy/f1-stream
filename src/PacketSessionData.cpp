@@ -349,16 +349,19 @@ std::string PacketSessionDataCSVHeader(std::string sep, std::string compr) {
 }
 
 /**
- * @brief Parse a string representation (default csv) of the PacketSessionData struct. Use .pop_back() to remove the 
+ * @brief Parse a string representation (default csv) of the PacketSessionData struct. Use .pop_back() to remove the
  * lingering "compr" character that remains.
  *
  * @param obj
+ * @param id
  * @param sep A string used to separate the individual field values.
  * @param compr A string used to compress the array-valued field values, should they be a struct or array themselves.
  * @param compr2 A string used to compress the array-typed field values together.
  * @return std::string
  */
-std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std::string compr, std::string compr2) {
+template <>
+std::string packetDataString(PacketSessionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   // compress marshal zones
   std::string compr_marshalZones;
   for (std::uint8_t i = 0; i < obj.m_packetSessionDataTop.m_numMarshalZones; i++) {
@@ -385,7 +388,8 @@ std::string PacketSessionDataString(PacketSessionData obj, std::string sep, std:
   return vpaste(vec, sep);
 }
 
-PacketSessionData ParsePacketSessionData(std::vector<unsigned char> bytes) {
+template <>
+PacketSessionData parsePacketData<PacketSessionData>(std::vector<unsigned char> bytes) {
   PacketSessionData obj;
   std::uint16_t offset = 0;
 
