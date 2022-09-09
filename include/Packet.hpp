@@ -7,6 +7,12 @@
 #include <string>
 
 template <class T>
+extern std::vector<std::size_t> pSizes();
+
+template <class T>
+extern std::vector<std::string> pNames();
+
+template <class T>
 extern T parsePacketData(std::vector<unsigned char> bytes);
 
 template <class T>
