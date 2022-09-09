@@ -60,7 +60,8 @@ extern std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::str
 template <>
 TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketSessionHistoryDataCSVHeader(std::string sep = ",", std::string compr = "/");
+template <>
+std::string packetDataHeader<PacketSessionHistoryData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketSessionHistoryData obj, std::uint8_t id, std::string sep, std::string compr,

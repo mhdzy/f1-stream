@@ -136,7 +136,8 @@ TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::v
   return obj;
 }
 
-std::string PacketSessionHistoryDataCSVHeader(std::string sep, std::string compr) {
+template <>
+std::string packetDataHeader<PacketSessionHistoryData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),           //
       vpaste(LapMetaDataNames, sep),            //

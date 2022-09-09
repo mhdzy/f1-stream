@@ -161,8 +161,8 @@ int main(int argc, char** argv) {
   output_files.at(CarStatusPacketID) << "m_carID," + PacketCarStatusDataCSVHeader() + "\n";
   output_files.at(FinalClassificationPacketID) << "m_carID," + PacketFinalClassificationDataCSVHeader() + "\n";
   output_files.at(LobbyInfoPacketID) << "m_carID," + PacketLobbyInfoDataCSVHeader() + "\n";
-  output_files.at(SessionHistoryPacketID) << "m_lapID," + PacketSessionHistoryDataCSVHeader() + "\n";
   output_files.at(CarDamagePacketID) << "m_carID," + packetDataHeader<PacketCarDamageData>() + "\n";
+  output_files.at(SessionHistoryPacketID) << "m_lapID," + packetDataHeader<PacketSessionHistoryData>() + "\n";
   if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");
