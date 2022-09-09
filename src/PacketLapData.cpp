@@ -157,7 +157,8 @@ LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>
   return obj;
 }
 
-std::string PacketLapDataCSVHeader(std::string sep, std::string compr) {
+template <>
+std::string packetDataHeader<PacketLapData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),  //
       vpaste(LapDataNames, sep),       //

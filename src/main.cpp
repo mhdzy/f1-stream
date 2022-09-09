@@ -151,12 +151,12 @@ int main(int argc, char** argv) {
   if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
   // WRITE HEADERS
-  output_files.at(MotionPacketID) << "m_carID," + PacketMotionDataCSVHeader() + "\n";
-  output_files.at(SessionPacketID) << "m_nopID," + PacketSessionDataCSVHeader() + "\n";
-  output_files.at(LapDataPacketID) << "m_carID," + PacketLapDataCSVHeader() + "\n";
-  output_files.at(EventPacketID) << "m_nopID" + PacketEventDataCSVHeader() + "\n";
-  output_files.at(ParticipantsPacketID) << "m_carID," + PacketParticipantsDataCSVHeader() + "\n";
-  output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
+  output_files.at(MotionPacketID) << "m_carID," + packetDataHeader<PacketMotionData>() + "\n";
+  output_files.at(SessionPacketID) << "m_nopID," + packetDataHeader<PacketSessionData>() + "\n";
+  output_files.at(LapDataPacketID) << "m_carID," + packetDataHeader<PacketLapData>() + "\n";
+  output_files.at(EventPacketID) << "m_nopID" + packetDataHeader<PacketEventData>() + "\n";
+  output_files.at(ParticipantsPacketID) << "m_carID," + packetDataHeader<PacketParticipantsData>() + "\n";
+  output_files.at(CarSetupsPacketID) << "m_carID," + packetDataHeader<PacketCarSetupData>() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + packetDataHeader<PacketCarTelemetryData>() + "\n";
   output_files.at(CarStatusPacketID) << "m_carID," + packetDataHeader<PacketCarStatusData>() + "\n";
   output_files.at(FinalClassificationPacketID) << "m_carID," + packetDataHeader<PacketFinalClassificationData>() + "\n";

@@ -48,7 +48,8 @@ extern std::string CarSetupDataString(CarSetupData obj, std::string sep = ",");
 template <>
 CarSetupData parseSubpacketData<CarSetupData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketCarSetupDataCSVHeader(std::string sep = ",", std::string compr = "/");
+template <>
+std::string packetDataHeader<PacketCarSetupData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketCarSetupData obj, std::uint8_t id, std::string sep, std::string compr,

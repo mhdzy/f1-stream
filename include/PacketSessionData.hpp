@@ -126,7 +126,8 @@ extern std::string PacketSessionDataBotString(PacketSessionDataBot obj, std::str
 template <>
 PacketSessionDataBot parseSubpacketData<PacketSessionDataBot>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketSessionDataCSVHeader(std::string sep = ",", std::string compr = "/");
+template <>
+std::string packetDataHeader<PacketSessionData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketSessionData obj, std::uint8_t id, std::string sep, std::string compr,

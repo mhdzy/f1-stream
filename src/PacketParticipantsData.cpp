@@ -92,7 +92,8 @@ ParticipantMetadata parseSubpacketData<ParticipantMetadata>(std::vector<std::vec
   return obj;
 }
 
-std::string PacketParticipantsDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketParticipantsData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),         //
       vpaste(ParticipantMetadataNames, sep),  //

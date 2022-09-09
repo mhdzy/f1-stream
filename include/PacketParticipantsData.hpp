@@ -46,7 +46,8 @@ extern std::string ParticipantMetadataString(ParticipantMetadata obj, std::strin
 template <>
 ParticipantMetadata parseSubpacketData<ParticipantMetadata>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketParticipantsDataCSVHeader(std::string sep = ",");
+template <>
+std::string packetDataHeader<PacketParticipantsData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketParticipantsData obj, std::uint8_t id, std::string sep, std::string compr,

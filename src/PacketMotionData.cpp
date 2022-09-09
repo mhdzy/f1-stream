@@ -236,7 +236,8 @@ ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vecto
   return obj;
 }
 
-std::string PacketMotionDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketMotionData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),       //
       vpaste(CarMotionDataNames, sep),      //

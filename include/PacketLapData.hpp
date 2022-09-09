@@ -66,7 +66,8 @@ extern std::string LapDataIdxString(LapDataIdx obj, std::string sep = ",");
 template <>
 LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketLapDataCSVHeader(std::string sep = ",", std::string compr = "/");
+template <>
+std::string packetDataHeader<PacketLapData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketLapData obj, std::uint8_t id, std::string sep, std::string compr,

@@ -149,7 +149,8 @@ extern std::string EventDataDetailsString(EventDataDetails obj, std::string sep 
 template <>
 EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketEventDataCSVHeader(std::string sep = ",", std::string compr = "/");
+template <>
+std::string packetDataHeader<PacketEventData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketEventData obj, std::uint8_t id, std::string sep, std::string compr,
