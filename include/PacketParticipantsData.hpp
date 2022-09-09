@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -26,8 +27,8 @@ struct ParticipantMetadata {
 };
 
 struct PacketParticipantsData {
-  PacketHeader m_header;  // Header
-  ParticipantMetadata m_participant; // contains info about m_participants
+  PacketHeader m_header;              // Header
+  ParticipantMetadata m_participant;  // contains info about m_participants
   ParticipantData m_participants[22];
 };
 
@@ -44,5 +45,10 @@ extern std::string ParticipantMetadataString(ParticipantMetadata obj, std::strin
 extern ParticipantMetadata ParseParticipantMetadata(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketParticipantsDataCSVHeader(std::string sep = ",");
-extern std::string PacketParticipantsDataString(PacketParticipantsData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketParticipantsData ParsePacketParticipantsData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketParticipantsData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketParticipantsData parsePacketData<PacketParticipantsData>(std::vector<unsigned char> bytes);

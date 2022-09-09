@@ -99,16 +99,19 @@ std::string PacketParticipantsDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketParticipantsDataString(PacketParticipantsData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketParticipantsData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                 //
-      ParticipantMetadataString(obj.m_participant),     //
-      ParticipantDataString(obj.m_participants[carID])  //
+      PacketHeaderString(obj.m_header),              //
+      ParticipantMetadataString(obj.m_participant),  //
+      ParticipantDataString(obj.m_participants[id])  //
   };
   return vpaste(vec, sep);
 }
 
-PacketParticipantsData ParsePacketParticipantsData(std::vector<unsigned char> bytes) {
+template <>
+PacketParticipantsData parsePacketData<PacketParticipantsData>(std::vector<unsigned char> bytes) {
   PacketParticipantsData obj;
   std::uint16_t offset = 0;
 
