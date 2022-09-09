@@ -52,7 +52,8 @@ extern std::string FinalClassificationMetaString(FinalClassificationMeta obj, st
 template <>
 FinalClassificationMeta parseSubpacketData<FinalClassificationMeta>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketFinalClassificationDataCSVHeader(std::string sep = ",");
+template <>
+std::string packetDataHeader<PacketFinalClassificationData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketFinalClassificationData obj, std::uint8_t id, std::string sep, std::string compr,

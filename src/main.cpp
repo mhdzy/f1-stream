@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
   output_files.at(CarSetupsPacketID) << "m_carID," + PacketCarSetupDataCSVHeader() + "\n";
   output_files.at(CarTelemetryPacketID) << "m_carID," + PacketCarTelemetryDataCSVHeader() + "\n";
   output_files.at(CarStatusPacketID) << "m_carID," + PacketCarStatusDataCSVHeader() + "\n";
-  output_files.at(FinalClassificationPacketID) << "m_carID," + PacketFinalClassificationDataCSVHeader() + "\n";
+  output_files.at(FinalClassificationPacketID) << "m_carID," + packetDataHeader<PacketFinalClassificationData>() + "\n";
   output_files.at(LobbyInfoPacketID) << "m_carID," + packetDataHeader<PacketLobbyInfoData>() + "\n";
   output_files.at(CarDamagePacketID) << "m_carID," + packetDataHeader<PacketCarDamageData>() + "\n";
   output_files.at(SessionHistoryPacketID) << "m_lapID," + packetDataHeader<PacketSessionHistoryData>() + "\n";

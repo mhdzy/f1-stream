@@ -155,7 +155,8 @@ FinalClassificationMeta parseSubpacketData<FinalClassificationMeta>(std::vector<
   return obj;
 }
 
-std::string PacketFinalClassificationDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketFinalClassificationData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),             //
       vpaste(FinalClassificationMetaNames, sep),  //
