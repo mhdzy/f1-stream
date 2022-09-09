@@ -278,12 +278,8 @@ int main(int argc, char** argv) {
       // FINAL CLASSIFICATION
 
       if (DEBUG) spdlog::debug("parsing final classification packet");
-      PacketFinalClassificationData obj = ParsePacketFinalClassificationData(filebytes);
-      for (std::uint8_t i = 0; i < 22; i++) {
-        output_files.at(FinalClassificationPacketID)
-            << std::to_string(i) + "," + PacketFinalClassificationDataString(obj, i) + "\n";
-        if (DEBUG) printf("%s,%s\n", std::to_string(i).c_str(), PacketFinalClassificationDataString(obj, i).c_str());
-      }
+      auto obj = parsePacketData<PacketFinalClassificationData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 22, DEBUG);
 
     } else if (packet.file_id == LobbyInfoPacketID) {
       // LOBBY INFO

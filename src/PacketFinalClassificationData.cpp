@@ -163,19 +163,20 @@ std::string PacketFinalClassificationDataCSVHeader(std::string sep) {
   return vpaste(vec, sep);
 }
 
-std::string PacketFinalClassificationDataString(PacketFinalClassificationData obj, std::uint8_t carID,
-                                                std::string sep) {
+template <>
+std::string packetDataString(PacketFinalClassificationData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                               //
-      FinalClassificationMetaString(obj.m_classificationMeta),        //
-      FinalClassificationDataString(obj.m_classificationData[carID])  //
+      PacketHeaderString(obj.m_header),                            //
+      FinalClassificationMetaString(obj.m_classificationMeta),     //
+      FinalClassificationDataString(obj.m_classificationData[id])  //
   };
-
 
   return vpaste(vec, sep);
 }
 
-PacketFinalClassificationData ParsePacketFinalClassificationData(std::vector<unsigned char> bytes) {
+template <>
+PacketFinalClassificationData parsePacketData<PacketFinalClassificationData>(std::vector<unsigned char> bytes) {
   PacketFinalClassificationData obj;
   std::uint16_t offset = 0;
 

@@ -4,6 +4,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -50,6 +51,10 @@ extern std::string FinalClassificationMetaString(FinalClassificationMeta obj, st
 extern FinalClassificationMeta ParseFinalClassificationMeta(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketFinalClassificationDataCSVHeader(std::string sep = ",");
-extern std::string PacketFinalClassificationDataString(PacketFinalClassificationData obj, std::uint8_t carID,
-                                                       std::string sep = ",");
-extern PacketFinalClassificationData ParsePacketFinalClassificationData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketFinalClassificationData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketFinalClassificationData parsePacketData<PacketFinalClassificationData>(std::vector<unsigned char> bytes);
