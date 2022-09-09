@@ -83,7 +83,8 @@ LobbyInfoData parseSubpacketData<LobbyInfoData>(std::vector<std::vector<unsigned
   return obj;
 }
 
-std::string PacketLobbyInfoDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketLobbyInfoData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),   //
       vpaste(LobbyInfoMetaNames, sep),  //

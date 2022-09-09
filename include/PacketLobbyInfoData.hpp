@@ -43,7 +43,8 @@ extern std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep = ",")
 template <>
 LobbyInfoMeta parseSubpacketData<LobbyInfoMeta>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketLobbyInfoDataCSVHeader(std::string sep = ",");
+template <>
+std::string packetDataHeader<PacketLobbyInfoData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketLobbyInfoData obj, std::uint8_t id, std::string sep, std::string compr,
