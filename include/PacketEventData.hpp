@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -147,5 +148,10 @@ extern std::string EventDataDetailsString(EventDataDetails obj, std::string sep 
 extern EventDataDetails ParseEventDataDetails(std::vector<std::vector<unsigned char>> bytes);
 
 extern std::string PacketEventDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketEventDataString(PacketEventData obj, std::string sep = ",");
-extern PacketEventData ParsePacketEventData(std::vector<unsigned char> bytes);
+
+template <>
+std::string packetDataString(PacketEventData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> bytes);

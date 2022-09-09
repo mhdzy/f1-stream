@@ -86,7 +86,9 @@ std::string PacketEventDataCSVHeader(std::string sep, std::string compr) {
   return vpaste(vec, sep);
 }
 
-std::string PacketEventDataString(PacketEventData obj, std::string sep) {
+template <>
+std::string packetDataString(PacketEventData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
       PacketHeaderString(obj.m_header),           //
       EventDataDetailsString(obj.m_eventDetails)  //
@@ -94,7 +96,8 @@ std::string PacketEventDataString(PacketEventData obj, std::string sep) {
   return vpaste(vec, sep);
 }
 
-PacketEventData ParsePacketEventData(std::vector<unsigned char> bytes) {
+template <>
+PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> bytes) {
   PacketEventData obj;
   std::uint16_t offset = 0;
 

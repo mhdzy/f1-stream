@@ -231,9 +231,8 @@ int main(int argc, char** argv) {
       // EVENT
 
       if (DEBUG) spdlog::debug("parsing event data packet");
-      PacketEventData obj = ParsePacketEventData(filebytes);
-      output_files.at(EventPacketID) << PacketEventDataString(obj) + "\n";
-      if (DEBUG) printf("%s\n", PacketEventDataString(obj).c_str());
+      auto obj = parsePacketData<PacketEventData>(filebytes);
+      printPacket(obj, output_files.at(packet.file_id), 0, DEBUG);
 
     } else if (packet.file_id == ParticipantsPacketID) {
       // PARTICIPANTS
