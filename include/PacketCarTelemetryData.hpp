@@ -61,7 +61,8 @@ extern std::string CarTelemetryPanelString(CarTelemetryPanel obj, std::string se
 template <>
 CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::string PacketCarTelemetryDataCSVHeader(std::string sep = ",");
+template <>
+std::string packetDataHeader<PacketCarTelemetryData>(std::string sep, std::string compr);
 
 template <>
 std::string packetDataString(PacketCarTelemetryData obj, std::uint8_t id, std::string sep, std::string compr,

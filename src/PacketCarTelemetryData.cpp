@@ -196,7 +196,8 @@ CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<
   return obj;
 }
 
-std::string PacketCarTelemetryDataCSVHeader(std::string sep) {
+template <>
+std::string packetDataHeader<PacketCarTelemetryData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
       vpaste(PacketHeaderNames, sep),      //
       vpaste(CarTelemetryDataNames, sep),  //
