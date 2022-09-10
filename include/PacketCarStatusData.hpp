@@ -53,8 +53,11 @@ struct PacketCarStatusData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarStatusDataSizes;
-extern std::vector<std::string> CarStatusDataNames;
+template <>
+std::vector<std::size_t> pSizes<CarStatusData>();
+
+template <>
+std::vector<std::string> pNames<CarStatusData>();
 
 template <>
 std::string subpacketDataString(CarStatusData obj, std::string sep);

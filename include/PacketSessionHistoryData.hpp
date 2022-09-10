@@ -42,8 +42,11 @@ struct PacketSessionHistoryData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LapMetaDataSizes;
-extern std::vector<std::string> LapMetaDataNames;
+template <>
+std::vector<std::size_t> pSizes<LapMetaData>();
+
+template <>
+std::vector<std::string> pNames<LapMetaData>();
 
 template <>
 std::string subpacketDataString(LapMetaData obj, std::string sep);
@@ -51,8 +54,11 @@ std::string subpacketDataString(LapMetaData obj, std::string sep);
 template <>
 LapMetaData parseSubpacketData<LapMetaData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> LapHistoryDataSizes;
-extern std::vector<std::string> LapHistoryDataNames;
+template <>
+std::vector<std::size_t> pSizes<LapHistoryData>();
+
+template <>
+std::vector<std::string> pNames<LapHistoryData>();
 
 template <>
 std::string subpacketDataString(LapHistoryData obj, std::string sep);
@@ -60,8 +66,11 @@ std::string subpacketDataString(LapHistoryData obj, std::string sep);
 template <>
 LapHistoryData parseSubpacketData<LapHistoryData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> TyreStintHistoryDataSizes;
-extern std::vector<std::string> TyreStintHistoryDataNames;
+template <>
+std::vector<std::size_t> pSizes<TyreStintHistoryData>();
+
+template <>
+std::vector<std::string> pNames<TyreStintHistoryData>();
 
 template <>
 std::string subpacketDataString(TyreStintHistoryData obj, std::string sep);

@@ -6,6 +6,8 @@
 #include <ostream>
 #include <string>
 
+#include "File.hpp"
+
 template <class T>
 extern std::vector<std::size_t> pSizes();
 
@@ -17,6 +19,11 @@ extern T parsePacketData(std::vector<unsigned char> bytes);
 
 template <class T>
 extern T parseSubpacketData(std::vector<std::vector<unsigned char>> bytes);
+
+template <class T>
+extern T parseSubpacketDataT(std::vector<unsigned char> bytes, std::uint16_t offset) {
+  return parseSubpacketData<T>(parseBytes(pSizes<T>(), bytes, offset));
+};
 
 template <class T>
 extern std::string packetDataHeader(std::string sep = ",", std::string compr = "/");

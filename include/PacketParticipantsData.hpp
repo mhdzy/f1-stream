@@ -34,8 +34,11 @@ struct PacketParticipantsData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> ParticipantDataSizes;
-extern std::vector<std::string> ParticipantDataNames;
+template <>
+std::vector<std::size_t> pSizes<ParticipantData>();
+
+template <>
+std::vector<std::string> pNames<ParticipantData>();
 
 template <>
 std::string subpacketDataString(ParticipantData obj, std::string sep);
@@ -43,8 +46,11 @@ std::string subpacketDataString(ParticipantData obj, std::string sep);
 template <>
 ParticipantData parseSubpacketData<ParticipantData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> ParticipantMetadataSizes;
-extern std::vector<std::string> ParticipantMetadataNames;
+template <>
+std::vector<std::size_t> pSizes<ParticipantMetadata>();
+
+template <>
+std::vector<std::string> pNames<ParticipantMetadata>();
 
 template <>
 std::string subpacketDataString(ParticipantMetadata obj, std::string sep);

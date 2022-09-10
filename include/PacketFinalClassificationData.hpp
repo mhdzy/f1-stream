@@ -40,8 +40,11 @@ struct PacketFinalClassificationData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> FinalClassificationDataSizes;
-extern std::vector<std::string> FinalClassificationDataNames;
+template <>
+std::vector<std::size_t> pSizes<FinalClassificationData>();
+
+template <>
+std::vector<std::string> pNames<FinalClassificationData>();
 
 template <>
 std::string subpacketDataString(FinalClassificationData obj, std::string sep);
@@ -49,8 +52,11 @@ std::string subpacketDataString(FinalClassificationData obj, std::string sep);
 template <>
 FinalClassificationData parseSubpacketData<FinalClassificationData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> FinalClassificationMetaSizes;
-extern std::vector<std::string> FinalClassificationMetaNames;
+template <>
+std::vector<std::size_t> pSizes<FinalClassificationMeta>();
+
+template <>
+std::vector<std::string> pNames<FinalClassificationMeta>();
 
 template <>
 std::string subpacketDataString(FinalClassificationMeta obj, std::string sep);

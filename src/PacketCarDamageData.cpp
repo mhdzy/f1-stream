@@ -1,52 +1,58 @@
 #include "../include/PacketCarDamageData.hpp"
 
-std::vector<std::size_t> CarDamageDataSizes = {
-    sizeof(((CarDamageData *)0)->m_tyresWear),             // Tyre wear (percentage)
-    sizeof(((CarDamageData *)0)->m_tyresDamage),           // Tyre damage (percentage)
-    sizeof(((CarDamageData *)0)->m_brakesDamage),          // Brakes damage (percentage)
-    sizeof(((CarDamageData *)0)->m_frontLeftWingDamage),   // Front left wing damage (percentage)
-    sizeof(((CarDamageData *)0)->m_frontRightWingDamage),  // Front right wing damage (percentage)
-    sizeof(((CarDamageData *)0)->m_rearWingDamage),        // Rear wing damage (percentage)
-    sizeof(((CarDamageData *)0)->m_floorDamage),           // Floor damage (percentage)
-    sizeof(((CarDamageData *)0)->m_diffuserDamage),        // Diffuser damage (percentage)
-    sizeof(((CarDamageData *)0)->m_sidepodDamage),         // Sidepod damage (percentage)
-    sizeof(((CarDamageData *)0)->m_drsFault),              // Indicator for DRS fault, 0 = OK, 1 = fault
-    sizeof(((CarDamageData *)0)->m_ersFault),              // Indicator for ERS fault, 0 = OK, 1 = fault
-    sizeof(((CarDamageData *)0)->m_gearBoxDamage),         // Gear box damage (percentage)
-    sizeof(((CarDamageData *)0)->m_engineDamage),          // Engine damage (percentage)
-    sizeof(((CarDamageData *)0)->m_engineMGUHWear),        // Engine wear MGU-H (percentage)
-    sizeof(((CarDamageData *)0)->m_engineESWear),          // Engine wear ES (percentage)
-    sizeof(((CarDamageData *)0)->m_engineCEWear),          // Engine wear CE (percentage)
-    sizeof(((CarDamageData *)0)->m_engineICEWear),         // Engine wear ICE (percentage)
-    sizeof(((CarDamageData *)0)->m_engineMGUKWear),        // Engine wear MGU-K (percentage)
-    sizeof(((CarDamageData *)0)->m_engineTCWear),          // Engine wear TC (percentage)
-    sizeof(((CarDamageData *)0)->m_engineBlown),           // Engine blown, 0 = OK, 1 = fault
-    sizeof(((CarDamageData *)0)->m_engineSeized)           // Engine seized, 0 = OK, 1 = fault
-};
+template <>
+std::vector<std::size_t> pSizes<CarDamageData>() {
+  return std::vector<std::size_t>{
+      sizeof(((CarDamageData *)0)->m_tyresWear),             // Tyre wear (percentage)
+      sizeof(((CarDamageData *)0)->m_tyresDamage),           // Tyre damage (percentage)
+      sizeof(((CarDamageData *)0)->m_brakesDamage),          // Brakes damage (percentage)
+      sizeof(((CarDamageData *)0)->m_frontLeftWingDamage),   // Front left wing damage (percentage)
+      sizeof(((CarDamageData *)0)->m_frontRightWingDamage),  // Front right wing damage (percentage)
+      sizeof(((CarDamageData *)0)->m_rearWingDamage),        // Rear wing damage (percentage)
+      sizeof(((CarDamageData *)0)->m_floorDamage),           // Floor damage (percentage)
+      sizeof(((CarDamageData *)0)->m_diffuserDamage),        // Diffuser damage (percentage)
+      sizeof(((CarDamageData *)0)->m_sidepodDamage),         // Sidepod damage (percentage)
+      sizeof(((CarDamageData *)0)->m_drsFault),              // Indicator for DRS fault, 0 = OK, 1 = fault
+      sizeof(((CarDamageData *)0)->m_ersFault),              // Indicator for ERS fault, 0 = OK, 1 = fault
+      sizeof(((CarDamageData *)0)->m_gearBoxDamage),         // Gear box damage (percentage)
+      sizeof(((CarDamageData *)0)->m_engineDamage),          // Engine damage (percentage)
+      sizeof(((CarDamageData *)0)->m_engineMGUHWear),        // Engine wear MGU-H (percentage)
+      sizeof(((CarDamageData *)0)->m_engineESWear),          // Engine wear ES (percentage)
+      sizeof(((CarDamageData *)0)->m_engineCEWear),          // Engine wear CE (percentage)
+      sizeof(((CarDamageData *)0)->m_engineICEWear),         // Engine wear ICE (percentage)
+      sizeof(((CarDamageData *)0)->m_engineMGUKWear),        // Engine wear MGU-K (percentage)
+      sizeof(((CarDamageData *)0)->m_engineTCWear),          // Engine wear TC (percentage)
+      sizeof(((CarDamageData *)0)->m_engineBlown),           // Engine blown, 0 = OK, 1 = fault
+      sizeof(((CarDamageData *)0)->m_engineSeized)           // Engine seized, 0 = OK, 1 = fault
+  };
+}
 
-std::vector<std::string> CarDamageDataNames = {
-    "m_tyresWear",             // Tyre wear (percentage)
-    "m_tyresDamage",           // Tyre damage (percentage)
-    "m_brakesDamage",          // Brakes damage (percentage)
-    "m_frontLeftWingDamage",   // Front left wing damage (percentage)
-    "m_frontRightWingDamage",  // Front right wing damage (percentage)
-    "m_rearWingDamage",        // Rear wing damage (percentage)
-    "m_floorDamage",           // Floor damage (percentage)
-    "m_diffuserDamage",        // Diffuser damage (percentage)
-    "m_sidepodDamage",         // Sidepod damage (percentage)
-    "m_drsFault",              // Indicator for DRS fault, 0 = OK, 1 = fault
-    "m_ersFault",              // Indicator for ERS fault, 0 = OK, 1 = fault
-    "m_gearBoxDamage",         // Gear box damage (percentage)
-    "m_engineDamage",          // Engine damage (percentage)
-    "m_engineMGUHWear",        // Engine wear MGU-H (percentage)
-    "m_engineESWear",          // Engine wear ES (percentage)
-    "m_engineCEWear",          // Engine wear CE (percentage)
-    "m_engineICEWear",         // Engine wear ICE (percentage)
-    "m_engineMGUKWear",        // Engine wear MGU-K (percentage)
-    "m_engineTCWear",          // Engine wear TC (percentage)
-    "m_engineBlown",           // Engine blown, 0 = OK, 1 = fault
-    "m_engineSeized"           // Engine seized, 0 = OK, 1 = fault
-};
+template <>
+std::vector<std::string> pNames<CarDamageData>() {
+  return std::vector<std::string>{
+      "m_tyresWear",             // Tyre wear (percentage)
+      "m_tyresDamage",           // Tyre damage (percentage)
+      "m_brakesDamage",          // Brakes damage (percentage)
+      "m_frontLeftWingDamage",   // Front left wing damage (percentage)
+      "m_frontRightWingDamage",  // Front right wing damage (percentage)
+      "m_rearWingDamage",        // Rear wing damage (percentage)
+      "m_floorDamage",           // Floor damage (percentage)
+      "m_diffuserDamage",        // Diffuser damage (percentage)
+      "m_sidepodDamage",         // Sidepod damage (percentage)
+      "m_drsFault",              // Indicator for DRS fault, 0 = OK, 1 = fault
+      "m_ersFault",              // Indicator for ERS fault, 0 = OK, 1 = fault
+      "m_gearBoxDamage",         // Gear box damage (percentage)
+      "m_engineDamage",          // Engine damage (percentage)
+      "m_engineMGUHWear",        // Engine wear MGU-H (percentage)
+      "m_engineESWear",          // Engine wear ES (percentage)
+      "m_engineCEWear",          // Engine wear CE (percentage)
+      "m_engineICEWear",         // Engine wear ICE (percentage)
+      "m_engineMGUKWear",        // Engine wear MGU-K (percentage)
+      "m_engineTCWear",          // Engine wear TC (percentage)
+      "m_engineBlown",           // Engine blown, 0 = OK, 1 = fault
+      "m_engineSeized"           // Engine seized, 0 = OK, 1 = fault
+  };
+}
 
 template <>
 std::string subpacketDataString(CarDamageData obj, std::string sep) {
@@ -145,8 +151,8 @@ CarDamageData parseSubpacketData<CarDamageData>(std::vector<std::vector<unsigned
 template <>
 std::string packetDataHeader<PacketCarDamageData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),  //
-      vpaste(CarDamageDataNames, sep)  //
+      vpaste(pNames<PacketHeader>(), sep),  //
+      vpaste(pNames<CarDamageData>(), sep)  //
   };
 
   return vpaste(vec, sep);
@@ -168,12 +174,12 @@ PacketCarDamageData parsePacketData<PacketCarDamageData>(std::vector<unsigned ch
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carDamageData[i] = parseSubpacketData<CarDamageData>(parseBytes(CarDamageDataSizes, bytes, offset));
+    obj.m_carDamageData[i] = parseSubpacketDataT<CarDamageData>(bytes, offset);
     offset += sizeof(CarDamageData);
   }
 

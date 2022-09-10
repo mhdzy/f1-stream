@@ -21,30 +21,35 @@ std::map<std::string, std::pair<std::string, std::string>> Events = {
     {"FLBK", std::make_pair("Flashback", "Flashback activated")},
     {"BUTN", std::make_pair("Button status", "Button status changed")}};
 
-std::vector<std::size_t> EventDataDetailsSizes = {
-    // unused
-};
+template <>
+std::vector<std::size_t> pSizes<EventDataDetails>() {
+  // unused
+  return std::vector<std::size_t>{};
+}
 
-std::vector<std::string> EventDataDetailsNames = {
-    "eventCode",                   // string representation of the event code
-    "vehicleIdx",                  // Vehicle index of car achieving fastest lap
-    "lapTime",                     // Lap time is in seconds
-    "penaltyType",                 // Penalty type – see Appendices
-    "infringementType",            // Infringement type – see Appendices
-    "otherVehicleIdx",             // Vehicle index of the other car involved
-    "time",                        // Time gained, or time spent doing action in seconds
-    "lapNum",                      // Lap the penalty occurred on
-    "placesGained",                // Number of places gained by this
-    "speed",                       // Top speed achieved in kilometres per hour
-    "isOverallFastestInSession",   // Overall fastest speed in session = 1, otherwise 0
-    "isDriverFastestInSession",    // Fastest speed for driver in session = 1, otherwise 0
-    "fastestVehicleIdxInSession",  // Vehicle index of the vehicle that is the fastest in this session
-    "fastestSpeedInSession",       // Speed of the vehicle that is the fastest in this session
-    "numLights",                   // Number of lights showing
-    "flashbackFrameIdentifier",    // Frame identifier flashed back to
-    "flashbackSessionTime",        // Session time flashed back to
-    "m_buttonStatus",              // Bit flags specifying which buttons are being pressed currently - see appendices
-};
+template <>
+std::vector<std::string> pNames<EventDataDetails>() {
+  return std::vector<std::string>{
+      "eventCode",                   // string representation of the event code
+      "vehicleIdx",                  // Vehicle index of car achieving fastest lap
+      "lapTime",                     // Lap time is in seconds
+      "penaltyType",                 // Penalty type – see Appendices
+      "infringementType",            // Infringement type – see Appendices
+      "otherVehicleIdx",             // Vehicle index of the other car involved
+      "time",                        // Time gained, or time spent doing action in seconds
+      "lapNum",                      // Lap the penalty occurred on
+      "placesGained",                // Number of places gained by this
+      "speed",                       // Top speed achieved in kilometres per hour
+      "isOverallFastestInSession",   // Overall fastest speed in session = 1, otherwise 0
+      "isDriverFastestInSession",    // Fastest speed for driver in session = 1, otherwise 0
+      "fastestVehicleIdxInSession",  // Vehicle index of the vehicle that is the fastest in this session
+      "fastestSpeedInSession",       // Speed of the vehicle that is the fastest in this session
+      "numLights",                   // Number of lights showing
+      "flashbackFrameIdentifier",    // Frame identifier flashed back to
+      "flashbackSessionTime",        // Session time flashed back to
+      "m_buttonStatus",              // Bit flags specifying which buttons are being pressed currently - see appendices
+  };
+}
 
 template <>
 std::string subpacketDataString(EventDataDetails obj, std::string sep) {
@@ -83,8 +88,8 @@ EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<un
 template <>
 std::string packetDataHeader<PacketEventData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),     //
-      vpaste(EventDataDetailsNames, sep)  //
+      vpaste(pNames<PacketHeader>(), sep),     //
+      vpaste(pNames<EventDataDetails>(), sep)  //
   };
   return vpaste(vec, sep);
 }
@@ -104,7 +109,7 @@ PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> byte
   PacketEventData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
   // extract packet type

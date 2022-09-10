@@ -60,11 +60,17 @@ struct PacketMotionData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarMotionDataSizes;
-extern std::vector<std::string> CarMotionDataNames;
+template <>
+std::vector<std::size_t> pSizes<CarMotionData>();
 
-extern std::vector<std::size_t> ExtraCarMotionDataSizes;
-extern std::vector<std::string> ExtraCarMotionDataNames;
+template <>
+std::vector<std::string> pNames<CarMotionData>();
+
+template <>
+std::vector<std::size_t> pSizes<ExtraCarMotionData>();
+
+template <>
+std::vector<std::string> pNames<ExtraCarMotionData>();
 
 template <>
 std::string subpacketDataString(CarMotionData obj, std::string sep);

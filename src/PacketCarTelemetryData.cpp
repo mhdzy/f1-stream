@@ -1,62 +1,75 @@
 #include "../include/PacketCarTelemetryData.hpp"
 
-std::vector<std::size_t> CarTelemetryDataSizes = {
-    sizeof(((CarTelemetryData *)0)->m_speed),              // Speed of car in kilometres per hour
-    sizeof(((CarTelemetryData *)0)->m_throttle),           // Amount of throttle applied (0.0 to 1.0)
-    sizeof(((CarTelemetryData *)0)->m_steer),              // Steering (-1.0 (full lock left) to 1.0 (full lock right))
-    sizeof(((CarTelemetryData *)0)->m_brake),              // Amount of brake applied (0.0 to 1.0)
-    sizeof(((CarTelemetryData *)0)->m_clutch),             // Amount of clutch applied (0 to 100)
-    sizeof(((CarTelemetryData *)0)->m_gear),               // Gear selected (1-8, N=0, R=-1)
-    sizeof(((CarTelemetryData *)0)->m_engineRPM),          // Engine RPM
-    sizeof(((CarTelemetryData *)0)->m_drs),                // 0 = off, 1 = on
-    sizeof(((CarTelemetryData *)0)->m_revLightsPercent),   // Rev lights indicator (percentage)
-    sizeof(((CarTelemetryData *)0)->m_revLightsBitValue),  // Rev lights (bit 0 = leftmost LED, bit 14 = rightmost LED)
-    sizeof(((CarTelemetryData *)0)->m_brakesTemperature),  // Brakes temperature (celsius)
-    sizeof(((CarTelemetryData *)0)->m_tyresSurfaceTemperature),  // Tyres surface temperature (celsius)
-    sizeof(((CarTelemetryData *)0)->m_tyresInnerTemperature),    // Tyres inner temperature (celsius)
-    sizeof(((CarTelemetryData *)0)->m_engineTemperature),        // Engine temperature (celsius)
-    sizeof(((CarTelemetryData *)0)->m_tyresPressure),            // Tyres pressure (PSI)
-    sizeof(((CarTelemetryData *)0)->m_surfaceType)               // Driving surface, see appendices
-};
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryData>() {
+  return std::vector<std::size_t>{
+      sizeof(((CarTelemetryData *)0)->m_speed),             // Speed of car in kilometres per hour
+      sizeof(((CarTelemetryData *)0)->m_throttle),          // Amount of throttle applied (0.0 to 1.0)
+      sizeof(((CarTelemetryData *)0)->m_steer),             // Steering (-1.0 (full lock left) to 1.0 (full lock right))
+      sizeof(((CarTelemetryData *)0)->m_brake),             // Amount of brake applied (0.0 to 1.0)
+      sizeof(((CarTelemetryData *)0)->m_clutch),            // Amount of clutch applied (0 to 100)
+      sizeof(((CarTelemetryData *)0)->m_gear),              // Gear selected (1-8, N=0, R=-1)
+      sizeof(((CarTelemetryData *)0)->m_engineRPM),         // Engine RPM
+      sizeof(((CarTelemetryData *)0)->m_drs),               // 0 = off, 1 = on
+      sizeof(((CarTelemetryData *)0)->m_revLightsPercent),  // Rev lights indicator (percentage)
+      sizeof(
+          ((CarTelemetryData *)0)->m_revLightsBitValue),  // Rev lights (bit 0 = leftmost LED, bit 14 = rightmost LED)
+      sizeof(((CarTelemetryData *)0)->m_brakesTemperature),        // Brakes temperature (celsius)
+      sizeof(((CarTelemetryData *)0)->m_tyresSurfaceTemperature),  // Tyres surface temperature (celsius)
+      sizeof(((CarTelemetryData *)0)->m_tyresInnerTemperature),    // Tyres inner temperature (celsius)
+      sizeof(((CarTelemetryData *)0)->m_engineTemperature),        // Engine temperature (celsius)
+      sizeof(((CarTelemetryData *)0)->m_tyresPressure),            // Tyres pressure (PSI)
+      sizeof(((CarTelemetryData *)0)->m_surfaceType)               // Driving surface, see appendices
+  };
+}
 
-std::vector<std::string> CarTelemetryDataNames = {
-    "m_speed",                    // Speed of car in kilometres per hour
-    "m_throttle",                 // Amount of throttle applied (0.0 to 1.0)
-    "m_steer",                    // Steering (-1.0 (full lock left) to 1.0 (full lock right))
-    "m_brake",                    // Amount of brake applied (0.0 to 1.0)
-    "m_clutch",                   // Amount of clutch applied (0 to 100)
-    "m_gear",                     // Gear selected (1-8, N=0, R=-1)
-    "m_engineRPM",                // Engine RPM
-    "m_drs",                      // 0 = off, 1 = on
-    "m_revLightsPercent",         // Rev lights indicator (percentage)
-    "m_revLightsBitValue",        // Rev lights (bit 0 = leftmost LED, bit 14 = rightmost LED)
-    "m_brakesTemperature",        // Brakes temperature (celsius)
-    "m_tyresSurfaceTemperature",  // Tyres surface temperature (celsius)
-    "m_tyresInnerTemperature",    // Tyres inner temperature (celsius)
-    "m_engineTemperature",        // Engine temperature (celsius)
-    "m_tyresPressure",            // Tyres pressure (PSI)
-    "m_surfaceType"               // Driving surface, see appendices
-};
+template <>
+std::vector<std::string> pNames<CarTelemetryData>() {
+  return std::vector<std::string>{
+      "m_speed",                    // Speed of car in kilometres per hour
+      "m_throttle",                 // Amount of throttle applied (0.0 to 1.0)
+      "m_steer",                    // Steering (-1.0 (full lock left) to 1.0 (full lock right))
+      "m_brake",                    // Amount of brake applied (0.0 to 1.0)
+      "m_clutch",                   // Amount of clutch applied (0 to 100)
+      "m_gear",                     // Gear selected (1-8, N=0, R=-1)
+      "m_engineRPM",                // Engine RPM
+      "m_drs",                      // 0 = off, 1 = on
+      "m_revLightsPercent",         // Rev lights indicator (percentage)
+      "m_revLightsBitValue",        // Rev lights (bit 0 = leftmost LED, bit 14 = rightmost LED)
+      "m_brakesTemperature",        // Brakes temperature (celsius)
+      "m_tyresSurfaceTemperature",  // Tyres surface temperature (celsius)
+      "m_tyresInnerTemperature",    // Tyres inner temperature (celsius)
+      "m_engineTemperature",        // Engine temperature (celsius)
+      "m_tyresPressure",            // Tyres pressure (PSI)
+      "m_surfaceType"               // Driving surface, see appendices
+  };
+}
 
-std::vector<std::size_t> CarTelemetryPanelSizes = {
-    sizeof(((CarTelemetryPanel *)0)->m_mfdPanelIndex),  // Index of MFD panel open - 255 = MFD closed
-                                                        // Single player, race – 0 = Car setup, 1 = Pits
-                                                        // 2 = Damage, 3 =  Engine, 4 = Temperatures
-                                                        // May vary depending on game mode
-    sizeof(((CarTelemetryPanel *)0)->m_mfdPanelIndexSecondaryPlayer),  // See above
-    sizeof(((CarTelemetryPanel *)0)->m_suggestedGear)                  // Suggested gear for the player (1-8)
-                                                                       // 0 if no gear suggested
-};
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryPanel>() {
+  return std::vector<std::size_t>{
+      sizeof(((CarTelemetryPanel *)0)->m_mfdPanelIndex),  // Index of MFD panel open - 255 = MFD closed
+                                                          // Single player, race – 0 = Car setup, 1 = Pits
+                                                          // 2 = Damage, 3 =  Engine, 4 = Temperatures
+                                                          // May vary depending on game mode
+      sizeof(((CarTelemetryPanel *)0)->m_mfdPanelIndexSecondaryPlayer),  // See above
+      sizeof(((CarTelemetryPanel *)0)->m_suggestedGear)                  // Suggested gear for the player (1-8)
+                                                                         // 0 if no gear suggested
+  };
+}
 
-std::vector<std::string> CarTelemetryPanelNames = {
-    "m_mfdPanelIndex",                 // Index of MFD panel open - 255 = MFD closed
-                                       // Single player, race – 0 = Car setup, 1 = Pits
-                                       // 2 = Damage, 3 =  Engine, 4 = Temperatures
-                                       // May vary depending on game mode
-    "m_mfdPanelIndexSecondaryPlayer",  // See above
-    "m_suggestedGear"                  // Suggested gear for the player (1-8)
-                                       // 0 if no gear suggested
-};
+template <>
+std::vector<std::string> pNames<CarTelemetryPanel>() {
+  return std::vector<std::string>{
+      "m_mfdPanelIndex",                 // Index of MFD panel open - 255 = MFD closed
+                                         // Single player, race – 0 = Car setup, 1 = Pits
+                                         // 2 = Damage, 3 =  Engine, 4 = Temperatures
+                                         // May vary depending on game mode
+      "m_mfdPanelIndexSecondaryPlayer",  // See above
+      "m_suggestedGear"                  // Suggested gear for the player (1-8)
+                                         // 0 if no gear suggested
+  };
+}
 
 template <>
 std::string subpacketDataString(CarTelemetryData obj, std::string sep) {
@@ -201,9 +214,9 @@ CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<
 template <>
 std::string packetDataHeader<PacketCarTelemetryData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),      //
-      vpaste(CarTelemetryDataNames, sep),  //
-      vpaste(CarTelemetryPanelNames, sep)  //
+      vpaste(pNames<PacketHeader>(), sep),      //
+      vpaste(pNames<CarTelemetryData>(), sep),  //
+      vpaste(pNames<CarTelemetryPanel>(), sep)  //
   };
 
   return vpaste(vec, sep);
@@ -226,17 +239,17 @@ PacketCarTelemetryData parsePacketData<PacketCarTelemetryData>(std::vector<unsig
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carTelemetryData[i] = parseSubpacketData<CarTelemetryData>(parseBytes(CarTelemetryDataSizes, bytes, offset));
+    obj.m_carTelemetryData[i] = parseSubpacketDataT<CarTelemetryData>(bytes, offset);
     offset += sizeof(CarTelemetryData);
   }
 
   // parse extra player car data
-  obj.m_carTelemetryPanel = parseSubpacketData<CarTelemetryPanel>(parseBytes(CarTelemetryPanelSizes, bytes, offset));
+  obj.m_carTelemetryPanel = parseSubpacketDataT<CarTelemetryPanel>(bytes, offset);
 
   return obj;
 }

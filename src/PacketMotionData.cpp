@@ -1,82 +1,94 @@
 #include "../include/PacketMotionData.hpp"
 
-std::vector<std::size_t> CarMotionDataSizes = {
-    sizeof(((CarMotionData *)0)->m_worldPositionX),      // World space X position
-    sizeof(((CarMotionData *)0)->m_worldPositionY),      // World space Y position
-    sizeof(((CarMotionData *)0)->m_worldPositionZ),      // World space Z position
-    sizeof(((CarMotionData *)0)->m_worldVelocityX),      // Velocity in world space X
-    sizeof(((CarMotionData *)0)->m_worldVelocityY),      // Velocity in world space Y
-    sizeof(((CarMotionData *)0)->m_worldVelocityZ),      // Velocity in world space Z
-    sizeof(((CarMotionData *)0)->m_worldForwardDirX),    // World space forward X direction (normalised)
-    sizeof(((CarMotionData *)0)->m_worldForwardDirY),    // World space forward Y direction (normalised)
-    sizeof(((CarMotionData *)0)->m_worldForwardDirZ),    // World space forward Z direction (normalised)
-    sizeof(((CarMotionData *)0)->m_worldRightDirX),      // World space right X direction (normalised)
-    sizeof(((CarMotionData *)0)->m_worldRightDirY),      // World space right Y direction (normalised)
-    sizeof(((CarMotionData *)0)->m_worldRightDirZ),      // World space right Z direction (normalised)
-    sizeof(((CarMotionData *)0)->m_gForceLateral),       // Lateral G-Force component
-    sizeof(((CarMotionData *)0)->m_gForceLongitudinal),  // Longitudinal G-Force component
-    sizeof(((CarMotionData *)0)->m_gForceVertical),      // Vertical G-Force component
-    sizeof(((CarMotionData *)0)->m_yaw),                 // Yaw angle in radians
-    sizeof(((CarMotionData *)0)->m_pitch),               // Pitch angle in radians
-    sizeof(((CarMotionData *)0)->m_roll)                 // Roll angle in radians
-};
+template <>
+std::vector<std::size_t> pSizes<CarMotionData>() {
+  return std::vector<std::size_t>{
+      sizeof(((CarMotionData *)0)->m_worldPositionX),      // World space X position
+      sizeof(((CarMotionData *)0)->m_worldPositionY),      // World space Y position
+      sizeof(((CarMotionData *)0)->m_worldPositionZ),      // World space Z position
+      sizeof(((CarMotionData *)0)->m_worldVelocityX),      // Velocity in world space X
+      sizeof(((CarMotionData *)0)->m_worldVelocityY),      // Velocity in world space Y
+      sizeof(((CarMotionData *)0)->m_worldVelocityZ),      // Velocity in world space Z
+      sizeof(((CarMotionData *)0)->m_worldForwardDirX),    // World space forward X direction (normalised)
+      sizeof(((CarMotionData *)0)->m_worldForwardDirY),    // World space forward Y direction (normalised)
+      sizeof(((CarMotionData *)0)->m_worldForwardDirZ),    // World space forward Z direction (normalised)
+      sizeof(((CarMotionData *)0)->m_worldRightDirX),      // World space right X direction (normalised)
+      sizeof(((CarMotionData *)0)->m_worldRightDirY),      // World space right Y direction (normalised)
+      sizeof(((CarMotionData *)0)->m_worldRightDirZ),      // World space right Z direction (normalised)
+      sizeof(((CarMotionData *)0)->m_gForceLateral),       // Lateral G-Force component
+      sizeof(((CarMotionData *)0)->m_gForceLongitudinal),  // Longitudinal G-Force component
+      sizeof(((CarMotionData *)0)->m_gForceVertical),      // Vertical G-Force component
+      sizeof(((CarMotionData *)0)->m_yaw),                 // Yaw angle in radians
+      sizeof(((CarMotionData *)0)->m_pitch),               // Pitch angle in radians
+      sizeof(((CarMotionData *)0)->m_roll)                 // Roll angle in radians
+  };
+}
 
-std::vector<std::string> CarMotionDataNames = {
-    "m_worldPositionX",      // World space X position
-    "m_worldPositionY",      // World space Y position
-    "m_worldPositionZ",      // World space Z position
-    "m_worldVelocityX",      // Velocity in world space X
-    "m_worldVelocityY",      // Velocity in world space Y
-    "m_worldVelocityZ",      // Velocity in world space Z
-    "m_worldForwardDirX",    // World space forward X direction (normalised)
-    "m_worldForwardDirY",    // World space forward Y direction (normalised)
-    "m_worldForwardDirZ",    // World space forward Z direction (normalised)
-    "m_worldRightDirX",      // World space right X direction (normalised)
-    "m_worldRightDirY",      // World space right Y direction (normalised)
-    "m_worldRightDirZ",      // World space right Z direction (normalised)
-    "m_gForceLateral",       // Lateral G-Force component
-    "m_gForceLongitudinal",  // Longitudinal G-Force component
-    "m_gForceVertical",      // Vertical G-Force component
-    "m_yaw",                 // Yaw angle in radians
-    "m_pitch",               // Pitch angle in radians
-    "m_roll"                 // Roll angle in radians
-};
+template <>
+std::vector<std::string> pNames<CarMotionData>() {
+  return std::vector<std::string>{
+      "m_worldPositionX",      // World space X position
+      "m_worldPositionY",      // World space Y position
+      "m_worldPositionZ",      // World space Z position
+      "m_worldVelocityX",      // Velocity in world space X
+      "m_worldVelocityY",      // Velocity in world space Y
+      "m_worldVelocityZ",      // Velocity in world space Z
+      "m_worldForwardDirX",    // World space forward X direction (normalised)
+      "m_worldForwardDirY",    // World space forward Y direction (normalised)
+      "m_worldForwardDirZ",    // World space forward Z direction (normalised)
+      "m_worldRightDirX",      // World space right X direction (normalised)
+      "m_worldRightDirY",      // World space right Y direction (normalised)
+      "m_worldRightDirZ",      // World space right Z direction (normalised)
+      "m_gForceLateral",       // Lateral G-Force component
+      "m_gForceLongitudinal",  // Longitudinal G-Force component
+      "m_gForceVertical",      // Vertical G-Force component
+      "m_yaw",                 // Yaw angle in radians
+      "m_pitch",               // Pitch angle in radians
+      "m_roll"                 // Roll angle in radians
+  };
+}
 
-std::vector<std::size_t> ExtraCarMotionDataSizes = {
-    sizeof(((ExtraCarMotionData *)0)->m_suspensionPosition),      // Note: All wheel arrays have the following order:
-    sizeof(((ExtraCarMotionData *)0)->m_suspensionVelocity),      // RL, RR, FL, FR
-    sizeof(((ExtraCarMotionData *)0)->m_suspensionAcceleration),  // RL, RR, FL, FR
-    sizeof(((ExtraCarMotionData *)0)->m_wheelSpeed),              // Speed of each wheel
-    sizeof(((ExtraCarMotionData *)0)->m_wheelSlip),               // Slip ratio for each wheel
-    sizeof(((ExtraCarMotionData *)0)->m_localVelocityX),          // Velocity in local space
-    sizeof(((ExtraCarMotionData *)0)->m_localVelocityY),          // Velocity in local space
-    sizeof(((ExtraCarMotionData *)0)->m_localVelocityZ),          // Velocity in local space
-    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityX),        // Angular velocity x-component
-    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityY),        // Angular velocity y-component
-    sizeof(((ExtraCarMotionData *)0)->m_angularVelocityZ),        // Angular velocity z-component
-    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationX),    // Angular velocity x-component
-    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationY),    // Angular velocity y-component
-    sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationZ),    // Angular velocity z-component
-    sizeof(((ExtraCarMotionData *)0)->m_frontWheelsAngle)         // Curent front wheel angle in radians
-};
+template <>
+std::vector<std::size_t> pSizes<ExtraCarMotionData>() {
+  return std::vector<std::size_t>{
+      sizeof(((ExtraCarMotionData *)0)->m_suspensionPosition),      // Note: All wheel arrays have the following order:
+      sizeof(((ExtraCarMotionData *)0)->m_suspensionVelocity),      // RL, RR, FL, FR
+      sizeof(((ExtraCarMotionData *)0)->m_suspensionAcceleration),  // RL, RR, FL, FR
+      sizeof(((ExtraCarMotionData *)0)->m_wheelSpeed),              // Speed of each wheel
+      sizeof(((ExtraCarMotionData *)0)->m_wheelSlip),               // Slip ratio for each wheel
+      sizeof(((ExtraCarMotionData *)0)->m_localVelocityX),          // Velocity in local space
+      sizeof(((ExtraCarMotionData *)0)->m_localVelocityY),          // Velocity in local space
+      sizeof(((ExtraCarMotionData *)0)->m_localVelocityZ),          // Velocity in local space
+      sizeof(((ExtraCarMotionData *)0)->m_angularVelocityX),        // Angular velocity x-component
+      sizeof(((ExtraCarMotionData *)0)->m_angularVelocityY),        // Angular velocity y-component
+      sizeof(((ExtraCarMotionData *)0)->m_angularVelocityZ),        // Angular velocity z-component
+      sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationX),    // Angular velocity x-component
+      sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationY),    // Angular velocity y-component
+      sizeof(((ExtraCarMotionData *)0)->m_angularAccelerationZ),    // Angular velocity z-component
+      sizeof(((ExtraCarMotionData *)0)->m_frontWheelsAngle)         // Curent front wheel angle in radians
+  };
+}
 
-std::vector<std::string> ExtraCarMotionDataNames = {
-    "m_suspensionPosition",      // Note: All wheel arrays have the following order:
-    "m_suspensionVelocity",      // RL, RR, FL, FR
-    "m_suspensionAcceleration",  // RL, RR, FL, FR
-    "m_wheelSpeed",              // Speed of each wheel
-    "m_wheelSlip",               // Slip ratio for each wheel
-    "m_localVelocityX",          // Velocity in local space
-    "m_localVelocityY",          // Velocity in local space
-    "m_localVelocityZ",          // Velocity in local space
-    "m_angularVelocityX",        // Angular velocity x-component
-    "m_angularVelocityY",        // Angular velocity y-component
-    "m_angularVelocityZ",        // Angular velocity z-component
-    "m_angularAccelerationX",    // Angular velocity x-component
-    "m_angularAccelerationY",    // Angular velocity y-component
-    "m_angularAccelerationZ",    // Angular velocity z-component
-    "m_frontWheelsAngle"         // Curent front wheel angle in radians
-};
+template <>
+std::vector<std::string> pNames<ExtraCarMotionData>() {
+  return std::vector<std::string>{
+      "m_suspensionPosition",      // Note: All wheel arrays have the following order:
+      "m_suspensionVelocity",      // RL, RR, FL, FR
+      "m_suspensionAcceleration",  // RL, RR, FL, FR
+      "m_wheelSpeed",              // Speed of each wheel
+      "m_wheelSlip",               // Slip ratio for each wheel
+      "m_localVelocityX",          // Velocity in local space
+      "m_localVelocityY",          // Velocity in local space
+      "m_localVelocityZ",          // Velocity in local space
+      "m_angularVelocityX",        // Angular velocity x-component
+      "m_angularVelocityY",        // Angular velocity y-component
+      "m_angularVelocityZ",        // Angular velocity z-component
+      "m_angularAccelerationX",    // Angular velocity x-component
+      "m_angularAccelerationY",    // Angular velocity y-component
+      "m_angularAccelerationZ",    // Angular velocity z-component
+      "m_frontWheelsAngle"         // Curent front wheel angle in radians
+  };
+}
 
 template <>
 std::string subpacketDataString(CarMotionData obj, std::string sep) {
@@ -241,9 +253,9 @@ ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vecto
 template <>
 std::string packetDataHeader<PacketMotionData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),       //
-      vpaste(CarMotionDataNames, sep),      //
-      vpaste(ExtraCarMotionDataNames, sep)  //
+      vpaste(pNames<PacketHeader>(), sep),       //
+      vpaste(pNames<CarMotionData>(), sep),      //
+      vpaste(pNames<ExtraCarMotionData>(), sep)  //
   };
   return vpaste(vec, sep);
 }
@@ -265,17 +277,18 @@ PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> by
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
+  // obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(pSizes<PacketHeader>(), bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carMotionData[i] = parseSubpacketData<CarMotionData>(parseBytes(CarMotionDataSizes, bytes, offset));
+    obj.m_carMotionData[i] = parseSubpacketDataT<CarMotionData>(bytes, offset);
     offset += sizeof(CarMotionData);
   }
 
   // parse extra player car data
-  obj.m_extraCarMotionData = parseSubpacketData<ExtraCarMotionData>(parseBytes(ExtraCarMotionDataSizes, bytes, offset));
+  obj.m_extraCarMotionData = parseSubpacketDataT<ExtraCarMotionData>(bytes, offset);
   offset += sizeof(ExtraCarMotionData);
 
   return obj;

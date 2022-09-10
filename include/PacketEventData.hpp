@@ -142,8 +142,11 @@ struct PacketEventData {
 
 extern std::map<std::string, std::pair<std::string, std::string>> Events;
 
-extern std::vector<std::size_t> EventDataDetailsSizes;
-extern std::vector<std::string> EventDataDetailsNames;
+template <>
+std::vector<std::size_t> pSizes<EventDataDetails>();
+
+template <>
+std::vector<std::string> pNames<EventDataDetails>();
 
 template <>
 std::string subpacketDataString(EventDataDetails obj, std::string sep);

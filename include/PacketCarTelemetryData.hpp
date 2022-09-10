@@ -47,8 +47,11 @@ struct PacketCarTelemetryData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarTelemetryDataSizes;
-extern std::vector<std::string> CarTelemetryDataNames;
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryData>();
+
+template <>
+std::vector<std::string> pNames<CarTelemetryData>();
 
 template <>
 std::string subpacketDataString(CarTelemetryData obj, std::string sep);
@@ -56,8 +59,11 @@ std::string subpacketDataString(CarTelemetryData obj, std::string sep);
 template <>
 CarTelemetryData parseSubpacketData<CarTelemetryData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> CarTelemetryPanelSizes;
-extern std::vector<std::string> CarTelemetryPanelNames;
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryPanel>();
+
+template <>
+std::vector<std::string> pNames<CarTelemetryPanel>();
 
 template <>
 std::string subpacketDataString(CarTelemetryPanel obj, std::string sep);

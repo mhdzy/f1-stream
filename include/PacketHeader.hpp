@@ -26,8 +26,11 @@ struct PacketHeader {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> PacketHeaderSizes;
-extern std::vector<std::string> PacketHeaderNames;
+template <>
+std::vector<std::size_t> pSizes<PacketHeader>();
+
+template <>
+std::vector<std::string> pNames<PacketHeader>();
 
 template <>
 std::string subpacketDataString(PacketHeader obj, std::string sep);

@@ -1,54 +1,72 @@
 #include "../include/PacketSessionHistoryData.hpp"
 
-std::vector<std::size_t> LapMetaDataSizes = {
-    sizeof(((LapMetaData *)0)->m_carIdx),             // Index of the car this lap data relates to
-    sizeof(((LapMetaData *)0)->m_numLaps),            // Num laps in the data (including current partial lap)
-    sizeof(((LapMetaData *)0)->m_numTyreStints),      // Number of tyre stints in the data
-    sizeof(((LapMetaData *)0)->m_bestLapTimeLapNum),  // Lap the best lap time was achieved on
-    sizeof(((LapMetaData *)0)->m_bestSector1LapNum),  // Lap the best Sector 1 time was achieved on
-    sizeof(((LapMetaData *)0)->m_bestSector2LapNum),  // Lap the best Sector 2 time was achieved on
-    sizeof(((LapMetaData *)0)->m_bestSector3LapNum)   // Lap the best Sector 3 time was achieved on
-};
+template <>
+std::vector<std::size_t> pSizes<LapMetaData>() {
+  return std::vector<std::size_t>{
+      sizeof(((LapMetaData *)0)->m_carIdx),             // Index of the car this lap data relates to
+      sizeof(((LapMetaData *)0)->m_numLaps),            // Num laps in the data (including current partial lap)
+      sizeof(((LapMetaData *)0)->m_numTyreStints),      // Number of tyre stints in the data
+      sizeof(((LapMetaData *)0)->m_bestLapTimeLapNum),  // Lap the best lap time was achieved on
+      sizeof(((LapMetaData *)0)->m_bestSector1LapNum),  // Lap the best Sector 1 time was achieved on
+      sizeof(((LapMetaData *)0)->m_bestSector2LapNum),  // Lap the best Sector 2 time was achieved on
+      sizeof(((LapMetaData *)0)->m_bestSector3LapNum)   // Lap the best Sector 3 time was achieved on
+  };
+}
 
-std::vector<std::string> LapMetaDataNames = {
-    "m_carIdx",             // Index of the car this lap data relates to
-    "m_numLaps",            // Num laps in the data (including current partial lap)
-    "m_numTyreStints",      // Number of tyre stints in the data
-    "m_bestLapTimeLapNum",  // Lap the best lap time was achieved on
-    "m_bestSector1LapNum",  // Lap the best Sector 1 time was achieved on
-    "m_bestSector2LapNum",  // Lap the best Sector 2 time was achieved on
-    "m_bestSector3LapNum"   // Lap the best Sector 3 time was achieved on
-};
+template <>
+std::vector<std::string> pNames<LapMetaData>() {
+  return std::vector<std::string>{
+      "m_carIdx",             // Index of the car this lap data relates to
+      "m_numLaps",            // Num laps in the data (including current partial lap)
+      "m_numTyreStints",      // Number of tyre stints in the data
+      "m_bestLapTimeLapNum",  // Lap the best lap time was achieved on
+      "m_bestSector1LapNum",  // Lap the best Sector 1 time was achieved on
+      "m_bestSector2LapNum",  // Lap the best Sector 2 time was achieved on
+      "m_bestSector3LapNum"   // Lap the best Sector 3 time was achieved on
+  };
+}
 
-std::vector<std::size_t> LapHistoryDataSizes = {
-    sizeof(((LapHistoryData *)0)->m_lapTimeInMS),      // Lap time in milliseconds
-    sizeof(((LapHistoryData *)0)->m_sector1TimeInMS),  // Sector 1 time in milliseconds
-    sizeof(((LapHistoryData *)0)->m_sector2TimeInMS),  // Sector 2 time in milliseconds
-    sizeof(((LapHistoryData *)0)->m_sector3TimeInMS),  // Sector 3 time in milliseconds
-    sizeof(((LapHistoryData *)0)->m_lapValidBitFlags)  // 0x01 bit set-lap valid,      0x02 bit set-sector 1 valid
-                                                       // 0x04 bit set-sector 2 valid, 0x08 bit set-sector 3 valid
-};
+template <>
+std::vector<std::size_t> pSizes<LapHistoryData>() {
+  return std::vector<std::size_t>{
+      sizeof(((LapHistoryData *)0)->m_lapTimeInMS),      // Lap time in milliseconds
+      sizeof(((LapHistoryData *)0)->m_sector1TimeInMS),  // Sector 1 time in milliseconds
+      sizeof(((LapHistoryData *)0)->m_sector2TimeInMS),  // Sector 2 time in milliseconds
+      sizeof(((LapHistoryData *)0)->m_sector3TimeInMS),  // Sector 3 time in milliseconds
+      sizeof(((LapHistoryData *)0)->m_lapValidBitFlags)  // 0x01 bit set-lap valid,      0x02 bit set-sector 1 valid
+                                                         // 0x04 bit set-sector 2 valid, 0x08 bit set-sector 3 valid
+  };
+}
 
-std::vector<std::string> LapHistoryDataNames = {
-    "m_lapTimeInMS",      // Lap time in milliseconds
-    "m_sector1TimeInMS",  // Sector 1 time in milliseconds
-    "m_sector2TimeInMS",  // Sector 2 time in milliseconds
-    "m_sector3TimeInMS",  // Sector 3 time in milliseconds
-    "m_lapValidBitFlags"  // 0x01 bit set-lap valid,      0x02 bit set-sector 1 valid
-                          // 0x04 bit set-sector 2 valid, 0x08 bit set-sector 3 valid
-};
+template <>
+std::vector<std::string> pNames<LapHistoryData>() {
+  return std::vector<std::string>{
+      "m_lapTimeInMS",      // Lap time in milliseconds
+      "m_sector1TimeInMS",  // Sector 1 time in milliseconds
+      "m_sector2TimeInMS",  // Sector 2 time in milliseconds
+      "m_sector3TimeInMS",  // Sector 3 time in milliseconds
+      "m_lapValidBitFlags"  // 0x01 bit set-lap valid,      0x02 bit set-sector 1 valid
+                            // 0x04 bit set-sector 2 valid, 0x08 bit set-sector 3 valid
+  };
+}
 
-std::vector<std::size_t> TyreStintHistoryDataSizes = {
-    sizeof(((TyreStintHistoryData *)0)->m_endLap),              // Lap the tyre usage ends on (255 of current tyre)
-    sizeof(((TyreStintHistoryData *)0)->m_tyreActualCompound),  // Actual tyres used by this driver
-    sizeof(((TyreStintHistoryData *)0)->m_tyreVisualCompound)   // Visual tyres used by this driver
-};
+template <>
+std::vector<std::size_t> pSizes<TyreStintHistoryData>() {
+  return std::vector<std::size_t>{
+      sizeof(((TyreStintHistoryData *)0)->m_endLap),              // Lap the tyre usage ends on (255 of current tyre)
+      sizeof(((TyreStintHistoryData *)0)->m_tyreActualCompound),  // Actual tyres used by this driver
+      sizeof(((TyreStintHistoryData *)0)->m_tyreVisualCompound)   // Visual tyres used by this driver
+  };
+}
 
-std::vector<std::string> TyreStintHistoryDataNames = {
-    "m_endLap",              // Lap the tyre usage ends on (255 of current tyre)
-    "m_tyreActualCompound",  // Actual tyres used by this driver
-    "m_tyreVisualCompound"   // Visual tyres used by this driver
-};
+template <>
+std::vector<std::string> pNames<TyreStintHistoryData>() {
+  return std::vector<std::string>{
+      "m_endLap",              // Lap the tyre usage ends on (255 of current tyre)
+      "m_tyreActualCompound",  // Actual tyres used by this driver
+      "m_tyreVisualCompound"   // Visual tyres used by this driver
+  };
+}
 
 template <>
 std::string subpacketDataString(LapMetaData obj, std::string sep) {
@@ -142,10 +160,10 @@ TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::v
 template <>
 std::string packetDataHeader<PacketSessionHistoryData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),           //
-      vpaste(LapMetaDataNames, sep),            //
-      vpaste(LapHistoryDataNames, sep),         //
-      vpaste(TyreStintHistoryDataNames, compr)  //
+      vpaste(pNames<PacketHeader>(), sep),           //
+      vpaste(pNames<LapMetaData>(), sep),            //
+      vpaste(pNames<LapHistoryData>(), sep),         //
+      vpaste(pNames<TyreStintHistoryData>(), compr)  //
   };
   return vpaste(vec, sep);
 }
@@ -185,21 +203,20 @@ PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<u
   PacketSessionHistoryData obj;
   std::uint16_t offset = 0;
 
-  obj.m_header = parseSubpacketData<PacketHeader>(parseBytes(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
-  obj.m_lapMetaData = parseSubpacketData<LapMetaData>(parseBytes(LapMetaDataSizes, bytes, offset));
+  obj.m_lapMetaData = parseSubpacketDataT<LapMetaData>(bytes, offset);
   offset += sizeof(LapMetaData);
 
   // iterate over all marshal zone array indices to correctly set the offset
   for (std::uint8_t i = 0; i < 100; i++) {
-    obj.m_lapHistoryData[i] = parseSubpacketData<LapHistoryData>(parseBytes(LapHistoryDataSizes, bytes, offset));
+    obj.m_lapHistoryData[i] = parseSubpacketDataT<LapHistoryData>(bytes, offset);
     offset += sizeof(LapHistoryData);
   }
 
   for (std::uint8_t i = 0; i < 8; i++) {
-    obj.m_tyreStintsHistoryData[i] =
-        parseSubpacketData<TyreStintHistoryData>(parseBytes(TyreStintHistoryDataSizes, bytes, offset));
+    obj.m_tyreStintsHistoryData[i] = parseSubpacketDataT<TyreStintHistoryData>(bytes, offset);
     offset += sizeof(TyreStintHistoryData);
   }
 

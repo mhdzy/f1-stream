@@ -96,8 +96,11 @@ struct PacketSessionData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> MarshalZoneSizes;
-extern std::vector<std::string> MarshalZoneNames;
+template <>
+std::vector<std::size_t> pSizes<MarshalZone>();
+
+template <>
+std::vector<std::string> pNames<MarshalZone>();
 
 template <>
 std::string subpacketDataString(MarshalZone obj, std::string sep);
@@ -105,8 +108,11 @@ std::string subpacketDataString(MarshalZone obj, std::string sep);
 template <>
 MarshalZone parseSubpacketData<MarshalZone>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> WeatherForecastSampleSizes;
-extern std::vector<std::string> WeatherForecastSampleNames;
+template <>
+std::vector<std::size_t> pSizes<WeatherForecastSample>();
+
+template <>
+std::vector<std::string> pNames<WeatherForecastSample>();
 
 template <>
 std::string subpacketDataString(WeatherForecastSample obj, std::string sep);
@@ -114,8 +120,11 @@ std::string subpacketDataString(WeatherForecastSample obj, std::string sep);
 template <>
 WeatherForecastSample parseSubpacketData<WeatherForecastSample>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> PacketSessionDataTopSizes;
-extern std::vector<std::string> PacketSessionDataTopNames;
+template <>
+std::vector<std::size_t> pSizes<PacketSessionDataTop>();
+
+template <>
+std::vector<std::string> pNames<PacketSessionDataTop>();
 
 template <>
 std::string subpacketDataString(PacketSessionDataTop obj, std::string sep);
@@ -123,8 +132,11 @@ std::string subpacketDataString(PacketSessionDataTop obj, std::string sep);
 template <>
 PacketSessionDataTop parseSubpacketData<PacketSessionDataTop>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> PacketSessionDataMidSizes;
-extern std::vector<std::string> PacketSessionDataMidNames;
+template <>
+std::vector<std::size_t> pSizes<PacketSessionDataMid>();
+
+template <>
+std::vector<std::string> pNames<PacketSessionDataMid>();
 
 template <>
 std::string subpacketDataString(PacketSessionDataMid obj, std::string sep);
@@ -132,8 +144,11 @@ std::string subpacketDataString(PacketSessionDataMid obj, std::string sep);
 template <>
 PacketSessionDataMid parseSubpacketData<PacketSessionDataMid>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> PacketSessionDataBotSizes;
-extern std::vector<std::string> PacketSessionDataBotNames;
+template <>
+std::vector<std::size_t> pSizes<PacketSessionDataBot>();
+
+template <>
+std::vector<std::string> pNames<PacketSessionDataBot>();
 
 template <>
 std::string subpacketDataString(PacketSessionDataBot obj, std::string sep);

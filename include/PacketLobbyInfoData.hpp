@@ -31,8 +31,11 @@ struct PacketLobbyInfoData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LobbyInfoDataSizes;
-extern std::vector<std::string> LobbyInfoDataNames;
+template <>
+std::vector<std::size_t> pSizes<LobbyInfoData>();
+
+template <>
+std::vector<std::string> pNames<LobbyInfoData>();
 
 template <>
 std::string subpacketDataString(LobbyInfoData obj, std::string sep);
@@ -40,8 +43,11 @@ std::string subpacketDataString(LobbyInfoData obj, std::string sep);
 template <>
 LobbyInfoData parseSubpacketData<LobbyInfoData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> LobbyInfoMetaSizes;
-extern std::vector<std::string> LobbyInfoMetaNames;
+template <>
+std::vector<std::size_t> pSizes<LobbyInfoMeta>();
+
+template <>
+std::vector<std::string> pNames<LobbyInfoMeta>();
 
 template <>
 std::string subpacketDataString(LobbyInfoMeta obj, std::string sep);

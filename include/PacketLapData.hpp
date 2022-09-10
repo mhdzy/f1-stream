@@ -54,8 +54,11 @@ struct PacketLapData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LapDataSizes;
-extern std::vector<std::string> LapDataNames;
+template <>
+std::vector<std::size_t> pSizes<LapData>();
+
+template <>
+std::vector<std::string> pNames<LapData>();
 
 template <>
 std::string subpacketDataString(LapData obj, std::string sep);
@@ -63,8 +66,11 @@ std::string subpacketDataString(LapData obj, std::string sep);
 template <>
 LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> bytes);
 
-extern std::vector<std::size_t> LapDataIdxSizes;
-extern std::vector<std::string> LapDataIdxNames;
+template <>
+std::vector<std::size_t> pSizes<LapDataIdx>();
+
+template <>
+std::vector<std::string> pNames<LapDataIdx>();
 
 template <>
 std::string subpacketDataString(LapDataIdx obj, std::string sep);
