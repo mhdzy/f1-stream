@@ -29,14 +29,29 @@
 #include "PacketHeader.hpp"
 #include "PacketLapData.hpp"
 #include "PacketLobbyInfoData.hpp"
-#include "PacketMap.hpp"
 #include "PacketMotionData.hpp"
 #include "PacketParticipantsData.hpp"
 #include "PacketSessionData.hpp"
 #include "PacketSessionHistoryData.hpp"
 #include "spdlog/spdlog.h"
 
-void printPacket(auto obj, std::ofstream &output_file, std::uint8_t loops, bool debug = false);
+#define PORT 20777
+#define BUFSIZE 4096
+
+const bool DEBUG = false;
+
+std::vector<std::string> RAW_NAMES;       // raw input files (for batch mode)
+std::vector<std::string> OUTPUT_NAMES;    // output string names
+std::vector<std::ofstream> OUTPUT_FILES;  // vector of writeable output files
+
+void printPacket(std::uint8_t packetid, auto obj, bool debug);
+
+void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug);
+
+template <class T>
+void printHeader(std::uint8_t packetid, std::string prefix);
+
+void printHeaders();
 
 /**
  * @brief

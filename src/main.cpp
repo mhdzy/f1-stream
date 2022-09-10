@@ -1,42 +1,129 @@
 #include "../include/main.hpp"
 
-#define PORT 20777
-#define BUFSIZE 4096
-
-const bool DEBUG = false;
-
 /**
  * @brief All packets holding core info in arrays can be printed using this function.
- * This is declared in main to avoid dealing with troubles handling ostream objects.
- * Unsure about the stupidity of passing refs to open files, but oh well. It works.
+ * This is declared in main to avoid dealing with troubles passing ostream objects.
 
+ * @param packetid An int representing the packetid (from enum PacketID).
  * @param obj An (auto) object, passed to the templated packetDataString().
- * @param output_file A reference to the output stream file.
- * @param loops Sets the upper loop boundary; if 0, prints once; 22 for car data; 100 for lap (session) data.
  * @param debug A flag to enable extra output.
  */
-void printPacket(auto obj, std::ofstream& output_file, std::uint8_t loops, bool debug) {
-  for (std::uint8_t i = 0; i < loops; i++) {
+void printPacket(auto obj, bool debug) {
+  std::uint8_t packetid = getPacketID(sizeof(obj));
+  for (std::uint8_t i = 0; i < packetLoopLimit(packetid); i++) {
     std::string str = packetDataString(obj, i);
-    output_file << std::to_string(i) + "," + str + "\n";
+    OUTPUT_FILES.at(packetid) << std::to_string(i) + "," + str + "\n";
     if (debug) printf("%s,%s\n", std::to_string(i).c_str(), str.c_str());
   }
 }
 
 /**
- * @brief All packets must be parsed & printed, and this function gives a quick way to complete the action for a packet
- * of class T. Passing a reference to a vector of open ofstream files is probably not a great idea, but see above...
+ * @brief Parses and prints a packet based on its ID (identified from the size of the packet bytes).
+ *
+ * @param bytes A vector of filebytes to parse, then print.
+ * @param debug A boolean flag.
+ */
+void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug) {
+  std::uint8_t packetid = getPacketID(bytes.size());
+
+  if (DEBUG) spdlog::debug("packet id: {}", packetid);
+  if (DEBUG) spdlog::debug("packet size: {}", bytes.size());
+
+  switch (packetid) {
+    case PacketID::Motion: {
+      auto obj = parsePacketData<PacketMotionData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::Session: {
+      auto obj = parsePacketData<PacketSessionData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::Lap: {
+      auto obj = parsePacketData<PacketLapData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::Event: {
+      auto obj = parsePacketData<PacketEventData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::Participants: {
+      auto obj = parsePacketData<PacketParticipantsData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::CarSetups: {
+      auto obj = parsePacketData<PacketCarSetupData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::CarTelemetry: {
+      auto obj = parsePacketData<PacketCarTelemetryData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::CarStatus: {
+      auto obj = parsePacketData<PacketCarStatusData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::FinalClassification: {
+      auto obj = parsePacketData<PacketFinalClassificationData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::LobbyInfo: {
+      auto obj = parsePacketData<PacketLobbyInfoData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::CarDamage: {
+      auto obj = parsePacketData<PacketCarDamageData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    case PacketID::SessionHistory: {
+      auto obj = parsePacketData<PacketSessionHistoryData>(bytes);
+      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+/**
+ * @brief Prints the header for a struct T with a prefix.
  *
  * @tparam T
- * @param output_files
- * @param packetid
- * @param filebytes
- * @param debug
+ * @param packetid An integer representing the packetid (from the enum PacketID).
+ * @param prefix A string to prefix the header string.
  */
 template <class T>
-void ppPacket(std::vector<std::ofstream>& output_files, std::uint8_t packetid, std::vector<unsigned char> filebytes,
-              bool debug) {
-  printPacket(parsePacketData<T>(filebytes), output_files.at(packetid), packet_loop_limit(packetid), debug);
+void printHeader(std::string prefix) {
+  OUTPUT_FILES.at(getPacketID(sizeof(T))) << prefix + packetDataHeader<T>() + "\n";
+}
+
+/**
+ * @brief Wrapper function to write each header to its respective output file.
+ *
+ */
+void printHeaders() {
+  printHeader<PacketMotionData>("m_carID");
+  printHeader<PacketSessionData>("m_nopID");
+  printHeader<PacketLapData>("m_carID");
+  printHeader<PacketEventData>("m_nopID");
+  printHeader<PacketParticipantsData>("m_carID");
+  printHeader<PacketCarSetupData>("m_carID");
+  printHeader<PacketCarTelemetryData>("m_carID");
+  printHeader<PacketCarStatusData>("m_carID");
+  printHeader<PacketFinalClassificationData>("m_carID");
+  printHeader<PacketLobbyInfoData>("m_carID");
+  printHeader<PacketCarDamageData>("m_carID");
+  printHeader<PacketSessionHistoryData>("m_lapID");
 }
 
 /**
@@ -68,11 +155,6 @@ int main(int argc, char** argv) {
   const std::string RAW_DATA_PATH = TRACK_PATH + "/raw/";     // source for 'batch'
   const std::string OUT_DATA_PATH = TRACK_PATH + "/parsed/";  // destination for all modes
 
-  std::vector<PacketMap> Packets;             // stores metadata for each raw file (batch mode)
-  std::vector<std::string> raw_filenames;     // raw input files (for batch mode)
-  std::vector<std::string> output_filenames;  // output string names
-  std::vector<std::ofstream> output_files;    // output streams
-
   /* setup UDP socket vars */
   struct sockaddr_in myaddr;           /* our address */
   struct sockaddr_in remaddr;          /* remote address */
@@ -95,23 +177,20 @@ int main(int argc, char** argv) {
 
     // collect all raw packet filenames
     for (auto const& dir_entry : std::filesystem::directory_iterator{std::filesystem::path{RAW_DATA_PATH}})
-      raw_filenames.push_back(dir_entry.path());
+      RAW_NAMES.push_back(dir_entry.path());
     spdlog::info("extracted raw filenames (packet bytes as files)");
 
-    // fetch metadata for each raw packet
-    for (std::string file : raw_filenames) Packets.push_back(packet_map_populate(file));
-    spdlog::info("extracted packet metadata");
-
     // restrict the main loop to exit after parsing all known data files
-    MAXPACKETS = Packets.size();
+    MAXPACKETS = RAW_NAMES.size();
   } else if (MODE == "live") {
     // check that the live output folder exists
     if (createDir(TRACK_PATH) == 0) {
       spdlog::info("creating output dir at '{}'", TRACK_PATH);
-      createDir(OUT_DATA_PATH);
-      createDir(RAW_DATA_PATH);
-      createDir(LOG_DATA_PATH);
+      // createDir for all subdirs (needed)
+      std::vector<std::string> out_paths = {OUT_DATA_PATH, RAW_DATA_PATH, LOG_DATA_PATH};
+      std::for_each(out_paths.begin(), out_paths.end(), &createDir);
     }
+
     /* create a UDP socket */
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
       std::perror("cannot create socket\n");
@@ -140,32 +219,20 @@ int main(int argc, char** argv) {
 
   // EXTRACT PACKET NAMES
   // extract all packet string names
-  for (auto const& p : packet_id_to_string) output_filenames.push_back(p.second);
+  for (auto const& p : allPacketNames) OUTPUT_NAMES.push_back(p.second);
   if (DEBUG) spdlog::debug("extracted output filenames (packet names)");
 
   // OPEN OUTPUT FILES
   // open output file & write csv header for all packet types
-  for (auto const& file : output_filenames) {
-    auto i = &file - &output_filenames[0];
-    std::string tmp_filename = OUT_DATA_PATH + output_filenames.at(i) + ".csv";
-    output_files.emplace_back(std::ofstream{tmp_filename});
+  for (auto const& file : OUTPUT_NAMES) {
+    auto i = &file - &OUTPUT_NAMES[0];
+    std::string tmp_name = OUT_DATA_PATH + OUTPUT_NAMES.at(i) + ".csv";
+    OUTPUT_FILES.emplace_back(std::ofstream{tmp_name});
   }
   if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
   // WRITE HEADERS
-  output_files.at(PacketID::Motion) << "m_carID," + packetDataHeader<PacketMotionData>() + "\n";
-  output_files.at(PacketID::Session) << "m_nopID," + packetDataHeader<PacketSessionData>() + "\n";
-  output_files.at(PacketID::Lap) << "m_carID," + packetDataHeader<PacketLapData>() + "\n";
-  output_files.at(PacketID::Event) << "m_nopID" + packetDataHeader<PacketEventData>() + "\n";
-  output_files.at(PacketID::Participants) << "m_carID," + packetDataHeader<PacketParticipantsData>() + "\n";
-  output_files.at(PacketID::CarSetups) << "m_carID," + packetDataHeader<PacketCarSetupData>() + "\n";
-  output_files.at(PacketID::CarTelemetry) << "m_carID," + packetDataHeader<PacketCarTelemetryData>() + "\n";
-  output_files.at(PacketID::CarStatus) << "m_carID," + packetDataHeader<PacketCarStatusData>() + "\n";
-  output_files.at(PacketID::FinalClassification)
-      << "m_carID," + packetDataHeader<PacketFinalClassificationData>() + "\n";
-  output_files.at(PacketID::LobbyInfo) << "m_carID," + packetDataHeader<PacketLobbyInfoData>() + "\n";
-  output_files.at(PacketID::CarDamage) << "m_carID," + packetDataHeader<PacketCarDamageData>() + "\n";
-  output_files.at(PacketID::SessionHistory) << "m_lapID," + packetDataHeader<PacketSessionHistoryData>() + "\n";
+  printHeaders();
   if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");
@@ -176,15 +243,14 @@ int main(int argc, char** argv) {
 
   // main loop
   for (std::uint32_t i = 0; i < MAXPACKETS; i++) {
-    PacketMap packet;
     std::vector<unsigned char> filebytes;
 
+    // receive raw bytes & fit into vector
     if (MODE == "live") {
       recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr*)&remaddr, &addrlen);
       if (DEBUG) spdlog::debug("(%d) %s %d %s\n", i, "received", recvlen, "bytes");
 
       if (recvlen > 0) buf[recvlen] = 0;
-      packet = parse_raw_packet(recvlen);
       filebytes = std::vector<unsigned char>(buf, buf + recvlen);
 
       // write bytes to file
@@ -192,64 +258,17 @@ int main(int argc, char** argv) {
       std::ofstream raw_file(raw_filename);
       std::copy(filebytes.cbegin(), filebytes.cend(), std::ostream_iterator<char>(raw_file));
     } else if (MODE == "batch") {
-      packet = Packets[i];
-      filebytes = file_read(packet.file_name);
+      filebytes = file_read(RAW_NAMES[i]);
     }
 
-    if (DEBUG) {
-      spdlog::debug("packet id : {}", packet.file_id);
-      spdlog::debug("packet name: {}", packet.file_packet_name);
-      spdlog::debug("packet size: {}", packet.file_size);
-    }
-
-    // parse packet & print it to the csv
-    std::uint8_t pfid = packet.file_id;
-    switch (pfid) {
-      case PacketID::Motion:
-        ppPacket<PacketMotionData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::Session:
-        ppPacket<PacketSessionData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::Lap:
-        ppPacket<PacketLapData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::Event:
-        ppPacket<PacketEventData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::Participants:
-        ppPacket<PacketParticipantsData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::CarSetups:
-        ppPacket<PacketCarSetupData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::CarTelemetry:
-        ppPacket<PacketCarTelemetryData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::CarStatus:
-        ppPacket<PacketCarStatusData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::FinalClassification:
-        ppPacket<PacketFinalClassificationData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::LobbyInfo:
-        ppPacket<PacketLobbyInfoData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::CarDamage:
-        ppPacket<PacketCarDamageData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      case PacketID::SessionHistory:
-        ppPacket<PacketSessionHistoryData>(output_files, packet.file_id, filebytes, DEBUG);
-        break;
-      default:
-        break;
-    }
+    // parse packet & print it to its csv
+    parseAndPrintPacket(filebytes, DEBUG);
   }
 
   spdlog::debug("parsed all packets");
 
   // close output files
-  for (auto& file : output_files) file.close();
+  for (auto& file : OUTPUT_FILES) file.close();
   spdlog::debug("closed output files");
 
   return 0;
