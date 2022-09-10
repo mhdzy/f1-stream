@@ -8,7 +8,8 @@ const bool DEBUG = false;
 /**
  * @brief All packets holding core info in arrays can be printed using this function.
  * This is declared in main to avoid dealing with troubles handling ostream objects.
- *
+ * Unsure about the stupidity of passing refs to open files, but oh well. It works.
+
  * @param obj An (auto) object, passed to the templated packetDataString().
  * @param output_file A reference to the output stream file.
  * @param loops Sets the upper loop boundary; if 0, prints once; 22 for car data; 100 for lap (session) data.
@@ -20,6 +21,22 @@ void printPacket(auto obj, std::ofstream& output_file, std::uint8_t loops, bool 
     output_file << std::to_string(i) + "," + str + "\n";
     if (debug) printf("%s,%s\n", std::to_string(i).c_str(), str.c_str());
   }
+}
+
+/**
+ * @brief All packets must be parsed & printed, and this function gives a quick way to complete the action for a packet
+ * of class T. Passing a reference to a vector of open ofstream files is probably not a great idea, but see above...
+ *
+ * @tparam T
+ * @param output_files
+ * @param packetid
+ * @param filebytes
+ * @param debug
+ */
+template <class T>
+void ppPacket(std::vector<std::ofstream>& output_files, std::uint8_t packetid, std::vector<unsigned char> filebytes,
+              bool debug) {
+  printPacket(parsePacketData<T>(filebytes), output_files.at(packetid), packet_loop_limit(packetid), debug);
 }
 
 /**
@@ -188,67 +205,42 @@ int main(int argc, char** argv) {
     // parse packet & print it to the csv
     std::uint8_t pfid = packet.file_id;
     switch (pfid) {
-      case PacketID::Motion: {
-        auto obj = parsePacketData<PacketMotionData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::Motion:
+        ppPacket<PacketMotionData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::Session: {
-        auto obj = parsePacketData<PacketSessionData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::Session:
+        ppPacket<PacketSessionData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::Lap: {
-        auto obj = parsePacketData<PacketLapData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::Lap:
+        ppPacket<PacketLapData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::Event: {
-        auto obj = parsePacketData<PacketEventData>(filebytes);
-
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::Event:
+        ppPacket<PacketEventData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::Participants: {
-        auto obj = parsePacketData<PacketParticipantsData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::Participants:
+        ppPacket<PacketParticipantsData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::CarSetups: {
-        auto obj = parsePacketData<PacketCarSetupData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::CarSetups:
+        ppPacket<PacketCarSetupData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::CarTelemetry: {
-        auto obj = parsePacketData<PacketCarTelemetryData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::CarTelemetry:
+        ppPacket<PacketCarTelemetryData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::CarStatus: {
-        auto obj = parsePacketData<PacketCarStatusData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::CarStatus:
+        ppPacket<PacketCarStatusData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::FinalClassification: {
-        auto obj = parsePacketData<PacketFinalClassificationData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::FinalClassification:
+        ppPacket<PacketFinalClassificationData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::LobbyInfo: {
-        auto obj = parsePacketData<PacketLobbyInfoData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::LobbyInfo:
+        ppPacket<PacketLobbyInfoData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::CarDamage: {
-        auto obj = parsePacketData<PacketCarDamageData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::CarDamage:
+        ppPacket<PacketCarDamageData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
-      case PacketID::SessionHistory: {
-        auto obj = parsePacketData<PacketSessionHistoryData>(filebytes);
-        printPacket(obj, output_files.at(pfid), packet_loop_limit(pfid), DEBUG);
+      case PacketID::SessionHistory:
+        ppPacket<PacketSessionHistoryData>(output_files, packet.file_id, filebytes, DEBUG);
         break;
-      }
       default:
         break;
     }
