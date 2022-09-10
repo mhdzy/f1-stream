@@ -8,6 +8,7 @@
 #include <string>
 
 #include "File.hpp"
+#include "spdlog/spdlog.h"
 
 enum PacketID : std::uint8_t {
   Motion = 0,               //

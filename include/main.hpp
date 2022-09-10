@@ -38,20 +38,23 @@
 #define PORT 20777
 #define BUFSIZE 4096
 
-const bool DEBUG = false;
+const bool DEBUG = true;
+
+// not const since this can shrink if in batch mode
+std::uint32_t MAXPACKETS = pow(2, 20);
 
 std::vector<std::string> RAW_NAMES;       // raw input files (for batch mode)
 std::vector<std::string> OUTPUT_NAMES;    // output string names
 std::vector<std::ofstream> OUTPUT_FILES;  // vector of writeable output files
 
-void printPacket(std::uint8_t packetid, auto obj, bool debug);
+void outputString(std::uint8_t idx, std::string str, bool debug);
 
 void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug);
 
 template <class T>
-void printHeader(std::uint8_t packetid, std::string prefix);
+void printHeader(std::string prefix, bool debug);
 
-void printHeaders();
+void printHeaders(bool debug);
 
 /**
  * @brief

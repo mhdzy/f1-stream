@@ -1,20 +1,33 @@
 #include "../include/main.hpp"
 
 /**
- * @brief All packets holding core info in arrays can be printed using this function.
- * This is declared in main to avoid dealing with troubles passing ostream objects.
-
- * @param packetid An int representing the packetid (from enum PacketID).
- * @param obj An (auto) object, passed to the templated packetDataString().
- * @param debug A flag to enable extra output.
+ * @brief Uses OUTPUT_FILES global vector to print to an output file.
+ *
+ * @param idx
+ * @param str
+ * @param debug
  */
-void printPacket(auto obj, bool debug) {
+void outputString(std::uint8_t idx, std::string str, bool debug) {
+  if (debug) spdlog::debug("printing string to index {}", idx);
+
+  OUTPUT_FILES.at(idx) << str;
+}
+
+/**
+ * @brief Constructs an output string for a packet.
+ *
+ * @param obj A packet struct.
+ * @param debug A bool flag, set 'true' to view the constructed string.
+ * @return std::string
+ */
+std::string pString(auto obj, bool debug) {
+  std::string str;
   std::uint8_t packetid = getPacketID(sizeof(obj));
   for (std::uint8_t i = 0; i < packetLoopLimit(packetid); i++) {
-    std::string str = packetDataString(obj, i);
-    OUTPUT_FILES.at(packetid) << std::to_string(i) + "," + str + "\n";
-    if (debug) printf("%s,%s\n", std::to_string(i).c_str(), str.c_str());
+    str += std::to_string(i) + "," + packetDataString(obj, i) + "\n";
   }
+  if (debug) spdlog::debug("packet id {} string = '{}'", packetid, str);
+  return str;
 }
 
 /**
@@ -26,68 +39,68 @@ void printPacket(auto obj, bool debug) {
 void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug) {
   std::uint8_t packetid = getPacketID(bytes.size());
 
-  if (DEBUG) spdlog::debug("packet id: {}", packetid);
-  if (DEBUG) spdlog::debug("packet size: {}", bytes.size());
+  if (debug) spdlog::debug("packet id: {}", packetid);
+  if (debug) spdlog::debug("packet size: {}", bytes.size());
 
   switch (packetid) {
     case PacketID::Motion: {
       auto obj = parsePacketData<PacketMotionData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::Session: {
       auto obj = parsePacketData<PacketSessionData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::Lap: {
       auto obj = parsePacketData<PacketLapData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::Event: {
       auto obj = parsePacketData<PacketEventData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::Participants: {
       auto obj = parsePacketData<PacketParticipantsData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::CarSetups: {
       auto obj = parsePacketData<PacketCarSetupData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::CarTelemetry: {
       auto obj = parsePacketData<PacketCarTelemetryData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::CarStatus: {
       auto obj = parsePacketData<PacketCarStatusData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::FinalClassification: {
       auto obj = parsePacketData<PacketFinalClassificationData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::LobbyInfo: {
       auto obj = parsePacketData<PacketLobbyInfoData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::CarDamage: {
       auto obj = parsePacketData<PacketCarDamageData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     case PacketID::SessionHistory: {
       auto obj = parsePacketData<PacketSessionHistoryData>(bytes);
-      if (getPacketPrint(packetid)) printPacket(obj, DEBUG);
+      if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
       break;
     }
     default:
@@ -103,27 +116,28 @@ void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug) {
  * @param prefix A string to prefix the header string.
  */
 template <class T>
-void printHeader(std::string prefix) {
-  OUTPUT_FILES.at(getPacketID(sizeof(T))) << prefix + packetDataHeader<T>() + "\n";
+void printHeader(std::string prefix, bool debug) {
+  std::string str = prefix + "," + packetDataHeader<T>() + "\n";
+  outputString(getPacketID(sizeof(T)), str, debug);
 }
 
 /**
  * @brief Wrapper function to write each header to its respective output file.
  *
  */
-void printHeaders() {
-  printHeader<PacketMotionData>("m_carID");
-  printHeader<PacketSessionData>("m_nopID");
-  printHeader<PacketLapData>("m_carID");
-  printHeader<PacketEventData>("m_nopID");
-  printHeader<PacketParticipantsData>("m_carID");
-  printHeader<PacketCarSetupData>("m_carID");
-  printHeader<PacketCarTelemetryData>("m_carID");
-  printHeader<PacketCarStatusData>("m_carID");
-  printHeader<PacketFinalClassificationData>("m_carID");
-  printHeader<PacketLobbyInfoData>("m_carID");
-  printHeader<PacketCarDamageData>("m_carID");
-  printHeader<PacketSessionHistoryData>("m_lapID");
+void printHeaders(bool debug) {
+  printHeader<PacketMotionData>("m_carID", debug);
+  printHeader<PacketSessionData>("m_nopID", debug);
+  printHeader<PacketLapData>("m_carID", debug);
+  printHeader<PacketEventData>("m_nopID", debug);
+  printHeader<PacketParticipantsData>("m_carID", debug);
+  printHeader<PacketCarSetupData>("m_carID", debug);
+  printHeader<PacketCarTelemetryData>("m_carID", debug);
+  printHeader<PacketCarStatusData>("m_carID", debug);
+  printHeader<PacketFinalClassificationData>("m_carID", debug);
+  printHeader<PacketLobbyInfoData>("m_carID", debug);
+  printHeader<PacketCarDamageData>("m_carID", debug);
+  printHeader<PacketSessionHistoryData>("m_lapID", debug);
 }
 
 /**
@@ -135,16 +149,12 @@ void printHeaders() {
  */
 int main(int argc, char** argv) {
   const char* USAGE = "Usage: ./main <track> [live|batch]\n";
+  spdlog::set_level(spdlog::level::debug);
 
   if (argc < 2) {
     std::perror(USAGE);
     return 0;
   }
-
-  spdlog::set_level(spdlog::level::debug);  // make all logging visible
-
-  // not const since this can shrink if in batch mode
-  std::uint32_t MAXPACKETS = pow(2, 20);
 
   const std::string TRACK(argv[1]);
   const std::string MODE(argv[2]);
@@ -232,7 +242,7 @@ int main(int argc, char** argv) {
   if (DEBUG) spdlog::debug("opened each output file (csv) for each packet type");
 
   // WRITE HEADERS
-  printHeaders();
+  printHeaders(DEBUG);
   if (DEBUG) spdlog::debug("wrote headers in for each file");
 
   spdlog::info(" === F1 2022 UDP parser === ");

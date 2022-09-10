@@ -41,7 +41,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(OS_FLAGS)
 
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
 	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
 
 clean: trim
