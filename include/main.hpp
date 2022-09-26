@@ -38,7 +38,7 @@
 #define PORT 20777
 #define BUFSIZE 4096
 
-const bool DEBUG = true;
+const bool DEBUG = false;
 
 // not const since this can shrink if in batch mode
 std::uint32_t MAXPACKETS = pow(2, 20);
@@ -46,6 +46,10 @@ std::uint32_t MAXPACKETS = pow(2, 20);
 std::vector<std::string> RAW_NAMES;       // raw input files (for batch mode)
 std::vector<std::string> OUTPUT_NAMES;    // output string names
 std::vector<std::ofstream> OUTPUT_FILES;  // vector of writeable output files
+
+std::ofstream motionHack;
+std::ofstream telemetryHack;
+
 
 void outputString(std::uint8_t idx, std::string str, bool debug);
 

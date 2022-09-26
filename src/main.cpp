@@ -46,6 +46,9 @@ void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug) {
     case PacketID::Motion: {
       auto obj = parsePacketData<PacketMotionData>(bytes);
       if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
+      motionHack << std::to_string(obj.m_header.m_frameIdentifier) + "," +
+                        std::to_string(obj.m_carMotionData[0].m_worldPositionX) + "," +
+                        std::to_string(-1 * obj.m_carMotionData[0].m_worldPositionZ) + "\n";
       break;
     }
     case PacketID::Session: {
@@ -76,6 +79,8 @@ void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug) {
     case PacketID::CarTelemetry: {
       auto obj = parsePacketData<PacketCarTelemetryData>(bytes);
       if (getPacketPrint(packetid)) outputString(packetid, pString(obj, debug), debug);
+      telemetryHack << std::to_string(obj.m_header.m_frameIdentifier) + "," +
+                           std::to_string(obj.m_carTelemetryData[0].m_speed) + "\n";
       break;
     }
     case PacketID::CarStatus: {
@@ -164,6 +169,12 @@ int main(int argc, char** argv) {
   const std::string LOG_DATA_PATH = TRACK_PATH + "/logs/";
   const std::string RAW_DATA_PATH = TRACK_PATH + "/raw/";     // source for 'batch'
   const std::string OUT_DATA_PATH = TRACK_PATH + "/parsed/";  // destination for all modes
+
+  motionHack = std::ofstream{"data/" + TRACK + "/parsed/MotionHack.csv"};
+  telemetryHack = std::ofstream{"data/" + TRACK + "/parsed/TelemetryHack.csv"};
+
+  motionHack << "frame,x,y\n";
+  telemetryHack << "frame,speed\n";
 
   /* setup UDP socket vars */
   struct sockaddr_in myaddr;           /* our address */
@@ -254,6 +265,7 @@ int main(int argc, char** argv) {
   // main loop
   for (std::uint32_t i = 0; i < MAXPACKETS; i++) {
     std::vector<unsigned char> filebytes;
+    std::string raw_filename = RAW_DATA_PATH + "data" + std::to_string(i) + ".raw";
 
     // receive raw bytes & fit into vector
     if (MODE == "live") {
@@ -264,11 +276,11 @@ int main(int argc, char** argv) {
       filebytes = std::vector<unsigned char>(buf, buf + recvlen);
 
       // write bytes to file
-      std::string raw_filename = RAW_DATA_PATH + "data" + std::to_string(i) + ".raw";
       std::ofstream raw_file(raw_filename);
       std::copy(filebytes.cbegin(), filebytes.cend(), std::ostream_iterator<char>(raw_file));
     } else if (MODE == "batch") {
-      filebytes = file_read(RAW_NAMES[i]);
+      // filebytes = file_read(RAW_NAMES[i]);
+      filebytes = file_read(raw_filename);
     }
 
     // parse packet & print it to its csv
