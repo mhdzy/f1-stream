@@ -1,5 +1,6 @@
 # object files
 *.o
+build/*
 
 # compilation target
 src/main
@@ -22,3 +23,4 @@ __pycache__/
 
 # vscode stuff
 .vscode
+.Rproj.user
