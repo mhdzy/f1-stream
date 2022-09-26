@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -26,23 +27,43 @@ struct ParticipantMetadata {
 };
 
 struct PacketParticipantsData {
-  PacketHeader m_header;  // Header
-  ParticipantMetadata m_participant; // contains info about m_participants
+  PacketHeader m_header;              // Header
+  ParticipantMetadata m_participant;  // contains info about m_participants
   ParticipantData m_participants[22];
 };
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> ParticipantDataSizes;
-extern std::vector<std::string> ParticipantDataNames;
-extern std::string ParticipantDataString(ParticipantData obj, std::string sep = ",");
-extern ParticipantData ParseParticipantData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<ParticipantData>();
 
-extern std::vector<std::size_t> ParticipantMetadataSizes;
-extern std::vector<std::string> ParticipantMetadataNames;
-extern std::string ParticipantMetadataString(ParticipantMetadata obj, std::string sep = ",");
-extern ParticipantMetadata ParseParticipantMetadata(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<ParticipantData>();
 
-extern std::string PacketParticipantsDataCSVHeader(std::string sep = ",");
-extern std::string PacketParticipantsDataString(PacketParticipantsData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketParticipantsData ParsePacketParticipantsData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(ParticipantData obj, std::string sep);
+
+template <>
+ParticipantData parseSubpacketData<ParticipantData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<ParticipantMetadata>();
+
+template <>
+std::vector<std::string> pNames<ParticipantMetadata>();
+
+template <>
+std::string subpacketDataString(ParticipantMetadata obj, std::string sep);
+
+template <>
+ParticipantMetadata parseSubpacketData<ParticipantMetadata>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketParticipantsData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketParticipantsData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketParticipantsData parsePacketData<PacketParticipantsData>(std::vector<unsigned char> bytes);

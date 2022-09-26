@@ -6,6 +6,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -59,18 +60,36 @@ struct PacketMotionData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarMotionDataSizes;
-extern std::vector<std::string> CarMotionDataNames;
+template <>
+std::vector<std::size_t> pSizes<CarMotionData>();
 
-extern std::vector<std::size_t> ExtraCarMotionDataSizes;
-extern std::vector<std::string> ExtraCarMotionDataNames;
+template <>
+std::vector<std::string> pNames<CarMotionData>();
 
-extern std::string CarMotionDataString(CarMotionData obj, std::string sep = ",");
-extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<ExtraCarMotionData>();
 
-extern std::string ExtraCarMotionDataString(ExtraCarMotionData obj, std::string sep = ",");
-extern ExtraCarMotionData ParseExtraCarMotionData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<ExtraCarMotionData>();
 
-extern std::string PacketMotionDataCSVHeader(std::string sep = ",");
-extern std::string PacketMotionDataString(PacketMotionData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketMotionData ParsePacketMotionData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(CarMotionData obj, std::string sep);
+
+template <>
+CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string subpacketDataString(ExtraCarMotionData obj, std::string sep);
+
+template <>
+ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketMotionData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> bytes);

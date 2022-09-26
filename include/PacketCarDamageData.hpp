@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -38,11 +39,24 @@ struct PacketCarDamageData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarDamageDataSizes;
-extern std::vector<std::string> CarDamageDataNames;
-extern std::string CarDamageDataString(CarDamageData obj, std::string sep = ",");
-extern CarDamageData ParseCarDamageData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<CarDamageData>();
 
-extern std::string PacketCarDamageDataCSVHeader(std::string sep = ",");
-extern std::string PacketCarDamageDataString(PacketCarDamageData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketCarDamageData ParsePacketCarDamageData(std::vector<unsigned char> bytes);
+template <>
+std::vector<std::string> pNames<CarDamageData>();
+
+template <>
+std::string subpacketDataString(CarDamageData obj, std::string sep);
+
+template <>
+CarDamageData parseSubpacketData<CarDamageData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketCarDamageData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketCarDamageData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketCarDamageData parsePacketData<PacketCarDamageData>(std::vector<unsigned char> bytes);

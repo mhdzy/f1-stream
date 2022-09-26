@@ -19,6 +19,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketCarDamageData.hpp"
 #include "PacketCarSetupData.hpp"
 #include "PacketCarStatusData.hpp"
@@ -28,12 +29,36 @@
 #include "PacketHeader.hpp"
 #include "PacketLapData.hpp"
 #include "PacketLobbyInfoData.hpp"
-#include "PacketMap.hpp"
 #include "PacketMotionData.hpp"
 #include "PacketParticipantsData.hpp"
 #include "PacketSessionData.hpp"
 #include "PacketSessionHistoryData.hpp"
 #include "spdlog/spdlog.h"
+
+#define PORT 20777
+#define BUFSIZE 4096
+
+const bool DEBUG = false;
+
+// not const since this can shrink if in batch mode
+std::uint32_t MAXPACKETS = pow(2, 20);
+
+std::vector<std::string> RAW_NAMES;       // raw input files (for batch mode)
+std::vector<std::string> OUTPUT_NAMES;    // output string names
+std::vector<std::ofstream> OUTPUT_FILES;  // vector of writeable output files
+
+std::ofstream motionHack;
+std::ofstream telemetryHack;
+
+
+void outputString(std::uint8_t idx, std::string str, bool debug);
+
+void parseAndPrintPacket(std::vector<unsigned char> bytes, bool debug);
+
+template <class T>
+void printHeader(std::string prefix, bool debug);
+
+void printHeaders(bool debug);
 
 /**
  * @brief
@@ -44,4 +69,4 @@
  * @param argv
  * @return int
  */
-int main(int argc, char** argv);
+int main(int argc, char **argv);

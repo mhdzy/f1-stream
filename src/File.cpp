@@ -70,19 +70,19 @@ std::size_t file_size(std::string filename) {
   return size;
 }
 
-/*
-  Parses a vector of raw bytes (unsigned char) into a vector of items.
-
-  Each item in the resulting vector will have a size dictated by its position
-  relative to the `sizes` input vector. `sizes` also dictates how the `filebytes`
-  vector will be split (shifted by `offset`).
-
-  @param sizes a vector of item sizes
-  @param filebytes a vector of raw bytes to split
-  @param int offset an offset to begin parsing the bytes at (files are < 65 kb)
-  @return a vector of vectors, each element being a vector of bytes representing an item.
-*/
-std::vector<std::vector<unsigned char>> parse_bytes_to_vec(std::vector<std::size_t> sizes,
+/**
+ * @brief Parses a vector of raw bytes (unsigned char) into a vector of items.
+ *
+ * Each item in the resulting vector will have a size dictated by its position
+ * relative to the `sizes` input vector. `sizes` also dictates how the `filebytes`
+ * vector will be split (shifted by `offset`).
+ *
+ * @param sizes a vector of item sizes
+ * @param filebytes a vector of raw bytes to split
+ * @param offset an offset to begin parsing the bytes at (files are < 65 kb)
+ * @return std::vector<std::vector<unsigned char>> each element being a vector of bytes representing an item.
+ */
+std::vector<std::vector<unsigned char>> parseBytes(std::vector<std::size_t> sizes,
                                                            std::vector<unsigned char> filebytes,
                                                            std::uint16_t offset = 0) {
   std::vector<std::vector<unsigned char>> pbytes;

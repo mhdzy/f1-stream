@@ -4,6 +4,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -46,16 +47,36 @@ struct PacketCarTelemetryData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> CarTelemetryDataSizes;
-extern std::vector<std::string> CarTelemetryDataNames;
-extern std::string CarTelemetryDataString(CarTelemetryData obj, std::string sep = ",");
-extern CarTelemetryData ParseCarTelemetryData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryData>();
 
-extern std::vector<std::size_t> CarTelemetryPanelSizes;
-extern std::vector<std::string> CarTelemetryPanelNames;
-extern std::string CarTelemetryPanelString(CarTelemetryPanel obj, std::string sep = ",");
-extern CarTelemetryPanel ParseCarTelemetryPanel(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<CarTelemetryData>();
 
-extern std::string PacketCarTelemetryDataCSVHeader(std::string sep = ",");
-extern std::string PacketCarTelemetryDataString(PacketCarTelemetryData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketCarTelemetryData ParsePacketCarTelemetryData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(CarTelemetryData obj, std::string sep);
+
+template <>
+CarTelemetryData parseSubpacketData<CarTelemetryData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<CarTelemetryPanel>();
+
+template <>
+std::vector<std::string> pNames<CarTelemetryPanel>();
+
+template <>
+std::string subpacketDataString(CarTelemetryPanel obj, std::string sep);
+
+template <>
+CarTelemetryPanel parseSubpacketData<CarTelemetryPanel>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketCarTelemetryData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketCarTelemetryData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketCarTelemetryData parsePacketData<PacketCarTelemetryData>(std::vector<unsigned char> bytes);

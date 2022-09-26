@@ -4,6 +4,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -39,17 +40,36 @@ struct PacketFinalClassificationData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> FinalClassificationDataSizes;
-extern std::vector<std::string> FinalClassificationDataNames;
-extern std::string FinalClassificationDataString(FinalClassificationData obj, std::string sep = ",");
-extern FinalClassificationData ParseFinalClassificationData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<FinalClassificationData>();
 
-extern std::vector<std::size_t> FinalClassificationMetaSizes;
-extern std::vector<std::string> FinalClassificationMetaNames;
-extern std::string FinalClassificationMetaString(FinalClassificationMeta obj, std::string sep = ",");
-extern FinalClassificationMeta ParseFinalClassificationMeta(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<FinalClassificationData>();
 
-extern std::string PacketFinalClassificationDataCSVHeader(std::string sep = ",");
-extern std::string PacketFinalClassificationDataString(PacketFinalClassificationData obj, std::uint8_t carID,
-                                                       std::string sep = ",");
-extern PacketFinalClassificationData ParsePacketFinalClassificationData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(FinalClassificationData obj, std::string sep);
+
+template <>
+FinalClassificationData parseSubpacketData<FinalClassificationData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<FinalClassificationMeta>();
+
+template <>
+std::vector<std::string> pNames<FinalClassificationMeta>();
+
+template <>
+std::string subpacketDataString(FinalClassificationMeta obj, std::string sep);
+
+template <>
+FinalClassificationMeta parseSubpacketData<FinalClassificationMeta>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketFinalClassificationData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketFinalClassificationData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketFinalClassificationData parsePacketData<PacketFinalClassificationData>(std::vector<unsigned char> bytes);

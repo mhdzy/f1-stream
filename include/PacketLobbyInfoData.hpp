@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -30,17 +31,36 @@ struct PacketLobbyInfoData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LobbyInfoDataSizes;
-extern std::vector<std::string> LobbyInfoDataNames;
-extern std::string LobbyInfoDataString(LobbyInfoData obj, std::string sep = ",");
-extern LobbyInfoData ParseLobbyInfoData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<LobbyInfoData>();
 
-extern std::vector<std::size_t> LobbyInfoMetaSizes;
-extern std::vector<std::string> LobbyInfoMetaNames;
-extern std::string LobbyInfoMetaString(LobbyInfoMeta obj, std::string sep = ",");
-extern LobbyInfoMeta ParseLobbyInfoMeta(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<LobbyInfoData>();
 
-extern std::string PacketLobbyInfoDataCSVHeader(std::string sep = ",");
-extern std::string PacketLobbyInfoDataString(PacketLobbyInfoData obj, std::uint8_t carID,
-                                                       std::string sep = ",");
-extern PacketLobbyInfoData ParsePacketLobbyInfoData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(LobbyInfoData obj, std::string sep);
+
+template <>
+LobbyInfoData parseSubpacketData<LobbyInfoData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<LobbyInfoMeta>();
+
+template <>
+std::vector<std::string> pNames<LobbyInfoMeta>();
+
+template <>
+std::string subpacketDataString(LobbyInfoMeta obj, std::string sep);
+
+template <>
+LobbyInfoMeta parseSubpacketData<LobbyInfoMeta>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketLobbyInfoData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketLobbyInfoData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketLobbyInfoData parsePacketData<PacketLobbyInfoData>(std::vector<unsigned char> bytes);

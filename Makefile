@@ -1,5 +1,6 @@
+# compiler and flags
 CC := g++
-CCFLAGS := -Wall -std=c++17
+CCFLAGS := -Wall -std=c++20
 
 # need to set '-lstdc++fs' on linux, breaks macOS builds
 OS_NAME := $(shell uname -s | tr A-Z a-z)
@@ -8,14 +9,16 @@ ifeq ($(OS_NAME), "linux")
 	OS_FLAGS += -lstdc++fs
 endif
 
+# source and install dirs
 BUILD_DIR   := build
 INCLUDE_DIR := include
 SOURCE_DIR  := src
 
+# target executable
 TARGET := main
 
 # some included libraries (spdlog)
-INC := /usr/local/include $(CURDIR)/$(INCLUDE_DIR)
+INC := /usr/local/include
 INC_LIBS := $(addprefix -I,$(INC))
 
 # auto-detect source .cpp files and derive .o names
@@ -36,25 +39,18 @@ endif
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	@echo "linking $@"
 	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(OS_FLAGS)
 
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
-	@printf "%s\n" "compiling $<"
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
 	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
 
-clean:
-	@printf "%s\n" "cleaning up"
-	rm -f $(OBJECTS) $(TARGET)
-
-trim:
-	@echo "cleaning object files"
-	rm -f $(OBJECTS)
+clean: trim
+	@echo "cleaning build files and executables"
+	rm -f $(BUILD_DIR)/* $(TARGET)
 
 run:
-	@printf "%s\n" "prog $(RUN_ARGS)"
+	@echo "prog $(RUN_ARGS)"
 	@chmod +x $(TARGET)
 	./$(TARGET) $(RUN_ARGS)
-
 
 .PHONY: clean run trim

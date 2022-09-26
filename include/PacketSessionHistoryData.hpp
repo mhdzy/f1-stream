@@ -2,6 +2,7 @@
 
 #include "Bytes.hpp"
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -41,23 +42,48 @@ struct PacketSessionHistoryData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LapMetaDataSizes;
-extern std::vector<std::string> LapMetaDataNames;
-extern std::string LapMetaDataString(LapMetaData obj, std::string sep = ",");
-extern LapMetaData ParseLapMetaData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<LapMetaData>();
 
-extern std::vector<std::size_t> LapHistoryDataSizes;
-extern std::vector<std::string> LapHistoryDataNames;
-extern std::string LapHistoryDataString(LapHistoryData obj, std::string sep = ",");
-extern LapHistoryData ParseLapHistoryData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<LapMetaData>();
 
-extern std::vector<std::size_t> TyreStintHistoryDataSizes;
-extern std::vector<std::string> TyreStintHistoryDataNames;
-extern std::string TyreStintHistoryDataString(TyreStintHistoryData obj, std::string sep = ",");
-extern TyreStintHistoryData ParseTyreStintHistoryData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::string subpacketDataString(LapMetaData obj, std::string sep);
 
-extern std::string PacketSessionHistoryDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketSessionHistoryDataString(PacketSessionHistoryData obj, std::uint8_t lapID,
-                                                  std::string sep = ",", std::string compr = "/",
-                                                  std::string compr2 = ";");
-extern PacketSessionHistoryData ParsePacketSessionHistoryData(std::vector<unsigned char> bytes);
+template <>
+LapMetaData parseSubpacketData<LapMetaData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<LapHistoryData>();
+
+template <>
+std::vector<std::string> pNames<LapHistoryData>();
+
+template <>
+std::string subpacketDataString(LapHistoryData obj, std::string sep);
+
+template <>
+LapHistoryData parseSubpacketData<LapHistoryData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<TyreStintHistoryData>();
+
+template <>
+std::vector<std::string> pNames<TyreStintHistoryData>();
+
+template <>
+std::string subpacketDataString(TyreStintHistoryData obj, std::string sep);
+
+template <>
+TyreStintHistoryData parseSubpacketData<TyreStintHistoryData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketSessionHistoryData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketSessionHistoryData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketSessionHistoryData parsePacketData<PacketSessionHistoryData>(std::vector<unsigned char> bytes);

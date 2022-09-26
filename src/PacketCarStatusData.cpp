@@ -1,80 +1,87 @@
 #include "../include/PacketCarStatusData.hpp"
 
-std::vector<std::size_t> CarStatusDataSizes = {
-    sizeof(((CarStatusData *)0)->m_tractionControl),        // Traction control - 0 = off, 1 = medium, 2 = full
-    sizeof(((CarStatusData *)0)->m_antiLockBrakes),         // 0 (off) - 1 (on)
-    sizeof(((CarStatusData *)0)->m_fuelMix),                // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
-    sizeof(((CarStatusData *)0)->m_frontBrakeBias),         // Front brake bias (percentage)
-    sizeof(((CarStatusData *)0)->m_pitLimiterStatus),       // Pit limiter status - 0 = off, 1 = on
-    sizeof(((CarStatusData *)0)->m_fuelInTank),             // Current fuel mass
-    sizeof(((CarStatusData *)0)->m_fuelCapacity),           // Fuel capacity
-    sizeof(((CarStatusData *)0)->m_fuelRemainingLaps),      // Fuel remaining in terms of laps (value on MFD)
-    sizeof(((CarStatusData *)0)->m_maxRPM),                 // Cars max RPM, point of rev limiter
-    sizeof(((CarStatusData *)0)->m_idleRPM),                // Cars idle RPM
-    sizeof(((CarStatusData *)0)->m_maxGears),               // Maximum number of gears
-    sizeof(((CarStatusData *)0)->m_drsAllowed),             // 0 = not allowed, 1 = allowed
-    sizeof(((CarStatusData *)0)->m_drsActivationDistance),  // 0 = DRS not available, non-zero - DRS will be
-                                                            // available in [X] metres
-    sizeof(((CarStatusData *)0)->m_actualTyreCompound),     // F1 Modern - 16 = C5, 17 = C4, 18 = C3, 19 = C2, 20 = C1
-                                                            // 7 = inter, 8 = wet
-                                                            // F1 Classic - 9 = dry, 10 = wet
-                                                            // F2 – 11 = super soft, 12 = soft, 13 = medium, 14 = hard
-                                                            // 15 = wet
-    sizeof(((CarStatusData *)0)->m_visualTyreCompound),     // F1 visual (can be different from actual compound)
-                                                            // 16 = soft, 17 = medium, 18 = hard, 7 = inter, 8 = wet
-                                                            // F1 Classic – same as above
-                                                            // F2 ‘19, 15 = wet, 19 – super soft, 20 = soft
-                                                            // 21 = medium , 22 = hard
-    sizeof(((CarStatusData *)0)->m_tyresAgeLaps),           // Age in laps of the current set of tyres
-    sizeof(((CarStatusData *)0)->m_vehicleFiaFlags),        // -1 = invalid/unknown, 0 = none, 1 = green
-                                                            // 2 = blue, 3 = yellow, 4 = red
-    sizeof(((CarStatusData *)0)->m_ersStoreEnergy),         // ERS energy store in Joules
-    sizeof(((CarStatusData *)0)->m_ersDeployMode),          // ERS deployment mode, 0 = none, 1 = medium
-                                                            // 2 = hotlap, 3 = overtake
-    sizeof(((CarStatusData *)0)->m_ersHarvestedThisLapMGUK),  // ERS energy harvested this lap by MGU-K
-    sizeof(((CarStatusData *)0)->m_ersHarvestedThisLapMGUH),  // ERS energy harvested this lap by MGU-H
-    sizeof(((CarStatusData *)0)->m_ersDeployedThisLap),       // ERS energy deployed this lap
-    sizeof(((CarStatusData *)0)->m_networkPaused)             // Whether the car is paused in a network game
-};
+template <>
+std::vector<std::size_t> pSizes<CarStatusData>() {
+  return std::vector<std::size_t>{
+      sizeof(((CarStatusData *)0)->m_tractionControl),        // Traction control - 0 = off, 1 = medium, 2 = full
+      sizeof(((CarStatusData *)0)->m_antiLockBrakes),         // 0 (off) - 1 (on)
+      sizeof(((CarStatusData *)0)->m_fuelMix),                // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
+      sizeof(((CarStatusData *)0)->m_frontBrakeBias),         // Front brake bias (percentage)
+      sizeof(((CarStatusData *)0)->m_pitLimiterStatus),       // Pit limiter status - 0 = off, 1 = on
+      sizeof(((CarStatusData *)0)->m_fuelInTank),             // Current fuel mass
+      sizeof(((CarStatusData *)0)->m_fuelCapacity),           // Fuel capacity
+      sizeof(((CarStatusData *)0)->m_fuelRemainingLaps),      // Fuel remaining in terms of laps (value on MFD)
+      sizeof(((CarStatusData *)0)->m_maxRPM),                 // Cars max RPM, point of rev limiter
+      sizeof(((CarStatusData *)0)->m_idleRPM),                // Cars idle RPM
+      sizeof(((CarStatusData *)0)->m_maxGears),               // Maximum number of gears
+      sizeof(((CarStatusData *)0)->m_drsAllowed),             // 0 = not allowed, 1 = allowed
+      sizeof(((CarStatusData *)0)->m_drsActivationDistance),  // 0 = DRS not available, non-zero - DRS will be
+                                                              // available in [X] metres
+      sizeof(((CarStatusData *)0)->m_actualTyreCompound),     // F1 Modern - 16 = C5, 17 = C4, 18 = C3, 19 = C2, 20 = C1
+                                                              // 7 = inter, 8 = wet
+                                                              // F1 Classic - 9 = dry, 10 = wet
+      // F2 – 11 = super soft, 12 = soft, 13 = medium, 14 = hard
+      // 15 = wet
+      sizeof(((CarStatusData *)0)->m_visualTyreCompound),       // F1 visual (can be different from actual compound)
+                                                                // 16 = soft, 17 = medium, 18 = hard, 7 = inter, 8 = wet
+                                                                // F1 Classic – same as above
+                                                                // F2 ‘19, 15 = wet, 19 – super soft, 20 = soft
+                                                                // 21 = medium , 22 = hard
+      sizeof(((CarStatusData *)0)->m_tyresAgeLaps),             // Age in laps of the current set of tyres
+      sizeof(((CarStatusData *)0)->m_vehicleFiaFlags),          // -1 = invalid/unknown, 0 = none, 1 = green
+                                                                // 2 = blue, 3 = yellow, 4 = red
+      sizeof(((CarStatusData *)0)->m_ersStoreEnergy),           // ERS energy store in Joules
+      sizeof(((CarStatusData *)0)->m_ersDeployMode),            // ERS deployment mode, 0 = none, 1 = medium
+                                                                // 2 = hotlap, 3 = overtake
+      sizeof(((CarStatusData *)0)->m_ersHarvestedThisLapMGUK),  // ERS energy harvested this lap by MGU-K
+      sizeof(((CarStatusData *)0)->m_ersHarvestedThisLapMGUH),  // ERS energy harvested this lap by MGU-H
+      sizeof(((CarStatusData *)0)->m_ersDeployedThisLap),       // ERS energy deployed this lap
+      sizeof(((CarStatusData *)0)->m_networkPaused)             // Whether the car is paused in a network game
+  };
+}
 
-std::vector<std::string> CarStatusDataNames = {
-    "m_tractionControl",          // Traction control - 0 = off, 1 = medium, 2 = full
-    "m_antiLockBrakes",           // 0 (off) - 1 (on)
-    "m_fuelMix",                  // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
-    "m_frontBrakeBias",           // Front brake bias (percentage)
-    "m_pitLimiterStatus",         // Pit limiter status - 0 = off, 1 = on
-    "m_fuelInTank",               // Current fuel mass
-    "m_fuelCapacity",             // Fuel capacity
-    "m_fuelRemainingLaps",        // Fuel remaining in terms of laps (value on MFD)
-    "m_maxRPM",                   // Cars max RPM, point of rev limiter
-    "m_idleRPM",                  // Cars idle RPM
-    "m_maxGears",                 // Maximum number of gears
-    "m_drsAllowed",               // 0 = not allowed, 1 = allowed
-    "m_drsActivationDistance",    // 0 = DRS not available, non-zero - DRS will be available
-                                  // in [X] metres
-    "m_actualTyreCompound",       // F1 Modern - 16 = C5, 17 = C4, 18 = C3, 19 = C2, 20 = C1
-                                  // 7 = inter, 8 = wet
-                                  // F1 Classic - 9 = dry, 10 = wet
-                                  // F2 – 11 = super soft, 12 = soft, 13 = medium, 14 = hard
-                                  // 15 = wet
-    "m_visualTyreCompound",       // F1 visual (can be different from actual compound)
-                                  // 16 = soft, 17 = medium, 18 = hard, 7 = inter, 8 = wet
-                                  // F1 Classic – same as above
-                                  // F2 ‘19, 15 = wet, 19 – super soft, 20 = soft
-                                  // 21 = medium , 22 = hard
-    "m_tyresAgeLaps",             // Age in laps of the current set of tyres
-    "m_vehicleFiaFlags",          // -1 = invalid/unknown, 0 = none, 1 = green
-                                  // 2 = blue, 3 = yellow, 4 = red
-    "m_ersStoreEnergy",           // ERS energy store in Joules
-    "m_ersDeployMode",            // ERS deployment mode, 0 = none, 1 = medium
-                                  // 2 = hotlap, 3 = overtake
-    "m_ersHarvestedThisLapMGUK",  // ERS energy harvested this lap by MGU-K
-    "m_ersHarvestedThisLapMGUH",  // ERS energy harvested this lap by MGU-H
-    "m_ersDeployedThisLap",       // ERS energy deployed this lap
-    "m_networkPaused"             // Whether the car is paused in a network game
-};
+template <>
+std::vector<std::string> pNames<CarStatusData>() {
+  return std::vector<std::string>{
+      "m_tractionControl",          // Traction control - 0 = off, 1 = medium, 2 = full
+      "m_antiLockBrakes",           // 0 (off) - 1 (on)
+      "m_fuelMix",                  // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
+      "m_frontBrakeBias",           // Front brake bias (percentage)
+      "m_pitLimiterStatus",         // Pit limiter status - 0 = off, 1 = on
+      "m_fuelInTank",               // Current fuel mass
+      "m_fuelCapacity",             // Fuel capacity
+      "m_fuelRemainingLaps",        // Fuel remaining in terms of laps (value on MFD)
+      "m_maxRPM",                   // Cars max RPM, point of rev limiter
+      "m_idleRPM",                  // Cars idle RPM
+      "m_maxGears",                 // Maximum number of gears
+      "m_drsAllowed",               // 0 = not allowed, 1 = allowed
+      "m_drsActivationDistance",    // 0 = DRS not available, non-zero - DRS will be available
+                                    // in [X] metres
+      "m_actualTyreCompound",       // F1 Modern - 16 = C5, 17 = C4, 18 = C3, 19 = C2, 20 = C1
+                                    // 7 = inter, 8 = wet
+                                    // F1 Classic - 9 = dry, 10 = wet
+                                    // F2 – 11 = super soft, 12 = soft, 13 = medium, 14 = hard
+                                    // 15 = wet
+      "m_visualTyreCompound",       // F1 visual (can be different from actual compound)
+                                    // 16 = soft, 17 = medium, 18 = hard, 7 = inter, 8 = wet
+                                    // F1 Classic – same as above
+                                    // F2 ‘19, 15 = wet, 19 – super soft, 20 = soft
+                                    // 21 = medium , 22 = hard
+      "m_tyresAgeLaps",             // Age in laps of the current set of tyres
+      "m_vehicleFiaFlags",          // -1 = invalid/unknown, 0 = none, 1 = green
+                                    // 2 = blue, 3 = yellow, 4 = red
+      "m_ersStoreEnergy",           // ERS energy store in Joules
+      "m_ersDeployMode",            // ERS deployment mode, 0 = none, 1 = medium
+                                    // 2 = hotlap, 3 = overtake
+      "m_ersHarvestedThisLapMGUK",  // ERS energy harvested this lap by MGU-K
+      "m_ersHarvestedThisLapMGUH",  // ERS energy harvested this lap by MGU-H
+      "m_ersDeployedThisLap",       // ERS energy deployed this lap
+      "m_networkPaused"             // Whether the car is paused in a network game
+  };
+}
 
-std::string CarStatusDataString(CarStatusData obj, std::string sep) {
+template <>
+std::string subpacketDataString(CarStatusData obj, std::string sep) {
   const char *fmt = "%d%s%d%s%d%s%d%s%d%s%f%s%f%s%f%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%f%s%d%s%f%s%f%s%f%s%d";
   const char *ssep = sep.c_str();
 
@@ -102,7 +109,8 @@ std::string CarStatusDataString(CarStatusData obj, std::string sep) {
   return str;
 }
 
-CarStatusData ParseCarStatusData(std::vector<std::vector<unsigned char>> bytes) {
+template <>
+CarStatusData parseSubpacketData<CarStatusData>(std::vector<std::vector<unsigned char>> bytes) {
   CarStatusData obj;
   std::memcpy(&obj.m_tractionControl, &bytes.at(0).front(), sizeof obj.m_tractionControl);
   std::memcpy(&obj.m_antiLockBrakes, &bytes.at(1).front(), sizeof obj.m_antiLockBrakes);
@@ -130,33 +138,37 @@ CarStatusData ParseCarStatusData(std::vector<std::vector<unsigned char>> bytes) 
   return obj;
 }
 
-std::string PacketCarStatusDataCSVHeader(std::string sep, std::string compr) {
+template <>
+std::string packetDataHeader<PacketCarStatusData>(std::string sep, std::string compr) {
   std::vector<std::string> vec = {
-      vpaste(PacketHeaderNames, sep),   //
-      vpaste(CarStatusDataNames, sep),  //
+      vpaste(pNames<PacketHeader>(), sep),   //
+      vpaste(pNames<CarStatusData>(), sep),  //
   };
   return vpaste(vec, sep);
 }
 
-std::string PacketCarStatusDataString(PacketCarStatusData obj, std::uint8_t carID, std::string sep) {
+template <>
+std::string packetDataString(PacketCarStatusData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2) {
   std::vector<std::string> vec = {
-      PacketHeaderString(obj.m_header),                 //
-      CarStatusDataString(obj.m_carStatusData[carID]),  //
+      subpacketDataString(obj.m_header),             //
+      subpacketDataString(obj.m_carStatusData[id]),  //
   };
   return vpaste(vec, sep);
 }
 
-PacketCarStatusData ParsePacketCarStatusData(std::vector<unsigned char> bytes) {
+template <>
+PacketCarStatusData parsePacketData<PacketCarStatusData>(std::vector<unsigned char> bytes) {
   PacketCarStatusData obj;
   std::uint16_t offset = 0;
 
   // parse header
-  obj.m_header = ParsePacketHeader(parse_bytes_to_vec(PacketHeaderSizes, bytes, offset));
+  obj.m_header = parseSubpacketDataT<PacketHeader>(bytes, offset);
   offset += sizeof(PacketHeader);
 
   // loop over the 22 car data packets and parse them
   for (std::uint8_t i = 0; i < 22; i++) {
-    obj.m_carStatusData[i] = ParseCarStatusData(parse_bytes_to_vec(CarStatusDataSizes, bytes, offset));
+    obj.m_carStatusData[i] = parseSubpacketDataT<CarStatusData>(bytes, offset);
     offset += sizeof(CarStatusData);
   }
 

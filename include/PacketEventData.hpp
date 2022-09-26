@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -141,11 +142,24 @@ struct PacketEventData {
 
 extern std::map<std::string, std::pair<std::string, std::string>> Events;
 
-extern std::vector<std::size_t> EventDataDetailsSizes;
-extern std::vector<std::string> EventDataDetailsNames;
-extern std::string EventDataDetailsString(EventDataDetails obj, std::string sep = ",");
-extern EventDataDetails ParseEventDataDetails(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<EventDataDetails>();
 
-extern std::string PacketEventDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketEventDataString(PacketEventData obj, std::string sep = ",");
-extern PacketEventData ParsePacketEventData(std::vector<unsigned char> bytes);
+template <>
+std::vector<std::string> pNames<EventDataDetails>();
+
+template <>
+std::string subpacketDataString(EventDataDetails obj, std::string sep);
+
+template <>
+EventDataDetails parseSubpacketData<EventDataDetails>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketEventData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketEventData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketEventData parsePacketData<PacketEventData>(std::vector<unsigned char> bytes);

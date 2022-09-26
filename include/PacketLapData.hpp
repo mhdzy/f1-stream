@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
 
 #pragma pack(push, 1)
@@ -53,16 +54,36 @@ struct PacketLapData {
 
 #pragma pack(pop)
 
-extern std::vector<std::size_t> LapDataSizes;
-extern std::vector<std::string> LapDataNames;
-extern std::string LapDataString(LapData obj, std::string sep = ",");
-extern LapData ParseLapData(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::size_t> pSizes<LapData>();
 
-extern std::vector<std::size_t> LapDataIdxSizes;
-extern std::vector<std::string> LapDataIdxNames;
-extern std::string LapDataIdxString(LapDataIdx obj, std::string sep = ",");
-extern LapDataIdx ParseLapDataIdx(std::vector<std::vector<unsigned char>> bytes);
+template <>
+std::vector<std::string> pNames<LapData>();
 
-extern std::string PacketLapDataCSVHeader(std::string sep = ",", std::string compr = "/");
-extern std::string PacketLapDataString(PacketLapData obj, std::uint8_t carID, std::string sep = ",");
-extern PacketLapData ParsePacketLapData(std::vector<unsigned char> bytes);
+template <>
+std::string subpacketDataString(LapData obj, std::string sep);
+
+template <>
+LapData parseSubpacketData<LapData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::vector<std::size_t> pSizes<LapDataIdx>();
+
+template <>
+std::vector<std::string> pNames<LapDataIdx>();
+
+template <>
+std::string subpacketDataString(LapDataIdx obj, std::string sep);
+
+template <>
+LapDataIdx parseSubpacketData<LapDataIdx>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketLapData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketLapData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketLapData parsePacketData<PacketLapData>(std::vector<unsigned char> bytes);
