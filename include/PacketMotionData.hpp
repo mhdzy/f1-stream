@@ -2,10 +2,14 @@
 
 #include <cstdint>
 #include <iostream>
-#include <string>
 #include <vector>
 
+#include "Bytes.hpp"
+#include "File.hpp"
+#include "Packet.hpp"
 #include "PacketHeader.hpp"
+
+#pragma pack(push, 1)
 
 struct CarMotionData {
   float m_worldPositionX;           // World space X position
@@ -28,11 +32,7 @@ struct CarMotionData {
   float m_roll;                     // Roll angle in radians
 };
 
-struct PacketMotionData {
-  PacketHeader m_header;  // Header
-
-  std::vector<CarMotionData> m_carMotionData = std::vector<CarMotionData>(22);  // Data for all cars on track
-
+struct ExtraCarMotionData {
   // Extra player car ONLY data
   float m_suspensionPosition[4];      // Note: All wheel arrays have the following
                                       // order:
@@ -52,12 +52,44 @@ struct PacketMotionData {
   float m_frontWheelsAngle;           // Current front wheels angle in radians
 };
 
-extern std::string CarMotionDataCSVHeader();
-extern std::string CarMotionDataString(CarMotionData obj, std::string sep);
-extern CarMotionData ParseCarMotionData(std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> CarMotionDataPairs;
+struct PacketMotionData {
+  PacketHeader m_header;                    // Header
+  CarMotionData m_carMotionData[22];        // Data for all cars on track
+  ExtraCarMotionData m_extraCarMotionData;  // Custom struct to simplify packet
+};
 
-extern std::string PacketMotionDataCSVHeader();
-extern std::string PacketMotionDataString(PacketMotionData obj, std::string sep);
-extern void ParsePacketMotionData(PacketMotionData &obj, std::vector<std::vector<unsigned char>> bytes);
-extern std::vector<std::pair<int, std::string>> PacketMotionDataPairs;
+#pragma pack(pop)
+
+template <>
+std::vector<std::size_t> pSizes<CarMotionData>();
+
+template <>
+std::vector<std::string> pNames<CarMotionData>();
+
+template <>
+std::vector<std::size_t> pSizes<ExtraCarMotionData>();
+
+template <>
+std::vector<std::string> pNames<ExtraCarMotionData>();
+
+template <>
+std::string subpacketDataString(CarMotionData obj, std::string sep);
+
+template <>
+CarMotionData parseSubpacketData<CarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string subpacketDataString(ExtraCarMotionData obj, std::string sep);
+
+template <>
+ExtraCarMotionData parseSubpacketData<ExtraCarMotionData>(std::vector<std::vector<unsigned char>> bytes);
+
+template <>
+std::string packetDataHeader<PacketMotionData>(std::string sep, std::string compr);
+
+template <>
+std::string packetDataString(PacketMotionData obj, std::uint8_t id, std::string sep, std::string compr,
+                             std::string compr2);
+
+template <>
+PacketMotionData parsePacketData<PacketMotionData>(std::vector<unsigned char> bytes);

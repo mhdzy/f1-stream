@@ -1,34 +1,56 @@
-CC:=g++
-CCFLAGS:=-Wall -std=c++17
+# compiler and flags
+CC := g++
+CCFLAGS := -Wall -std=c++20
 
-SDIR:=src
-LDIR:=src/lib/include
-UDIR:=src/lib/utils
+# need to set '-lstdc++fs' on linux, breaks macOS builds
+OS_NAME := $(shell uname -s | tr A-Z a-z)
+OS_FLAGS :=
+ifeq ($(OS_NAME), "linux")
+	OS_FLAGS += -lstdc++fs
+endif
 
-OBJECTS:= \
-	$(SDIR)/main.o \
-	$(LDIR)/PacketHeader.o \
-	$(LDIR)/PacketMotionData.o \
-	$(UDIR)/PacketMap.o \
-	$(UDIR)/File.o
+# source and install dirs
+BUILD_DIR   := build
+INCLUDE_DIR := include
+SOURCE_DIR  := src
 
-TARGET_EXECUTABLE:= \
-	$(SDIR)/main
+# target executable
+TARGET := main
 
-all: $(TARGET_EXECUTABLE)
+# some included libraries (spdlog)
+INC := /usr/local/include
+INC_LIBS := $(addprefix -I,$(INC))
 
-%.o: %.cpp
-	@echo "compiling $<"
-	$(CC) $(CCFLAGS) -c -g $< -o $@
+# auto-detect source .cpp files and derive .o names
+# assumes corresponding .hpp files exist in the $(INCLUDE_DIR)
+SOURCES := $(wildcard $(SOURCE_DIR)/*.cpp)
+OBJECTS := $(patsubst $(SOURCE_DIR)/%,%,$(SOURCES))
+OBJECTS := $(patsubst %.cpp,%.o,$(OBJECTS))
+OBJECTS := $(addprefix $(BUILD_DIR)/,$(OBJECTS))
 
-$(TARGET_EXECUTABLE): $(OBJECTS)
-	@echo "linking $@"
-	$(CC) $(CCFLGAS) $(OBJECTS) -g -o $@
+# setup 'make run' args
+ifeq (run, $(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "run"
+  RUN_ARGS := $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
 
-clean:
-	@echo "cleaning up"
-	rm -f $(OBJECTS) $(TARGET_EXECUTABLE)
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(CCFLAGS) $(OBJECTS) -g -o $@ $(INC_LIBS) $(OS_FLAGS)
+
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
+	$(CC) $(CCFLAGS) -c -g $(INC_DIRS) $< -o $@
+
+clean: trim
+	@echo "cleaning build files and executables"
+	rm -f $(BUILD_DIR)/* $(TARGET)
 
 run:
-	@chmod +x $(TARGET_EXECUTABLE)
-	./$(TARGET_EXECUTABLE)
+	@echo "prog $(RUN_ARGS)"
+	@chmod +x $(TARGET)
+	./$(TARGET) $(RUN_ARGS)
+
+.PHONY: clean run trim

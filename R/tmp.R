@@ -53,20 +53,8 @@ arrows(plotdf$id,plotdf$avg_place-plotdf$avg_sd, plotdf$id, plotdf$avg_place+plo
 plotdf %>%
   ggplot2::ggplot(aes(x = avg_place, y = avg_sd)) + geom_point()
 
-## f1 stuff
 
-library(dplyr)
-library(readr)
-
-track <- "spa"
-
-lapdata <- paste0("~/prog/f1/data/", track, "-lap-data-parsed.csv") |>
-  readr::read_csv() |>
-  dplyr::arrange(m_frameIdentifier)
-
-debugdata <- readr::read_csv("~/prog/f1/data/debug.csv")
-plot(debugdata$x, debugdata$y)
-
+# show position (2d graph)
 lapdata |>
   dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
@@ -78,12 +66,13 @@ lapdata |>
   ) +
   ggplot2::geom_point()
 
+# linear graph of lap time
 lapdata |>
   dplyr::filter(m_carID == 0) |>
   ggplot2::ggplot(
     ggplot2::aes(
       x = m_frameIdentifier,
-      y = m_gForceLongitudinal,
+      y = m_currentLapTimeInMS,
       #y = m_gForceLateral,
       color = m_frameIdentifier
     )
@@ -101,14 +90,23 @@ rgl::plot3d(
 
 l2 <- lapdata |>
   dplyr::arrange(dplyr::desc(m_frameIdentifier)) |>
-  dplyr::pull(m_suspensionAcceleration) |>
+  dplyr::pull(m_wheelSlip) |>
   stringr::str_split("/") |>
   base::unique() |>
   lapply(function(x) c('rl' = x[1], 'rr' = x[2], 'fl' = x[3], 'fr' = x[4])) |>
   dplyr::bind_rows() |>
-  dplyr::distinct()
+  dplyr::distinct() |>
+  dplyr::mutate_if(
+    is.character,
+    function(x) as.numeric(x)
+  )
 
 plot(
   l2$rr/32767,
   l2$rl/32767
+)
+
+plot(
+  l2$fr/32767,
+  l2$fl/32767
 )
