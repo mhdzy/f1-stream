@@ -48,3 +48,10 @@ parsed output data
 
 parsed output data
  - `data/<tag>/parsed`
+
+### display
+
+show track progress in real time
+ - `make run <tag> live` in one window
+ - `python3 python/graph.py --track <tag>`
+
