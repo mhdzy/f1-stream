@@ -184,6 +184,14 @@ int main(int argc, char** argv) {
   std::uint32_t fd;                    /* our socket */
   unsigned char buf[BUFSIZE];          /* receive buffer */
 
+  zmq::context_t ctx;
+  zmq::socket_t sock(ctx, zmq::socket_type::push);
+  sock.bind("tcp://127.0.0.1:5556");
+  for (int i = 0; i < 10; i++) {
+    spdlog::info("print" + std::to_string(i));
+      sock.send(zmq::str_buffer("test msg"), zmq::send_flags::dontwait);
+  }
+
   // SETUP
   /*
     batch mode sets up 'raw' files to parse and restricts max packets

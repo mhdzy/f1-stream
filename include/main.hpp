@@ -33,6 +33,7 @@
 #include "PacketParticipantsData.hpp"
 #include "PacketSessionData.hpp"
 #include "PacketSessionHistoryData.hpp"
+#include "cppzmq/zmq.hpp"
 #include "spdlog/spdlog.h"
 
 #define PORT 20777
@@ -49,7 +50,6 @@ std::vector<std::ofstream> OUTPUT_FILES;  // vector of writeable output files
 
 std::ofstream motionHack;
 std::ofstream telemetryHack;
-
 
 void outputString(std::uint8_t idx, std::string str, bool debug);
 
